@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adage CRM - Cloud Based CRM Software</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Navbar */
+    .navbar-nav .nav-link {
+      margin-right: 20px;
+      color: #333;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #dc3545;
+    }
+
+    /* Input Box */
+    .input-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 10px 20px;
+      max-width: 400px;
+      margin-top: 20px;
+    }
+
+    .input-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1.1rem;
+      padding: 10px;
+      background: transparent;
+    }
+
+    .custom-call-btn {
+      background-color: #d00000;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(208, 0, 0, 0.4);
+      transition: background 0.3s ease;
+      margin-left: 10px;
+    }
+
+    .custom-call-btn:hover {
+      background-color: lightblue;
+      color: indigo;
+    }
+
+    /* WhatsApp Button */
+    .whatsappchat {
+      animation: mover 1s infinite alternate;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .whatsappchat a:hover {
+      color: #fff;
+    }
+
+    .whatsapp_float {
+      display: flex;
+      align-items: center;
+      background-color: #25d366;
+      color: #FFF;
+      padding: 0 20px;
+      height: 45px;
+      border-radius: 50px 0 0 50px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      animation: pulse 1.5s infinite ease-out;
+    }
+
+    .whatsapp_float i {
+      font-size: 30px;
+      margin-right: 10px;
+    }
+
+    .visited-whatsup {
+      position: absolute;
+      top: -5px;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgb(232, 44, 12);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 20px;
+    }
+
+    @keyframes mover {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+      }
+
+      80% {
+        box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+      }
+    }
+
+    /* Connector line */
+    .connector-line {
+      position: absolute;
+      width: 100px;
+      height: 1px;
+      border-top: 2px dashed #999;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .connector-line {
+        display: none;
+      }
+
+      .whatsappchat {
+        top: 86%;
+        left: 20px;
+        border-radius: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Top Info Bar -->
+  <div class="text-white py-1 px-3 small text-center fw-bold" style="background-color: #004d4d;">
+    Call for Demo: 📞 <strong>+91-093126 19418</strong>
+  </div>
+
+  <!-- Place your HTML content here (already included above) -->
+
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-2 sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">
+        <span class="text-danger">Adage</span><span class="text-dark">CRM</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle fw-semibold" href="#" data-bs-toggle="dropdown">Trades</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Retail</a></li>
+              <li><a class="dropdown-item" href="#">Distribution</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Pricing</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Training</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Mobile App</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">API Integration</a></li>
+          <li class="nav-item"><a class="nav-link fw-semibold" href="#">Contact Us</a></li>
+        </ul>
+        <div class="d-flex">
+          <button class="btn btn-success me-2 px-4">Login</button>
+          <button class="btn btn-danger px-4" [routerLink]="['/signup']">Sign Up</button>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+
+
+  <!-- Hero Section -->
+  <section class="bg-light py-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 mb-4 mb-md-0">
+          <h1 class="display-5 fw-bold">Cloud-Based <br> Customer Relationship Management Software</h1>
+          <p class="lead mt-3">
+            Run Your Business Smarter with Adage CRM.<br>
+            Efficiently manage your entire business for just <span class="text-primary fw-bold">₹15/Day</span>.
+          </p>
+          <p class="text-muted">Trusted by <strong class="text-info">1000000+</strong> businesses worldwide!</p>
+
+          <div class="input-group mb-3 w-75">
+            <input type="text" class="form-control" placeholder="Mobile number">
+            <button class="btn btn-danger">Get a call</button>
+          </div>
+
+          <a href="#" class="btn btn-outline-danger btn-lg">Explore Demo Account</a>
+        </div>
+        <div class="col-md-6 text-center">
+          <img src="assets/bannerfirst.png" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="py-5 text-center" style="background-color: #004d4d; color: white;">
+    <div class="container">
+      <h2 class="fw-bold">Trusted by <span style="color: #fbc02d;">10 Million+</span> Merchants Worldwide</h2>
+      <div class="row mt-4 justify-content-center">
+        <!-- Logos Row 1 -->
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/patanjali.png" class="img-fluid" alt="Patanjali">
+        </div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/shriram.png" class="img-fluid" alt="Shriram">
+        </div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/goodyear.png" class="img-fluid" alt="Goodyear">
+        </div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/allites.png" class="img-fluid" alt="Allites">
+        </div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/adven.png" class="img-fluid" alt="Adven"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/alkem.png" class="img-fluid" alt="Alkem"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/ananya.png" class="img-fluid" alt="Ananya"></div>
+
+        <!-- Logos Row 2 -->
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/bikaji.png" class="img-fluid" alt="Bikaji"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/rspl.png" class="img-fluid" alt="RSPL"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/vmart.png" class="img-fluid" alt="V Mart"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/samrvir.png" class="img-fluid" alt="Samrvir">
+        </div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/shivnaresh.png" class="img-fluid"
+            alt="Shiv Naresh"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/starus.png" class="img-fluid" alt="Starus"></div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/dharmanis.png" class="img-fluid" alt="Dharmanis">
+        </div>
+        <div class="col-md-1 col-4 my-2"><img src="assets/images/logos/santulan.png" class="img-fluid" alt="Santulan">
+        </div>
+      </div>
+
+      <!-- Rating Cards -->
+      <div class="row mt-5 justify-content-center">
+        <div class="col-6 col-sm-2">
+          <div class="bg-white text-dark p-3 rounded">
+            <img src="assets/getApp.png" alt="GetApp" class="img-fluid" style="max-height: 30px;">
+            <div class="fw-bold mt-2">GetApp<br>4.4/5</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-2">
+          <div class="bg-white text-dark p-3 rounded">
+            <img src="assets/capttera.png" alt="Capterra" class="img-fluid" style="max-height: 30px;">
+            <div class="fw-bold mt-2">Capterra<br>4.4/5</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-2">
+          <div class="bg-white text-dark p-3 rounded">
+            <img src="assets/playstore.png" alt="Google Play" class="img-fluid" style="max-height: 30px;">
+            <div class="fw-bold mt-2">Google Play<br>4.7/5</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-2">
+          <div class="bg-white text-dark p-3 rounded">
+            <img src="assets/aapstore.png" alt="App Store" class="img-fluid" style="max-height: 30px;">
+            <div class="fw-bold mt-2">App Store<br>4.8/5</div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-2">
+          <div class="bg-white text-dark p-3 rounded">
+            <img src="assets/google.png" alt="Google" class="img-fluid" style="max-height: 30px;">
+            <div class="fw-bold mt-2">Google<br>4.6/5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="py-5 text-center bg-white">
+    <div class="container">
+      <!-- Title -->
+      <h2 class="fw-bold mb-5">
+        India’s <span style="color: #00796b;">No. 1 True Cloud Based</span> Customer Relationship Management Software?
+      </h2>
+
+      <!-- Stats with Logos -->
+      <div class="row text-center mb-5 justify-content-center">
+        <!-- Happy Users -->
+        <div class="col-md-2 col-6 mb-4">
+          <img src="assets/happycustomer.png" alt="Happy Users" style="height: 40px;">
+          <h5 class="mt-2 mb-0 fw-bold">10 Million+</h5>
+          <p class="mb-0 text-muted fw-bold">Happy Users</p>
+        </div>
+
+        <!-- Sales Centers -->
+        <div class="col-md-2 col-6 mb-4">
+          <img src="assets/multiuser1.png" alt="Support Centers" style="height: 40px;">
+          <h5 class="mt-2 mb-0 fw-bold">500+</h5>
+          <p class="mb-0 text-muted fw-bold">Sales & Support Centers in India</p>
+        </div>
+
+        <!-- Experience -->
+        <div class="col-md-2 col-6 mb-4">
+          <img src="assets/32yearsofexcellence.png" alt="Years of Experience" style="height: 40px;">
+          <h5 class="mt-2 mb-0 fw-bold">32+</h5>
+          <p class="mb-0 text-muted fw-bold">Years of Experience</p>
+        </div>
+
+        <!-- Multi-Device -->
+        <div class="col-md-2 col-6 mb-4">
+          <img src="assets/multidevice.png" alt="Multi-Device" style="height: 40px;">
+          <h5 class="mt-2 mb-0 fw-bold">Multi-Device</h5>
+          <p class="mb-0 text-muted fw-bold">Use Together on Mobile/Desktop</p>
+        </div>
+
+        <!-- Rated 4.8 -->
+        <div class="col-md-2 col-6 mb-4">
+          <img src="assets/gplaystore2.png" alt="Rated 4.8" style="height: 40px;">
+          <h5 class="mt-2 mb-0 fw-bold">Rated 4.8/5</h5>
+          <p class="mb-0 text-muted fw-bold">On Google & Play Store</p>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <h3 class="fw-bold mb-4">
+            What is <span style="color: #00796b;">Cloud Based Customer Relationship Management Software?</span>
+          </h3>
+          <p class="lead text-muted justify-content-center text-dark">
+            A cloud-based CRM application like AdageCRM empowers businesses to manage invoicing, track payments, and
+            handle customer and financial data securely from anywhere. Unlike traditional tools, it enables seamless
+            collaboration between teams—including sales, accounts, and management—through real-time access on connected
+            devices. By digitizing operations, it reduces paperwork, boosts efficiency, and ensures better
+            decision-making across the organization.
+          </p>
+          <a href="#" class="btn btn-outline-danger mt-3">Read More +</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Video Section -->
+  <section class="py-5 bg-light text-center">
+    <div class="container">
+      <h2 class="fw-bold mb-4">Watch How AdageCRM Works</h2>
+      <div class="ratio ratio-16x9 mx-auto" style="max-width: 800px;">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/SlhESAKF1Tk?si=AFw8xL4GtDf7QH1y"
+          title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="py-5 bg-white text-center">
+    <div class="container">
+      <!-- Heading -->
+      <h2 class="fw-bold mb-3">
+        Streamline Your Business Operations with <br>
+        <span style="color: #00796b;">Cloud Based Customer Relationship Management Software</span>
+      </h2>
+
+      <!-- Description -->
+      <p class="text-muted mx-auto" style="max-width: 900px;">
+        AdageCRM is designed to simplify your business operations by combining billing, accounting, and customer
+        relationship management into one powerful platform. Built for all business types, it streamlines invoicing,
+        account tracking, and day-to-day interactions with clients. With secure cloud storage, businesses can reduce
+        operational costs, minimize human error, and improve efficiency. By managing leads, customers, and financials
+        all in one place, AdageCRM helps you scale faster, serve better, and boost profitability.
+      </p>
+
+      <!-- Tab Navigation (Icons) -->
+      <div class="row justify-content-center mt-5">
+        <div class="col-md-2 col-4">
+          <div class="text-center border-bottom pb-2" style="color: #00796b;">
+            <img src="assets/RetailPOS.png" alt="Retail" style="height: 30px;">
+            <p class="mt-2 fw-bold mb-0">Retail & POS</p>
+          </div>
+        </div>
+        <div class="col-md-2 col-4">
+          <div class="text-center pb-2">
+            <img src="assets/servicep.png" alt="Distribution" style="height: 30px;">
+            <p class="mt-2 fw-bold mb-0 text-muted">Distribution</p>
+          </div>
+        </div>
+        <div class="col-md-2 col-4">
+          <div class="text-center pb-2">
+            <img src="assets/Professional.png" alt="Service Providers" style="height: 30px;">
+            <p class="mt-2 fw-bold mb-0 text-muted">Service Providers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <!-- Left Content -->
+        <div class="col-md-6">
+          <h3 class="fw-bold mb-4">AdageCRM Efficiently</h3>
+          <p>
+            With AdageCRM, you can efficiently manage every aspect of your retail operations—from purchasing and
+            inventory control to sales and customer engagement. Offer a seamless checkout experience, simplify returns
+            and exchanges, and support multiple billing counters with flexible payment options. Enhance customer
+            satisfaction and drive repeat business by delivering a smooth and personalized shopping journey.
+          </p>
+          <ul class="list-unstyled mt-3">
+            <li class="mb-2">
+              <i class="fas fa-circle-check text-success me-2"></i> FMCG/ Grocery
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-circle-check text-success me-2"></i> Superstores
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-circle-check text-success me-2"></i> Smart Home Electronics
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-circle-check text-success me-2"></i> Jewellery
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-circle-check text-success me-2"></i> Garments & other retail shops
+            </li>
+          </ul>
+        </div>
+        <!-- Right Image -->
+        <div class="col-md-6 text-center">
+          <img src="assets/retaliopos.png" alt="Retail POS System" class="lzy-img sm-hidden rounded w-100" height="342"
+            width="361">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="py-5 bg-white position-relative">
+    <div class="container">
+      <div class="row align-items-center">
+
+        <!-- Left Content -->
+        <div class="col-md-6 mb-4 mb-md-0 position-relative">
+          <span class="badge rounded-pill bg-success px-3 py-3 mb-2  font-weight-bold">Simplifying Business</span>
+          <h2 class="fw-bold">
+            Carry your Business <br />
+            Books wherever You Go
+          </h2>
+          <p class="text-muted fw-bold">
+            The AdageCRM app is transforming how businesses manage customer relationships and operations. With powerful
+            tools for lead tracking, client communication, and workflow automation, it enables teams to work from
+            anywhere—anytime. By digitizing processes, reducing manual data entry, and eliminating paperwork, businesses
+            boost productivity, enhance customer engagement, and make smarter, faster decisions.
+          </p>
+
+          <!-- Input box with shadow -->
+          <div class="input-box">
+            <input type="text" class="form-control" placeholder="Mobile number">
+            <button class="custom-call-btn">Get a call</button>
+          </div>
+
+
+          <!-- Floating red icon -->
+          <img src="assets/invoice.png" alt="Invoice Icon" class="position-absolute"
+            style="top: 70px; left: 90%; width: 50px; transform: translateX(-50%); z-index: 5;">
+        </div>
+
+        <!-- Right Image -->
+        <div class="col-md-6 text-center position-relative">
+          <div class="bg-teal rounded-4 position-relative p-4" style="background-color: #006d6d;">
+            <img src="assets/entirecrm.png" alt="Phone App" class="img-fluid" style="max-height: 400px;">
+
+            <!-- Speech Bubble Style Info Tag -->
+            <div class="position-absolute rounded fw-bold mb-3"
+              style="bottom: 10px; left: -50px; background-color: #004d4d; color: white; padding: 10px 20px;  font-size: 20px;">
+              All of your data, in one place.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="py-5 text-center bg-white position-relative">
+    <div class="container">
+      <h2 class="fw-bold mb-5">
+        Managing Your Business Becomes <span style="color: #00796b;">Simple & Easy</span> With Our<br>
+        <span style="color: #00796b;">Online Customer Relationship Management</span>
+      </h2>
+
+      <!-- Steps Row -->
+      <div class="row justify-content-between align-items-center position-relative px-md-5">
+
+        <!-- Step 1 -->
+        <div class="col-md-4 mb-5 mb-md-0">
+          <img src="assets/signup.png" alt="Signup Icon" style="height: 50px;">
+          <h5 class="fw-bold mt-3">Signup</h5>
+          <p><span class="text-danger fw-semibold">Visit</span> any web browser and<br> sign up using your login
+            credentials.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="col-md-4 mb-5 mb-md-0">
+          <img src="assets/environment.png" alt="Create Company" style="height: 50px;">
+          <h5 class="fw-bold mt-3">AdageCRM environment</h5>
+          <p>Set up your CRM workspace by adding your company details and start organizing your customer data
+            efficiently.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-md-4">
+          <img src="assets/start.png" alt="Start Billing" style="height: 50px;">
+          <h5 class="fw-bold mt-3">Start AdageCRM</h5>
+          <p>Add leads, manage customer interactions and track communications, and start closing deals instantly with
+            our CRM platform.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <footer class="text-white pt-5 pb-4" style="background-color: #004d4d;">
+    <div class="container text-md-left">
+      <div class="row text-md-left">
+        <!-- Company Info -->
+        <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
+          <h5 class="text-uppercase mb-4 font-weight-bold text-warning">AdageCRM</h5>
+          <p>
+            India’s No. 1 True Cloud Based Billing & Accounting Software. Trusted by 10 Million+ Merchants Worldwide.
+          </p>
+          <p>
+            <i class="fas fa-map-marker-alt"></i> 107, H Block, Sector 63, Noida, Uttar Pradesh 201301
+          </p>
+          <p>
+            <i class="fas fa-envelope"></i> support@hukamsar.com
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+          <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Quick Links</h5>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Home</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">About Us</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Pricing</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Contact Us</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Blog</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">FAQ's</a></p>
+        </div>
+
+        <!-- Policies -->
+        <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+          <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Policies</h5>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Privacy</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Refund Policy</a></p>
+          <p><a href="#" class="text-white" style="text-decoration: none;">Terms & Conditions</a></p>
+        </div>
+
+        <!-- Social Media -->
+        <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+          <h5 class="text-uppercase mb-4 font-weight-bold text-warning">Follow Us</h5>
+
+          <a href="#" class="me-2"
+            style="background-color: #1877F2; color: white; border-radius: 50%; padding: 12px; display: inline-block; width: 45px; height: 45px; text-align: center;">
+            <i class="fab fa-facebook-f fa-lg"></i>
+          </a>
+
+          <a href="#" class="me-2"
+            style="background-color: #1DA1F2; color: white; border-radius: 50%; padding: 12px; display: inline-block; width: 45px; height: 45px; text-align: center;">
+            <i class="fab fa-twitter fa-lg"></i>
+          </a>
+
+          <a href="#" class="me-2"
+            style="background-color: #FF0000; color: white; border-radius: 50%; padding: 12px; display: inline-block; width: 45px; height: 45px; text-align: center;">
+            <i class="fab fa-youtube fa-lg"></i>
+          </a>
+
+          <a href="#" class="me-2"
+            style="background-color: #0A66C2; color: white; border-radius: 50%; padding: 12px; display: inline-block; width: 45px; height: 45px; text-align: center;">
+            <i class="fab fa-linkedin-in fa-lg"></i>
+          </a>
+
+          <a href="#"
+            style="background-color: #E4405F; color: white; border-radius: 50%; padding: 12px; display: inline-block; width: 45px; height: 45px; text-align: center;">
+            <i class="fab fa-instagram fa-lg"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom Line -->
+      <div class="row align-items-center mt-4">
+        <div class="col-md-12 text-center">
+          <p class="text-white">&copy;2025 | All Rights Reserved by <strong>AdageCRM</strong> & Powered by
+            <strong>Hukamsar Technologies Pvt Ltd. </strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <div class="whatsappchat">
+    <a href="https://api.whatsapp.com/send?phone=9555501342" target="_blank" class="whatsapp_float"
+      rel="noopener noreferrer">
+      <i class="fab fa-whatsapp" aria-hidden="true"></i>
+      <span class="visited-whatsup">WhatsApp</span>
+    </a>
+  </div>
+
+</body>
+
+</html>
