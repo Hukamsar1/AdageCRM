@@ -1,35 +1,85 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UserService } from 'src/app/core/Service/registerservice';
 
 @Component({
   selector: 'app-signup',
+  standalone:true,
+  imports:[CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'] // or .scss if using SCSS
+  styleUrls: ['./register.component.scss'] // or .scss if using SCSS
 })
 export class RegisterComponent {
-  signupForm: FormGroup;
-  submitted = false;
+  signupForm!: FormGroup;
+  isOtpSent = false;
+  otpInput = '';
+  successMessage = '';
+  errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  otpInputs: string[] = ['', '', '', '', '', ''];
+  isOtpModalVisible = false;
+  isOtpVerified = false;
+  timer = 120; // 30 second timer
+  timerInterval: any;
+
+  constructor(private fb: FormBuilder, private userService: UserService) { }
+
+  ngOnInit(): void {
+    this.formCreate();
+  }
+
+  formCreate() {
     this.signupForm = this.fb.group({
       mobile: ['', [Validators.required, Validators.pattern('^[6-9]\\d{9}$')]],
-      referralCode: ['']
+      referralCode: [''],
+      password: ['', Validators.required]
     });
   }
 
-  get f() {
-    return this.signupForm.controls;
+getInputValue(event: Event): string {
+  return (event.target as HTMLInputElement).value || '';
+}
+
+
+  sendOtp(): void {
+    if (this.signupForm.get('mobile')?.invalid) return;
+    const rawMobile = this.signupForm.value.mobile; // e.g. "9876543210"
+    const internationalMobile = `+91${rawMobile}`;
+
+    this.userService.sendOtp(internationalMobile).subscribe(
+      () => {
+        this.isOtpModalVisible = true;
+        this.startTimer();
+      }
+    );
   }
 
-  onSubmit() {
-    this.submitted = true;
+  verifyOtp(): void {
+    const otp = this.otpInputs.join('');
+    this.userService.verifyOtp(this.signupForm.get('mobile')?.value, otp).subscribe(
+      () => {
+        this.isOtpModalVisible = false;
+        this.isOtpVerified = true;
+        clearInterval(this.timerInterval);
+      }
+    );
+  }
 
-    if (this.signupForm.invalid) {
-      return;
-    }
+  startTimer(): void {
+    this.timer = 120;
+    this.timerInterval = setInterval(() => {
+      this.timer--;
+      if (this.timer <= 0) {
+        clearInterval(this.timerInterval);
+      }
+    }, 2000);
+  }
 
-    const formData = this.signupForm.value;
-    console.log('Sending OTP to:', formData.mobile);
-    // TODO: Call backend API to send OTP
+  register(): void {
+    if (this.signupForm.invalid || !this.isOtpVerified) return;
+    this.userService.registerUser(this.signupForm.value).subscribe(
+      res => alert('User registered successfully!')
+    );
   }
 }

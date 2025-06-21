@@ -5,3 +5,21 @@ input:focus {
 input::placeholder {
     color: #aaa;
 }
+
+.logo-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;  
+  z-index: 999;
+}
+
+.logo-container img {
+  height: 60px;  /* Adjust the size as you like */
+  width: auto;
+  object-fit: contain;
+}
+
+/* register.component.css */
+:host {
+  display: block;
+}
