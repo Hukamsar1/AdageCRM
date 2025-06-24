@@ -8,7 +8,7 @@ import { RegisterUserRequest } from '../interface/Iregister';
 export class UserService {
   private apiUrl = 'https://localhost:44369/api'; // apni API ka URL yaha dalo
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   registerUser(request: RegisterUserRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/User/register`, request);
@@ -16,11 +16,15 @@ export class UserService {
 
 
   sendOtp(mobile: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/User/sendOtp`, { mobile }); 
-}
+    return this.http.post(`${this.apiUrl}/User/sendOtp`, { mobile });
+  }
 
-verifyOtp(mobile: string, otp: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/User/verifyOtp`, { mobile, otp }); 
+  verifyOtp(mobile: string, otp: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/User/verifyOtp`, { mobile, otp });
+  }
+
+  signup(userData: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/User/register`, userData); 
 }
 
 }

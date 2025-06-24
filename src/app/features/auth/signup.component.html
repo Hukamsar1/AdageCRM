@@ -1,0 +1,75 @@
+<div class="container py-4">
+  <h3 class="text-center mb-3">Sign Up</h3>
+  <p class="text-center text-muted">Create your AdageCRM Account</p>
+
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="shadow p-4 rounded-4 bg-white">
+    <!-- Mobile -->
+    <div class="mb-3">
+      <label class="form-label">Mobile</label>
+      <div class="input-group">
+        <span class="input-group-text"><img src="https://flagcdn.com/in.svg" width="24" alt="IN" /> +91</span>
+        <input
+          class="form-control"
+          formControlName="mobile"
+          placeholder="Enter mobile number"
+          type="text"
+        />
+      </div>
+      <small class="text-danger" *ngIf="isInvalid('mobile')">Enter valid mobile number</small>
+    </div>
+
+    <!-- Referral Code -->
+    <div class="mb-3">
+      <label class="form-label">Referral Code</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-ticket"></i></span>
+        <input class="form-control" formControlName="referralCode" placeholder="Referral code (optional)" />
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+        <input class="form-control" formControlName="email" placeholder="Email" type="email" />
+      </div>
+      <small class="text-danger" *ngIf="isInvalid('email')">Enter valid email address</small>
+    </div>
+
+    <!-- Pin Code -->
+    <div class="mb-3">
+      <label class="form-label">Pin-Code</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-map-marker-alt"></i></span>
+        <input class="form-control" formControlName="pincode" placeholder="Pin-Code" type="text" maxlength="6" />
+      </div>
+      <small class="text-danger" *ngIf="isInvalid('pincode')">Enter valid 6 digit pincode</small>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="password" placeholder="Password" type="password" />
+      </div>
+      <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small>
+    </div>
+
+    <!-- Terms & Conditions -->
+    <div class="form-check mb-3">
+      <input class="form-check-input" id="terms" type="checkbox" formControlName="terms" />
+      <label class="form-check-label" for="terms">
+        By creating an account, you agree to the <a href="#">Terms & Conditions</a>
+      </label>
+      <small class="text-danger d-block" *ngIf="isInvalid('terms')">You must accept the terms</small>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn btn-success w-100" type="submit" [disabled]="signupForm.invalid">SIGN UP</button>
+
+    <div class="text-center my-3 text-muted">OR</div>
+    <p class="text-center">Already have an account? <a [routerLink]="['/login']">Sign In</a></p>
+  </form>
+</div>

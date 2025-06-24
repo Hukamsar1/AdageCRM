@@ -1,29 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/Service/registerservice';
 
 @Component({
   selector: 'app-signup',
   standalone:true,
-  imports:[CommonModule, ReactiveFormsModule],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'] // or .scss if using SCSS
+  imports:[CommonModule, ReactiveFormsModule,FormsModule],
+  templateUrl: './Otpsent.component.html',
+  styleUrls: ['./Otpsent.component.scss'] // or .scss if using SCSS
 })
-export class RegisterComponent {
+export class OTPSentComponent {
   signupForm!: FormGroup;
   isOtpSent = false;
   otpInput = '';
   successMessage = '';
   errorMessage = '';
-
-  otpInputs: string[] = ['', '', '', '', '', ''];
   isOtpModalVisible = false;
   isOtpVerified = false;
   timer = 120; // 30 second timer
   timerInterval: any;
 
-  constructor(private fb: FormBuilder, private userService: UserService) { }
+  constructor(private fb: FormBuilder, private userService: UserService,private router: Router) { }
 
   ngOnInit(): void {
     this.formCreate();
@@ -55,16 +54,34 @@ getInputValue(event: Event): string {
     );
   }
 
-  verifyOtp(): void {
-    const otp = this.otpInputs.join('');
-    this.userService.verifyOtp(this.signupForm.get('mobile')?.value, otp).subscribe(
-      () => {
-        this.isOtpModalVisible = false;
-        this.isOtpVerified = true;
-        clearInterval(this.timerInterval);
+
+verifyOtp(): void {
+  const otp = this.otpInput;
+  const mobile = this.signupForm.get('mobile')?.value;
+  const formattedMobile = `+91${mobile}`;
+
+  this.userService.verifyOtp(formattedMobile, otp).subscribe(
+    res => {
+      console.log('Verified:', res);
+      if (res) {
+        this.goToSignup();
+        // OTP verified successfully
+        this.isOtpModalVisible = false; // Modal band kar do
+        this.isOtpVerified = true;       // Password field dikhao
+        clearInterval(this.timerInterval); // Timer band kar do
       }
-    );
-  }
+    },
+    err => {
+      console.error('Error:', err);
+      // Error message dikhana chaho to yaha dikhado
+    }
+  );
+}
+
+  goToSignup() {
+    this.router.navigateByUrl('/signup');
+
+  } 
 
   startTimer(): void {
     this.timer = 120;
