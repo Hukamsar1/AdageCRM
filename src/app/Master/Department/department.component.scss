@@ -15,3 +15,30 @@
   font-size: 0.9em; /* Make the asterisk slightly smaller */
 }
 
+.ag-cell-actions .btn .bi {
+  font-size: 0.8em; /* Make the icon 80% of its parent's font size (which is already btn-sm) */
+  /* You can experiment with values like 0.7em, 0.9em, or fixed pixels like 12px */
+}
+
+/* Optional: Re-adjust button padding if icons become too small/centered poorly */
+.ag-cell-actions .btn {
+  padding: 0.2rem 0.4rem; /* Slightly smaller padding to match smaller icon */
+  line-height: 1; /* Ensures vertical alignment is good */
+}
+
+.ag-header-cell {
+  /* ... other styles ... */
+  font-weight: bold !important; /* Try this if it's still not bold */
+}
+
+
+/* src/app/Master/department-list/department-list.component.scss */
+
+.ag-header-cell {
+  background: #007bff !important; /* Bootstrap primary color for header background */
+  color: rgb(17, 16, 16) !important;
+  font-weight: bold; /* This line makes the header text bold */
+  text-align: center;
+  padding: 0.5rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.3); /* subtle separator */
+}

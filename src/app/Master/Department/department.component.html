@@ -1,69 +1,8 @@
-<!-- <div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">Create New Department</h4>
-      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
-        <i class="bi bi-arrow-left"></i> Back </button>
-    </div>
-
-    <div class="card-body p-4">
-      <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
-
-        <div class="mb-3">
-          <label for="departmentName" class="form-label fw-bold">Department Name <span class="text-danger">*</span></label>
-          <input
-            id="departmentName"
-            type="text"
-            class="form-control"
-            formControlName="departmentName"
-            placeholder="e.g., Sales, Marketing, HR"
-            aria-describedby="departmentNameHelp"
-          />
-          <div id="departmentNameHelp" class="form-text">Enter the unique name for the department.</div>
-          <div *ngIf="departmentForm.get('departmentName')?.invalid && departmentForm.get('departmentName')?.touched" class="text-danger mt-1">
-            Department name is required.
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label for="underDepartment" class="form-label fw-bold">Reports To (Under Department)</label>
-          <select
-            id="underDepartment"
-            class="form-select"
-            formControlName="underDepartment"
-            aria-describedby="underDepartmentHelp"
-          >
-            <option value="" disabled selected>-- Select a parent department (Optional) --</option>
-            <option *ngFor="let dep of departments" [value]="dep.id">{{ dep.name }}</option>
-          </select>
-          <div id="underDepartmentHelp" class="form-text">Select a parent department if this department reports to another.</div>
-        </div>
-
-        <button type="submit" class="d-none"></button>
-      </form>
-    </div>
-
-    <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
-      <button type="button" class="btn btn-success" (click)="onSubmit()" [disabled]="departmentForm.invalid">
-        <i class="bi bi-save"></i> Save Department
-      </button>
-      <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
-        <i class="bi bi-eraser"></i> Clear Form
-      </button>
-      <button type="button" class="btn btn-secondary" (click)="closeForm()">
-        <i class="bi bi-x-circle"></i> Close
-      </button>
-    </div>
-  </div>
-</div> -->
-
-
-
 
 <div class="container mt-4">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">Create New Department</h4>
+      <h5 class="mb-0">Create New Department</h5>
       <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
         <i class="bi bi-arrow-left"></i> Back
       </button>
@@ -82,14 +21,14 @@
             placeholder="e.g., Sales, Marketing, HR"
             aria-describedby="departmentNameHelp"
           />
-          <div id="departmentNameHelp" class="form-text">Enter the unique name for the department.</div>
+          <!-- <div id="departmentNameHelp" class="form-text">Enter the unique name for the department.</div> -->
           <div *ngIf="departmentForm.get('departmentName')?.invalid && departmentForm.get('departmentName')?.touched" class="text-danger mt-1">
             Department name is required.
           </div>
         </div>
 
         <div class="mb-4">
-          <label for="underDepartment" class="form-label fw-bold">Reports To (Parent Department)</label>
+          <label for="underDepartment" class="form-label fw-bold">Reports To Parent Department</label>
           <select
             id="underDepartment"
             class="form-select"
@@ -97,9 +36,9 @@
             aria-describedby="underDepartmentHelp"
           >
             <option value="" disabled selected>-- Select a parent department (Optional) --</option>
-            <option *ngFor="let dep of departments" [value]="dep.id">{{ dep.name }}</option>
+            <option *ngFor="let dep of departments" [value]="dep.name">{{ dep.name }}</option>
           </select>
-          <div id="underDepartmentHelp" class="form-text">Select a parent department if this department reports to another.</div>
+          <!-- <div id="underDepartmentHelp" class="form-text">Select a parent department if this department reports to another.</div> -->
         </div>
 
         <button type="submit" class="d-none"></button>
@@ -118,4 +57,4 @@
       </button>
     </div>
   </div>
-</div>
+</div> 

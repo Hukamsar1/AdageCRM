@@ -1,5 +1,12 @@
+/* src/app/Master/department-list/department-list.component.scss */
+
+/* Important: Make sure these base imports are at the very top */
 @import "~ag-grid-community/styles/ag-grid.css";
 @import "~ag-grid-community/styles/ag-theme-alpine.css";
+
+/* ========================================================= */
+/* Custom ag-Grid Theme Overrides */
+/* ========================================================= */
 
 .ag-theme-alpine {
   --ag-borders: solid;
@@ -7,9 +14,10 @@
   --ag-cell-horizontal-border: solid 1px var(--ag-border-color);
   --ag-header-column-separator-display: block;
   --ag-header-column-separator-color: var(--ag-border-color);
-  
-  --ag-header-background-color: #f8f9fa;
-  --ag-odd-row-background-color: #f8f9fa;
+
+  /* Consider removing these if .ag-header-cell handles background better */
+  /* --ag-header-background-color: #f8f9fa; */
+  /* --ag-odd-row-background-color: #f8f9fa; */
   --ag-font-size: 14px;
 
   .ag-row-blank {
@@ -19,24 +27,93 @@
   }
 }
 
+/* Specific styling for ag-Grid headers */
 .ag-header-cell {
-  font-weight: 600;
-  border-right: 1px solid #dee2e6 !important;
+  background: #007bff !important; /* Bootstrap primary color for header background */
+  color: white !important;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.3); /* subtle separator */
 }
 
+.ag-header-cell-label {
+  justify-content: center !important; /* center header label text */
+}
+
+/* Specific styling for ag-Grid cells */
 .ag-cell {
-  border-right: 1px solid #dee2e6 !important;
-  display: flex;
-  align-items: center;
+  border-right: 1px solid #dee2e6 !important; /* Ensure vertical borders for cells */
+  display: flex; /* Use flexbox for vertical alignment */
+  align-items: center; /* Vertically center content in cells */
 }
 
+/* Overall container for the ag-Grid to apply border and overflow */
 .grid-container {
   border: 1px solid #dee2e6;
   border-radius: 4px;
-  overflow: hidden;
+  /* Removed overflow: hidden here, as ag-grid handles its own overflow */
+
+  width: 100%;
+  min-height: 150px; /* Minimum height for grid */
+
+  max-height: calc(100vh - 220px); /* Adjusted value - IMPORTANT! */
+  overflow: auto; /* Allow the grid's content to scroll internally */
+
+  /* Added some margin to separate grid from error/no data messages if they appear */
+  margin: 1rem 0;
 }
 
+/* Disabled button styling */
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+
+.ag-cell-action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Fill cell height */
+  gap: 5px; /* Reduced gap slightly for very small buttons */
+  width: 100%; /* Ensure container takes full width of cell */
+}
+
+/* Style the buttons themselves */
+.ag-cell-action-buttons .btn {
+  /* This combination makes the buttons very small */
+  padding: 0.1rem 0.2rem; /* Even smaller padding */
+  line-height: 1; /* Ensures vertical centering of content */
+  font-size: 0.6rem; /* Base font for button, might not be visible if only icon */
+  border-radius: 0.15rem; /* Even smaller border-radius */
+  display: flex; /* Use flex for icon centering */
+  align-items: center; /* Center icon vertically */
+  justify-content: center; /* Center icon horizontally */
+}
+
+/* Style the Bootstrap icons within these buttons */
+.ag-cell-action-buttons .btn .bi {
+  font-size: 0.7rem; /* Explicitly set icon size (e.g., 11-12px) */
+  vertical-align: middle; /* Ensures icon is perfectly centered */
+  margin: 0; /* Remove any default margins */
+  padding: 0; /* Remove any default paddings */
+}
+
+/* Optional: Hover effects for better UX */
+.ag-cell-action-buttons .btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+.ag-cell-action-buttons .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+.card-header{
+  padding: 0.5%;
+}
+
+.ag-header-cell-label.custom-header {
+  font-weight: bold;
+  color: #2c2c2c; // dark shade — adjust as needed
 }

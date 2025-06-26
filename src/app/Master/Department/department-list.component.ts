@@ -2,113 +2,143 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
-
-interface Department {
-  id: number;
-  name: string;
-  parentDepartmentName?: string;
-}
+import { ColDef, GridApi, GridReadyEvent, ICellRendererParams } from 'ag-grid-community';
+import { DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
 @Component({
   selector: 'app-department-list',
   standalone: true,
   imports: [AgGridModule, CommonModule],
   templateUrl: './department-list.component.html',
-  styleUrls: ['./department-list.component.scss']
+  styleUrls: ['./department-list.component.scss'],
 })
 export class DepartmentListComponent implements OnInit {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
 
-  public columnDefs: ColDef[] = [];
-  public rowData: Department[] = [];
-  public blankRowData: Department[] = [];
-  public defaultColDef: ColDef = {
+  columnDefs: ColDef[] = [];
+  rowData: any[] = []; // we'll bind transformed data
+  defaultColDef: ColDef = {
     flex: 1,
     minWidth: 100,
     resizable: true,
     sortable: true,
     filter: true,
   };
-
   private gridApi!: GridApi;
-  loading: boolean = true; // Start with loading true
+  loading = true;
   error: string | null = null;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private departmentService: DepartmentService
+  ) { }
 
   ngOnInit(): void {
     this.setupColumnDefs();
-    this.createBlankRows(5); // Create 5 blank rows initially
-    this.loadDepartments(); // Then load real data
-  }
-
-  createBlankRows(count: number): void {
-    this.blankRowData = Array(count).fill({}).map((_, index) => ({
-      id: index + 1,
-      name: '',
-      parentDepartmentName: ''
-    }));
+    this.loadDepartments();
   }
 
   setupColumnDefs(): void {
     this.columnDefs = [
-      { 
-        headerName: 'ID', 
-        field: 'id', 
+      {
+        headerName: 'ID',
+        field: 'id',
         width: 80,
-        cellRenderer: (params: any) => params.value || '-'
+        headerClass: 'custom-header',
+        resizable: true,
+        sortable: true,
+        filter: true,
+        cellRenderer: (p: ICellRendererParams) => p.value || '-',
       },
-      { 
-        headerName: 'Department Name', 
+      {
+        headerName: 'Department Name',
         field: 'name',
-        cellRenderer: (params: any) => params.value || 'No data'
+        headerClass: 'custom-header',
+        resizable: true,
+        sortable: true,
+        filter: true,
+        cellRenderer: (p: ICellRendererParams) => p.value || 'No data',
       },
       {
         headerName: 'Reports To',
         field: 'parentDepartmentName',
-        cellRenderer: (params: any) => params.value || 'N/A'
+        headerClass: 'custom-header',
+        resizable: true,
+        sortable: true,
+        filter: true,
+        cellRenderer: (p: ICellRendererParams) => p.value || 'N/A',
       },
       {
         headerName: 'Actions',
-        width: 150,
-        cellRenderer: () => `
-          <button class="btn btn-sm btn-warning me-1" disabled>
-            <i class="bi bi-pencil"></i>
-          </button>
-          
-          <button class="btn btn-sm btn-danger" disabled>
-            <i class="bi bi-trash"></i>
-          </button>
-        `,
-        sortable: false,
-        filter: false
+        width: 100,
+        flex: 0,
+        resizable: true,
+        sortable: true,
+        filter: true,
+        cellRenderer: (params: any) => `
+    <div class="text-center">
+      <button class="btn btn-warning me-1" style="font-size:12px; padding: 2px; width:18px; height:25px; margin-bottom:8px;" data-action="edit" data-id="${params.data.id}" title="Edit">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button class="btn btn-danger" style="font-size:12px; padding: 2px; width:18px; height:25px; margin-bottom:8px;" data-action="delete" data-id="${params.data.id}" title="Delete">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  `
       }
+
+
     ];
   }
 
-   onGridReady(params: GridReadyEvent): void {
-    this.gridApi = params.api;
-    // Adjust columns to fit
-    setTimeout(() => {
-      this.gridApi.sizeColumnsToFit();
-    }, 0);
+  onCellClicked(event: any): void {
+    const target = event.event.target;
+    const action = target.closest('button')?.getAttribute('data-action');
+    const id = target.closest('button')?.getAttribute('data-id');
+
+    if (action === 'edit' && id) {
+      this.router.navigate([`/Mainlayout/department/create/${id}`]);
+    } else if (action === 'delete' && id) {
+      this.deleteDepartment(+id); // implement this
+    }
+  }
+
+  private deleteDepartment(id: number): void {
+    if (confirm('Are you sure you want to delete this department?')) {
+      this.departmentService.deleteDepartment(id).subscribe(
+        () => this.loadDepartments(),
+        (error) => {
+          this.error = 'Error deleting department';
+          console.error(error);
+        }
+      );
+    }
   }
 
 
+  onGridReady(params: GridReadyEvent): void {
+    this.gridApi = params.api;
+    setTimeout(() => this.gridApi.sizeColumnsToFit(), 0);
+  }
+
   loadDepartments(): void {
-    // Simulate API call delay
-    setTimeout(() => {
-      this.rowData = [
-        { id: 1, name: 'Management', parentDepartmentName: '' },
-        { id: 2, name: 'Sales', parentDepartmentName: 'Management' },
-        { id: 3, name: 'Marketing', parentDepartmentName: 'Sales' },
-        { id: 4, name: 'Human Resources', parentDepartmentName: 'Management' },
-        { id: 5, name: 'Customer Support', parentDepartmentName: 'Marketing' },
-        { id: 6, name: 'Finance', parentDepartmentName: 'Management' }
-      ];
-      this.loading = false;
-    }, 2000);
+    this.loading = true;
+    this.departmentService.getDepartments().subscribe(
+      (data) => {
+        // Map API response to UI model
+        this.rowData = data.map((item) => ({
+          id: item.id,
+          name: item.departmentName,
+          parentDepartmentName: item.underDepartment,
+        }));
+        this.loading = false;
+      },
+      (err) => {
+        this.error = 'Error loading departments';
+        console.error(err);
+        this.loading = false;
+      }
+    );
   }
 
   createNewDepartment(): void {

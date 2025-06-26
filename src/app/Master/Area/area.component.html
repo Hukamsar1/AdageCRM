@@ -1,0 +1,67 @@
+<!-- area.component.html -->
+<form [formGroup]="locationForm" (ngSubmit)="onSubmit()" class="compact-form">
+  <div class="compact-card mt-5 bg-primary">
+    <div class="row">
+      <h5 class="form-title text-center text-white fw-bold">Area Information</h5>
+    </div>
+
+    <div class="form-row">
+      <!-- Country Field -->
+      <div class="form-col">
+        <label>Country *</label>
+        <select formControlName="country" (change)="onCountryChange()" class="form-select">
+          <option value="" disabled selected>Select Country</option>
+          <option *ngFor="let c of countries" [value]="c.countryId">{{c.countryName}}</option>
+        </select>
+        <div *ngIf="showError('country')" class="error-text">Please select a country</div>
+        <div *ngIf="loadingCountries" class="loading-text">Loading countries...</div>
+      </div>
+
+      <!-- State Field -->
+      <div class="form-col">
+        <label>State *</label>
+        <select formControlName="state" [disabled]="!filteredStates.length" (change)="onStateChange()" class="form-select">
+          <option value="" disabled selected>Select State</option>
+          <option *ngFor="let s of filteredStates" [value]="s.stateId">{{s.stateName}}</option>
+        </select>
+        <div *ngIf="!filteredStates.length && countryControl.value" class="helper-text">No states available</div>
+        <div *ngIf="!countryControl.value" class="helper-text">Select country first</div>
+        <div *ngIf="showError('state')" class="error-text">Please select a state</div>
+        <div *ngIf="loadingStates" class="loading-text">Loading states...</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <!-- City Field -->
+      <div class="form-col">
+        <label>City *</label>
+        <select formControlName="city" [disabled]="!filteredCities.length" (change)="onCityChange()" class="form-select">
+          <option value="" disabled selected>Select City</option>
+          <option *ngFor="let c of filteredCities" [value]="c.cityId">{{c.cityName}}</option>
+        </select>
+        <div *ngIf="!filteredCities.length && stateControl.value" class="helper-text">No cities available</div>
+        <div *ngIf="!stateControl.value" class="helper-text">Select state first</div>
+        <div *ngIf="showError('city')" class="error-text">Please select a city</div>
+        <div *ngIf="loadingCities" class="loading-text">Loading cities...</div>
+      </div>
+
+      <!-- Area Field -->
+      <div class="form-col">
+        <label>Area</label>
+        <input type="text" formControlName="area" [disabled]="!cityControl.value" class="form-input" placeholder="Enter area name">
+        <div *ngIf="!cityControl.value" class="helper-text">Select city first</div>
+        <div *ngIf="areaControl.invalid && (areaControl.dirty || areaControl.touched)" class="error-text">
+          <span *ngIf="areaControl.errors?.['required']">Area is required</span>
+          <span *ngIf="areaControl.errors?.['maxlength']">Area name is too long</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-sm" (click)="onReset()">Reset</button>
+      <button type="submit" class="btn btn-sm primary" [disabled]="locationForm.invalid || loading">
+        {{ loading ? 'Saving...' : 'Submit' }}
+      </button>
+    </div>
+  </div>
+</form>

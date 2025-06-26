@@ -1,0 +1,66 @@
+<form [formGroup]="designationForm" (ngSubmit)="onSubmit()" class="designation-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <span>Create New Designation</span>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <!-- Designation Name -->
+    <div class="form-group">
+      <label for="designationName">Designation Name <span class="required">*</span></label>
+      <input
+        id="designationName"
+        type="text"
+        class="form-control"
+        formControlName="designationName"
+        placeholder="e.g., Manager, Executive"
+      />
+      <div class="error-text" *ngIf="showError('designationName')">
+        Designation Name is required.
+      </div>
+    </div>
+
+    <!-- Department -->
+    <div class="form-group">
+      <label for="departmentId">Department <span class="required">*</span></label>
+      <select
+        id="departmentId"
+        class="form-control"
+        formControlName="departmentId">
+        <option value="">-- Select Department --</option>
+        <option *ngFor="let dept of departments" [value]="dept.id">
+          {{ dept.name }}
+        </option>
+      </select>
+      <div class="error-text" *ngIf="showError('departmentId')">
+        Department is required.
+      </div>
+    </div>
+
+    <!-- Report To -->
+    <div class="form-group">
+      <label for="reportToId">Reports To</label>
+      <select
+        id="reportToId"
+        class="form-control"
+        formControlName="reportToId">
+        <option value="">-- Select Reporting Person (Optional) --</option>
+        <option *ngFor="let person of reportToList" [value]="person.id">
+          {{ person.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Card Footer -->
+  <div class="card-footer">
+    <button type="submit" class="btn btn-save" [disabled]="designationForm.invalid || isLoading">
+      <span *ngIf="!isLoading">💾 Save Designation</span>
+      <span *ngIf="isLoading">Saving...</span>
+    </button>
+    <button type="button" class="btn btn-clear" (click)="onClear()" [disabled]="isLoading">
+      🧹 Clear
+    </button>
+  </div>
+</form>

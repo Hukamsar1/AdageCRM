@@ -10,6 +10,8 @@
   import { LeadComponent } from './Master/lead.component';
 import { DepartmentComponent } from './Master/Department/department.component';
 import { DepartmentListComponent } from './Master/Department/department-list.component';
+import { AreaComponent   } from './Master/Area/area.component';
+import { DesignationComponent } from './Master/Designation/designation.component';
 
   export const appRoutes: Routes = [
     { path: '', component: HomePageComponent, pathMatch: 'full' },
@@ -24,9 +26,11 @@ import { DepartmentListComponent } from './Master/Department/department-list.com
       children: [
         { path: 'lead', component: LeadComponent },
        { path: 'department/create', component: DepartmentComponent },
+       { path: 'department/create/:id', component: DepartmentComponent },
        { path: 'department/list', component: DepartmentListComponent },
-      // { path: 'customers', component: CustomersComponent },
-      // { path: '', redirectTo: 'overview', pathMatch: 'full' } // default page
+       { path: 'area/create', component: AreaComponent },
+       { path: 'designation/create', component: DesignationComponent },
+       { path: 'designation/list', component: AreaComponent },
       ]
     }
   ];

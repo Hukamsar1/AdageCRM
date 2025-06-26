@@ -1,9 +1,9 @@
 <div class="container-fluid mt-2">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">Department List</h4>
-      <button type="button" class="btn btn-light btn-sm" (click)="createNewDepartment()">
-        <i class="bi bi-plus-circle"></i> Add New Department
+      <h6 class="mb-0 fw-bold">Department List</h6>
+      <button type="button" class="btn btn-light btn-sm" style="width: 90px; margin-right: 15px; height: 28px; padding: auto;" (click)="createNewDepartment()">
+        <i class="bi bi-plus-circle"></i> <small>Add New</small>
       </button>
     </div>
 
@@ -25,7 +25,8 @@
           (gridReady)="onGridReady($event)"
           [headerHeight]="40"
           [rowHeight]="40"
-          [suppressHorizontalScroll]="true">
+          [suppressHorizontalScroll]="true"
+          (cellClicked)="onCellClicked($event)">
         </ag-grid-angular>
       </div>
 

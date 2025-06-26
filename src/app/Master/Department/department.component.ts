@@ -1,35 +1,47 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
 @Component({
-    standalone: true,
-    selector: 'app-department',
-    imports: [CommonModule, ReactiveFormsModule,RouterModule],
-    templateUrl: './department.component.html',
-    styleUrls: ['./department.component.scss'] // optional if you want to style it
+  standalone: true,
+  selector: 'app-department',
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './department.component.html',
+  styleUrls: ['./department.component.scss'] // optional if you want to style it
 })
 export class DepartmentComponent implements OnInit {
-    // Reactive form for department
-    departmentForm!: FormGroup;
+  departmentForm!: FormGroup;
+  isEditMode = false;
+  departmentId!: number;
 
-    // Sample departments for dropdown
-    departments = [
-        { id: 1, name: 'HR' },
-        { id: 2, name: 'Finance' },
-        { id: 3, name: 'Sales' }
-    ];
+  // Sample departments for dropdown
+  departments = [
+    { id: 1, name: 'HR' },
+    { id: 2, name: 'Finance' },
+    { id: 3, name: 'Sales' }
+  ];
 
-    constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder,
+    private router: Router,
+    private departmentService: DepartmentService,
+    private route: ActivatedRoute,
+  ) { }
 
-    }
-    ngOnInit(): void {
-    this.initializeForm();
-    this.loadParentDepartments(); // Load departments for the 'Under' dropdown
+  ngOnInit(): void {
+    this.initForm();
+    this.loadParentDepartments();
+    this.checkEditMode();
   }
 
-  // Placeholder method to load parent departments (e.g., from an API)
+  private initForm(): void {
+    this.departmentForm = this.fb.group({
+      departmentName: ['', Validators.required],
+      underDepartment: [''],
+    });
+  }
+
   loadParentDepartments(): void {
     // In a real application, you would fetch this from an API service
     // For demonstration, let's mock some data:
@@ -41,43 +53,75 @@ export class DepartmentComponent implements OnInit {
     ];
   }
 
-   initializeForm(): void {
-    this.departmentForm = this.fb.group({
-      departmentName: ['', Validators.required], // Department Name, required
-      underDepartment: [''] // Parent Department (optional, hence no Validators.required here)
-    });
+  private checkEditMode(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode = true;
+      this.departmentId = +id;
+      this.loadDepartmentData(this.departmentId);
+    }
   }
 
-    // Called on form submit
-   // Handles the form submission
+  private loadDepartmentData(id: number): void {
+    this.departmentService.getDepartmentById(id).subscribe(
+      (dep) => this.departmentForm.patchValue(dep),
+      (error) => {
+        console.error('Error fetching department data:', error);
+        alert('Error fetching department data.');
+      }
+    );
+  }
+
   onSubmit(): void {
-    if (this.departmentForm.valid) {
-      console.log('Form Submitted!', this.departmentForm.value);
-      // Here you would typically send this data to a backend service
-      // Example: this.departmentService.createDepartment(this.departmentForm.value).subscribe(response => {
-      //   console.log('Department created successfully', response);
-      //   this.router.navigate(['/departments-list']); // Navigate to a list page after success
-      // });
-      alert('Department data: ' + JSON.stringify(this.departmentForm.value)); // For demonstration
-      this.departmentForm.reset(); // Optionally reset form after successful submission
+    if (this.departmentForm.invalid) {
+      this.departmentForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.isEditMode) {
+      this.updateDepartment();
     } else {
-      console.log('Form is invalid. Please fill in all required fields.');
-      // Optionally mark all fields as touched to show validation errors immediately
+      this.saveDepartment();
+    }
+  }
+
+  saveDepartment(): void {
+    if (this.departmentForm.valid) {
+      const payload = this.departmentForm.value;
+
+      this.departmentService.createDepartment(payload).subscribe({
+        next: (response) => {
+          console.log('Department created successfully:', response);
+          this.router.navigate(['/Mainlayout/department/list']);
+        },
+        error: (err) => {
+          console.error('Error creating department:', err);
+          alert('Error occurred while creating the department. Please try again.');
+        }
+      });
+    } else {
       this.departmentForm.markAllAsTouched();
     }
   }
 
-  // Clears the form fields
+  private updateDepartment(): void {
+    this.departmentService.updateDepartment(this.departmentId, this.departmentForm.value).subscribe(
+      () => this.router.navigate(['/Mainlayout/department/list']),
+      (error) => {
+        console.error('Error updating department:', error);
+        alert('Error updating department.');
+      }
+    );
+  }
+
   clearForm(): void {
-    this.departmentForm.reset(); // Resets all form controls to their initial values
+    this.departmentForm.reset();
   }
 
-  // Handles closing the form (e.g., navigate back)
   closeForm(): void {
-    this.router.navigate(['/departmenylist']); // Navigate back to the list page
+    this.router.navigate(['/departmenylist']);
   }
 
-  // Handles the 'Back' button click
   goBack(): void {
     this.router.navigate(['/Mainlayout/department/list']);
 

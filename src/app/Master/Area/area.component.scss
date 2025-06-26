@@ -1,0 +1,150 @@
+/* Container styling */
+.compact-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Card styling */
+.compact-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s ease;
+}
+
+.compact-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Form title */
+.form-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Form rows & columns */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.form-col {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+label {
+  font-weight: 200;
+  font-size: 0.9rem;
+  margin-bottom: 0.1rem;
+  color: #f8f7f7;
+}
+
+/* Select and input styling */
+.form-select,
+.form-input {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+
+}
+
+.form-select:focus,
+.form-input:focus {
+  border-color: #4c8bf5;
+  box-shadow: 0 0 0 2px rgba(76, 139, 245, 0.2);
+  outline: none;
+}
+
+/* Disabled styling */
+.form-select:disabled,
+.form-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Helper & error text */
+.helper-text {
+  font-size: 0.62rem;
+  color: #fffcfc;
+  margin-top: 0.2rem;
+}
+
+.error-text {
+  font-size: 0.60rem;
+  color: #d32f2f;
+  margin-top: 0.2rem;
+}
+
+/* Loading text */
+.loading-text {
+  font-size: 0.65rem;
+  color: #555;
+  margin-top: 0.3rem;
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.9rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn-sm {
+  padding: 0.3rem 1rem;
+}
+
+.btn.primary {
+  background-color: #4c8bf5;
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background-color: #3b76d0;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn:not(.primary) {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn:not(.primary):hover {
+  background: #ccc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+  }
+  .form-col {
+    flex: 1 1 100%;
+  }
+}

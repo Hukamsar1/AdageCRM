@@ -1,0 +1,105 @@
+.designation-card {
+  max-width: 550px;
+  margin: 2rem auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+.card-header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 1rem;
+  font-weight: 500;
+  font-size: 1.2rem;
+  text-align: center;;
+}
+
+/* Body */
+.card-body {
+  padding: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.7rem;
+}
+
+.form-group label {
+  margin-bottom: 0.2rem;
+  font-weight: 400;
+  color: #333;
+  font-size: 0.8rem;
+}
+
+.required {
+  color: red;
+}
+
+.form-control {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  font-size: 0.8rem;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 0.55rem;
+  margin-top: 0.25rem;
+}
+
+/* Footer Buttons */
+.card-footer {
+  border-top: 1px solid #ddd;
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background-color: #f9f9f9;
+}
+
+.btn {
+  padding: 0.35rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-save:hover {
+  background-color: #218838;
+}
+
+.btn-clear {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn-clear:hover {
+  background-color: #e0a800;
+}
+
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

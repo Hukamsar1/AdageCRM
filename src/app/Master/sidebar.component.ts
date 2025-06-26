@@ -26,8 +26,8 @@ declare var bootstrap: any;
   <div class="collapse submenu-container" id="masterMenu">
     <nav class="submenu-items">
       <a routerLink="/Mainlayout/department/list" routerLinkActive="active">Department</a>
-      <a routerLink="/item">Area</a>
-      <a routerLink="/area">Designation</a>
+      <a routerLink="/Mainlayout/area/create" routerLinkActive="active">Area</a>
+      <a routerLink="/Mainlayout/designation/create" routerLinkActive="active">Designation</a>
       <a routerLink="/route">Empoloyee</a>
       <a routerLink="/route">Partner</a>
       <a routerLink="/route">Enquery Source</a>
