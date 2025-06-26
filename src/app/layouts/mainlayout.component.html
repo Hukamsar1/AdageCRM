@@ -1,0 +1,29 @@
+<div class="page-container d-flex flex-column vh-100">
+  <!-- Header -->
+  <header class="page-header bg-warning d-flex align-items-center justify-content-between px-3 py-2 fixed-header">
+    <div class="d-flex align-items-center gap-3">
+      <img src="assets/AdgeApp.jpg" class="app-logo" style="height:40px;" />
+      <i class="bi bi-list fs-4" style="cursor:pointer;" (click)="toggleSidebar()"></i>
+      <span class="fw-semibold position-absolute top-50 start-50 translate-middle">Your trial ends in 5 Days</span>
+    </div>
+    <div class="header-actions d-none d-md-flex gap-2">
+      <button class="fw-semibold btn btn-outline-danger">Settings</button>
+      <button class="fw-semibold btn btn-outline-danger text-primary">Logout</button>
+    </div>
+  </header>
+
+  <!-- Main body -->
+  <div class="page-body flex-grow-1 d-flex">
+    <!-- Sidebar -->
+    <app-sidebar [isCollapsed]="isCollapsed"></app-sidebar>
+    <!-- Main content -->
+    <main class="page-main flex-grow-1 overflow-auto">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+

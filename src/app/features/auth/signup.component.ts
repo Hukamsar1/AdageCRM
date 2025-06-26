@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserService } from 'src/app/core/Service/registerservice';
 import { NotificationService } from 'src/app/core/Service/notificationService';
 
@@ -16,7 +16,9 @@ import { NotificationService } from 'src/app/core/Service/notificationService';
 export class SignupComponent implements OnInit{
   signupForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private userService: UserService,private notificationService: NotificationService) {
+  constructor(private fb: FormBuilder, private userService: UserService,
+    private notificationService: NotificationService,
+    private router:Router) {
   }
 
   ngOnInit(): void {
@@ -54,7 +56,8 @@ isInvalid(controlName: string): boolean {
         (res) => {
           console.log('User registered successfully!', res);
            this.notificationService.success('You are registered successfully!');
-          this.signupForm.reset();
+           this.router.navigate(['/Mainlayout']);
+          //this.signupForm.reset();
         },
         (error) => {
           console.error('Error registering user:', error);
@@ -65,4 +68,9 @@ isInvalid(controlName: string): boolean {
       this.signupForm.markAllAsTouched();
     }
   }
+
+  // GotoDashboard()
+  // {
+  //    this.router.navigateByUrl('/signup');
+  // }
 }

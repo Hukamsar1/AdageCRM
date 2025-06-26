@@ -1,14 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NotificationMessage, NotificationService } from 'src/app/core/Service/notificationService';
 
 @Component({
   selector: 'app-notification',
+  standalone:true,
+  imports:[CommonModule],
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css']
+  styleUrls: ['./notification.component.scss']
 })
 export class NotificationComponent {
-  message: NotificationMessage | null = null;
+message: { type: string; text: string } | null = null;
+
   private sub!: Subscription;
 
   constructor(private notificationService: NotificationService) {}

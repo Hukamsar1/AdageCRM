@@ -1,0 +1,161 @@
+<div class="container py-4">
+  <h3 class="text-center mb-3">Company Registration</h3>
+  <p class="text-center text-muted">Create your AdageCRM Account</p>
+
+  <form [formGroup]="signupForm" (ngSubmit)="CreateCompany()" class="shadow p-4 rounded-4 bg-white">
+    <!-- Mobile -->
+    <div class="mb-3">
+      <label class="form-label">Bussiness Name</label>
+      <div class="input-group">
+        <input
+          class="form-control"
+          formControlName="bussinessname"
+          placeholder="Enter Bussiness Name"
+          type="text"
+        />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('mobile')">Enter valid </small> -->
+    </div>
+
+    <!-- Referral Code -->
+    <div class="mb-3">
+      <label class="form-label">City</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-ticket"></i></span>
+        <input class="form-control" formControlName="city" placeholder="City (optional)" />
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="form-label">Address 1</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+        <input class="form-control" formControlName="Address" placeholder="Address" type="Address" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('Address')">Enter valid email address</small> -->
+    </div>
+
+    <!-- Pin Code -->
+    <div class="mb-3">
+      <label class="form-label">Address 2   </label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-map-marker-alt"></i></span>
+        <input class="form-control" formControlName="Address" placeholder="Address" type="text" maxlength="6" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('Address')">Enter valid 6 digit pincode</small> -->
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label class="form-label">Company Type</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="Companytype" placeholder="Companytype" type="Companytype" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+
+ <div class="mb-3">
+      <label class="form-label">pincode</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="pincode" placeholder="pincode" type="pincode" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+
+     <div class="mb-3">
+      <label class="form-label">Gst</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="gst" placeholder="gst" type="gst" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+<div class="mb-3">
+      <label class="form-label">TIN</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="tin" placeholder="tin" type="tin" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+
+    <div class="mb-3">
+      <label class="form-label">Pan</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="pan" placeholder="pan" type="pan" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+
+    <div class="mb-3">
+      <label class="form-label">Contact Persion</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="Contactpersion" placeholder="Contactpersion" type="Contactpersion" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+     <div class="mb-3">
+      <label class="form-label">Phone No.</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="Phoneno" placeholder="Phoneno" type="Phoneno" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+
+     <div class="mb-3">
+      <label class="form-label">Mobile</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="mobile" placeholder="mobile" type="mobile" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+     <div class="mb-3">
+      <label class="form-label">Email</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="Email" placeholder="Email" type="Email" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+     <div class="mb-3">
+      <label class="form-label">Contact Persion</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+        <input class="form-control" formControlName="Contactpersion" placeholder="Contactpersion" type="Contactpersion" />
+      </div>
+      <!-- <small class="text-danger" *ngIf="isInvalid('password')">Password is required</small> -->
+    </div>
+
+
+    <!-- Terms & Conditions -->
+    <div class="form-check mb-3">
+      <input class="form-check-input" id="terms" type="checkbox" formControlName="terms" />
+      <label class="form-check-label" for="terms">
+        By creating an account, you agree to the <a href="#">Terms & Conditions</a>
+      </label>
+      <small class="text-danger d-block" *ngIf="isInvalid('terms')">You must accept the terms</small>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn btn-success w-100" type="submit" [disabled]="signupForm.invalid">SIGN UP</button>
+
+    <div class="text-center my-3 text-muted">OR</div>
+    <p class="text-center">Already have an account? <a [routerLink]="['/login']">Sign In</a></p>
+  </form>
+</div>

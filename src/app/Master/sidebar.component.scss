@@ -1,0 +1,7 @@
+.transition-arrow {
+  transition: transform 0.3s ease;
+}
+.collapse.show ~ button .transition-arrow,
+button[aria-expanded="true"] .transition-arrow {
+  transform: rotate(180deg);
+}

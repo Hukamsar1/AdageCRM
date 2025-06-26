@@ -1,0 +1,17 @@
+/* department.component.css */
+
+/* Optional: Adjust container width for better form presentation */
+.container {
+  max-width: 600px; /* Make the form less wide on large screens */
+}
+
+/* Optional: Slight shadow on hover for interactive elements */
+.btn:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Optional: Custom style for required field indicator if you want more than text-danger */
+.form-label .text-danger {
+  font-size: 0.9em; /* Make the asterisk slightly smaller */
+}
+

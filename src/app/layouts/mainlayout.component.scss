@@ -1,0 +1,119 @@
+/* Reset and container setup */
+html, body, app-root, .page-container {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Header styles */
+
+.page-header {
+  height: 60px;
+  background-color: #004d40;
+  color: white;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: sticky; /* Sticky ya fixed */
+  top: 0;
+  z-index: 1000;
+}
+
+/* Body layout */
+.page-body {
+  flex: 1;
+  display: flex;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+
+.page-header h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.header-actions button {
+  background: white;
+  color: #004d40;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  margin-left: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+/* Sidebar styles */
+.page-aside {
+  width: 200px;
+  background: #00695c;
+  color: white;
+  padding: 1rem;
+}
+
+.page-aside ul {
+  list-style: none;
+  padding: 0;
+}
+
+.page-aside li {
+  margin: 0.5rem 0;
+}
+
+.page-aside a {
+  color: white;
+  text-decoration: none;
+}
+
+.page-aside a:hover {
+  text-decoration: underline;
+}
+
+/* Main content styles */
+.page-main {
+  flex: 1;
+ // padding: 1rem;
+  background: #f5f5f5;
+  overflow-y: auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  background: #004d40;
+  color: white;
+}
+  .app-logo {
+    height: 50px;
+    width: 100px;
+    margin-right: auto; /* Pushes header-actions to right */
+  }
+
+aside {
+  background-color: #212529; /* ya bg-dark ke saath match kare */
+  width: 250px;
+  height: 100%;           /* full height */
+  overflow-y: auto;       /* scroll only content */
+  flex-shrink: 0;  
+  transition: width 0.3s;       /* collapse hone par width shrink hoga */
+}
+
+aside.collapsed {
+  width: 60px;
+}
+  .header-actions {
+    button {
+      background: white;
+      color: #004d40;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      margin-left: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  }
+
