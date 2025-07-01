@@ -41,8 +41,8 @@ export class DepartmentListComponent implements OnInit {
   setupColumnDefs(): void {
     this.columnDefs = [
       {
-        headerName: 'ID',
-        field: 'id',
+        headerName: 'DepartmentId',
+        field: 'departmentId',
         width: 80,
         headerClass: 'custom-header',
         resizable: true,
@@ -76,15 +76,20 @@ export class DepartmentListComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: (params: any) => `
-    <div class="text-center">
-      <button class="btn btn-warning me-1" style="font-size:12px; padding: 2px; width:18px; height:25px; margin-bottom:8px;" data-action="edit" data-id="${params.data.id}" title="Edit">
-        <i class="bi bi-pencil"></i>
-      </button>
-      <button class="btn btn-danger" style="font-size:12px; padding: 2px; width:18px; height:25px; margin-bottom:8px;" data-action="delete" data-id="${params.data.id}" title="Delete">
-        <i class="bi bi-trash"></i>
-      </button>
-    </div>
-  `
+  <div class="text-center">
+    <button class="btn btn-warning me-1" 
+      style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
+      data-action="edit" data-id="${params.data.departmentId}" title="Edit">
+      <i class="bi bi-pencil"></i>
+    </button>
+    <button class="btn btn-danger" 
+      style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
+      data-action="delete" data-id="${params.data.departmentId}" title="Delete">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+`
+
       }
 
 
@@ -127,7 +132,7 @@ export class DepartmentListComponent implements OnInit {
       (data) => {
         // Map API response to UI model
         this.rowData = data.map((item) => ({
-          id: item.id,
+          departmentId: item.departmentId,
           name: item.departmentName,
           parentDepartmentName: item.underDepartment,
         }));

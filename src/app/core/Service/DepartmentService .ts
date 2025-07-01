@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Department {
-  id?: number;
+  departmentId?: number;
   departmentName: string;
   underDepartment?: string;
 }
@@ -22,8 +22,8 @@ export class DepartmentService {
     return this.http.post<Department>(`${this.apiUrl}/department/Add`, payload);
   }
 
-  getDepartmentById(id: number): Observable<Department> {
-    return this.http.get<Department>(`${this.apiUrl}/department/${id}`);
+  getDepartmentById(departmentId: number): Observable<Department> {
+    return this.http.get<Department>(`${this.apiUrl}/department/${departmentId}`);
   }
 
   updateDepartment(id: number, payload: Department): Observable<any> {

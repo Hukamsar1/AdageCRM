@@ -27,10 +27,9 @@ declare var bootstrap: any;
     <nav class="submenu-items">
       <a routerLink="/Mainlayout/department/list" routerLinkActive="active">Department</a>
       <a routerLink="/Mainlayout/area/create" routerLinkActive="active">Area</a>
-      <a routerLink="/Mainlayout/designation/create" routerLinkActive="active">Designation</a>
-      <a routerLink="/route">Empoloyee</a>
-      <a routerLink="/route">Partner</a>
-      <a routerLink="/route">Enquery Source</a>
+      <a routerLink="/Mainlayout/designation/list" routerLinkActive="active">Designation</a>
+      <a routerLink="/Mainlayout/employee/list" routerLinkActive="active">Empoloyee</a>
+      <a routerLink="/Mainlayout/enquiry-source-list/create" routerLinkActive="active">Enquery Source</a>
       <a routerLink="/route">Product</a>
     </nav>
   </div>

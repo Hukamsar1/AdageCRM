@@ -1,66 +1,72 @@
-<form [formGroup]="designationForm" (ngSubmit)="onSubmit()" class="designation-card">
-  <!-- Card Header -->
-  <div class="card-header">
-    <span>Create New Designation</span>
-  </div>
-
-  <!-- Card Body -->
-  <div class="card-body">
-    <!-- Designation Name -->
-    <div class="form-group">
-      <label for="designationName">Designation Name <span class="required">*</span></label>
-      <input
-        id="designationName"
-        type="text"
-        class="form-control"
-        formControlName="designationName"
-        placeholder="e.g., Manager, Executive"
-      />
-      <div class="error-text" *ngIf="showError('designationName')">
-        Designation Name is required.
-      </div>
+<div class="container mt-4" style="max-width: 600px;">
+  <div class="card shadow-sm" style="max-width: 500px;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">{{ isEditMode ? 'Edit' : 'Create' }} Designation</h5>
+      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
     </div>
 
-    <!-- Department -->
-    <div class="form-group">
-      <label for="departmentId">Department <span class="required">*</span></label>
-      <select
-        id="departmentId"
-        class="form-control"
-        formControlName="departmentId">
-        <option value="">-- Select Department --</option>
-        <option *ngFor="let dept of departments" [value]="dept.id">
-          {{ dept.name }}
-        </option>
-      </select>
-      <div class="error-text" *ngIf="showError('departmentId')">
-        Department is required.
-      </div>
+    <div class="card-body p-4">
+      <form [formGroup]="designationForm" (ngSubmit)="onSubmit()">
+
+        <div class="mb-3">
+          <label for="designationName" class="form-label fw-bold">Designation Name <span class="text-danger">*</span></label>
+          <input
+            id="designationName"
+            type="text"
+            class="form-control"
+            formControlName="designationName"
+            placeholder="e.g., Manager, Executive"
+          />
+          <div *ngIf="showError('designationName')" class="text-danger mt-1">
+            Designation name is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="departmentId" class="form-label fw-bold">Department <span class="text-danger">*</span></label>
+          <select
+            id="departmentId"
+            class="form-select"
+            formControlName="departmentId">
+            <option value="" disabled selected>-- Select Department --</option>
+            <option *ngFor="let dept of departments" [value]="dept.id">
+              {{ dept.name }}
+            </option>
+          </select>
+          <div *ngIf="showError('departmentId')" class="text-danger mt-1">
+            Department is required.
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="reportToId" class="form-label fw-bold">Reports To</label>
+          <select
+            id="reportToId"
+            class="form-select"
+            formControlName="reportToId">
+            <option value="" disabled selected>-- Select Reporting Person (Optional) --</option>
+            <option *ngFor="let person of reportToList" [value]="person.id">
+              {{ person.name }} ({{ person.designation }})
+            </option>
+          </select>
+        </div>
+
+        <button type="submit" class="d-none"></button>
+      </form>
     </div>
 
-    <!-- Report To -->
-    <div class="form-group">
-      <label for="reportToId">Reports To</label>
-      <select
-        id="reportToId"
-        class="form-control"
-        formControlName="reportToId">
-        <option value="">-- Select Reporting Person (Optional) --</option>
-        <option *ngFor="let person of reportToList" [value]="person.id">
-          {{ person.name }}
-        </option>
-      </select>
+    <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
+      <button type="button" class="btn btn-success" (click)="onSubmit()" [disabled]="designationForm.invalid || isLoading">
+        <i class="bi bi-save"></i> {{ isEditMode ? 'Update' : 'Save' }} Designation
+      </button>
+      <button type="button" class="btn btn-warning text-dark" (click)="onClear()" [disabled]="isLoading">
+        <i class="bi bi-eraser"></i> Clear Form
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-x-circle"></i> Close
+      </button>
     </div>
   </div>
-
-  <!-- Card Footer -->
-  <div class="card-footer">
-    <button type="submit" class="btn btn-save" [disabled]="designationForm.invalid || isLoading">
-      <span *ngIf="!isLoading">💾 Save Designation</span>
-      <span *ngIf="isLoading">Saving...</span>
-    </button>
-    <button type="button" class="btn btn-clear" (click)="onClear()" [disabled]="isLoading">
-      🧹 Clear
-    </button>
-  </div>
-</form>
+</div>

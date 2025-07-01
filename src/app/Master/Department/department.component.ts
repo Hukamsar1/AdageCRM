@@ -55,16 +55,21 @@ export class DepartmentComponent implements OnInit {
 
   private checkEditMode(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    this.departmentId = Number(id);
+    if (!isNaN(this.departmentId) && this.departmentId > 0) {
       this.isEditMode = true;
-      this.departmentId = +id;
       this.loadDepartmentData(this.departmentId);
     }
+
   }
 
   private loadDepartmentData(id: number): void {
     this.departmentService.getDepartmentById(id).subscribe(
-      (dep) => this.departmentForm.patchValue(dep),
+      (dep) => this.departmentForm.patchValue({
+        departmentName: dep.departmentName,
+        underDepartment: dep.underDepartment
+      }),
+
       (error) => {
         console.error('Error fetching department data:', error);
         alert('Error fetching department data.');

@@ -1,0 +1,15 @@
+<h2>{{ isEdit ? 'Edit' : 'Create' }} Enquiry Source</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label class="form-label">Enquiry Source</label>
+    <input type="text" class="form-control" formControlName="enquirySourceName">
+    <div *ngIf="form.get('enquirySourceName')?.invalid && form.get('enquirySourceName')?.touched" class="text-danger">
+      Enquiry Source is required
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    {{ isEdit ? 'Update' : 'Save' }}
+  </button>
+</form>

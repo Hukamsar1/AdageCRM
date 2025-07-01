@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Designation } from '../interface/Ideignation';
+import { Observable } from "rxjs";
+import { Designation } from "../interface/Ideignation";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
 @Injectable({ providedIn: 'root' })
 export class DesignationService {
-  private apiUrl = 'https://your-api-url/designations';
+  private apiUrl = 'https://localhost:44369/api/Designation';
 
   constructor(private http: HttpClient) {}
 
@@ -17,8 +17,12 @@ export class DesignationService {
     return this.http.put(`${this.apiUrl}/update/${id}`, designation);
   }
 
-  deleteDesignation(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete/${id}`);
+  deleteDesignation(id: number, actionType: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/delete/${id}?actionType=${actionType}`);
+  }
+
+  getDesignationById(id: number): Observable<Designation> {
+    return this.http.get<Designation>(`${this.apiUrl}/${id}`);
   }
 
   getDesignations(): Observable<Designation[]> {
