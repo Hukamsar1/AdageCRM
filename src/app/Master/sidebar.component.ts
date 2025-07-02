@@ -42,7 +42,7 @@ declare var bootstrap: any;
   </button>
   <div class="collapse submenu-container" id="saleMenu">
     <nav class="submenu-items">
-      <a routerLink="/sale-invoice">Lead</a>
+      <a routerLink="/Mainlayout/leadcreate" routerLinkActive="active">Lead</a>
       <a routerLink="/sale-list">Order</a>
       <a routerLink="/sale-list">Payment</a>
     </nav>

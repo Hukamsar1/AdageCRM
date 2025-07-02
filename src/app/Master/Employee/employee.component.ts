@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Designation, DesignationForDropdown } from 'src/app/core/interface/Ideignation';
 import { Employee, EmployeeDropdown } from 'src/app/core/interface/IEmployee';
@@ -56,7 +56,7 @@ export class EmployeeComponent implements OnInit {
             lastName: ['', Validators.required],
             phone: ['', [Validators.required, Validators.pattern('[0-9]{10}')]],
             email: ['', [Validators.required, Validators.email]],
-            dob: ['', Validators.required],
+            dob: ['', [Validators.required, this.minimumAgeValidator(18)]],
             countryId: ['', Validators.required],
             stateId: ['', Validators.required],
             cityId: ['', Validators.required],
@@ -101,6 +101,27 @@ export class EmployeeComponent implements OnInit {
             }
         });
     }
+
+
+ private minimumAgeValidator(minAge: number): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) {
+      return null; // empty -> required validator will catch
+    }
+
+    const dob = new Date(control.value);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    return age < minAge ? { minimumAge: { requiredAge: minAge, actualAge: age } } : null;
+  };
+}
+
 
     private resetDependentControls(controlNames: string[]): void {
         controlNames.forEach(controlName => this.employeeForm.get(controlName)?.reset());
@@ -293,9 +314,23 @@ export class EmployeeComponent implements OnInit {
         return;
     }
 
+ //  DOB age check
+    // const dobValue = this.employeeForm.get('dob')?.value;
+    // if (!dobValue) {
+    //     this.showError('Date of Birth is required');
+    //     return;
+    // }
+
+    // const age = this.calculateAge(new Date(dobValue));
+    // if (age < 18) {
+    //     this.showError('Employee must be at least 18 years old');
+    //     return;
+    // }
+
+    
     this.isSubmitting = true;
 
-    // ✅ Create ke time documents mandatory check
+    //  Create ke time documents mandatory check
     if (!this.isEditMode) {
         if (!this.aadharFile || !this.resumeFile || !this.appointmentFile) {
             this.isSubmitting = false;
@@ -346,6 +381,20 @@ export class EmployeeComponent implements OnInit {
     this.logFormDataContents(formData);
 }
 
+get dobErrors() {
+  return this.employeeForm.get('dob')?.errors ?? {};
+}
+
+
+private calculateAge(dob: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+    return age;
+}
 
 
     private createEmployee(formData: FormData): void {

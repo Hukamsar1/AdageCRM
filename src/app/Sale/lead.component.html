@@ -1,0 +1,248 @@
+<div class="container mt-3">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white py-2">
+            <h5 class="mb-0 fs-6">Lead Registration</h5>
+        </div>
+
+        <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+            <div class="card-body p-3">
+
+                <!-- Lead Details Section -->
+                <fieldset class="form-section mb-3">
+                    <legend class="section-legend fs-6">Lead Details</legend>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small">Business Name *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="businessName">
+                            <div *ngIf="leadForm.get('businessName')?.invalid && leadForm.get('businessName')?.touched"
+                                class="invalid-feedback small">Please enter business name</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Contact Person First Name *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="firstName">
+                            <div *ngIf="leadForm.get('firstName')?.invalid && leadForm.get('firstName')?.touched"
+                                class="invalid-feedback small">Please enter first name</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Contact Person Last Name *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="lastName">
+                            <div *ngIf="leadForm.get('lastName')?.invalid && leadForm.get('lastName')?.touched"
+                                class="invalid-feedback small">Please enter last name</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Address</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="address">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Area *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="area">
+                            <div *ngIf="leadForm.get('area')?.invalid && leadForm.get('area')?.touched"
+                                class="invalid-feedback small">Please enter area</div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Pin Code</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="pinCode">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Country <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm" formControlName="countryId"
+                                (change)="onCountryChange()">
+                                <option value="">Select Country</option>
+                                <option *ngFor="let c of countries" [value]="c.id">{{c.name}}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('countryId')?.invalid && leadForm.get('countryId')?.touched"
+                                class="invalid-feedback small">Please select country</div>
+                        </div>
+
+
+
+                        <div class="col-md-4">
+                            <label class="form-label small">State <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm" formControlName="stateId"
+                                (change)="onStateChange()">
+                                <option value="">Select State</option>
+                                <option *ngFor="let s of states" [value]="s.id">{{s.name}}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('stateId')?.invalid && leadForm.get('stateId')?.touched"
+                                class="invalid-feedback small">Please select state</div>
+                        </div>
+
+
+
+
+                        <div class="col-md-4">
+                            <label class="form-label small">City <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm" formControlName="cityId">
+                                <option value="">Select City</option>
+                                <option *ngFor="let city of cities" [value]="city.id">{{city.name}}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('cityId')?.invalid && leadForm.get('cityId')?.touched"
+                                class="invalid-feedback small">Please select city</div>
+                        </div>
+
+
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Business *</label>
+                            <select class="form-select form-select-sm" formControlName="business">
+                                <option value="">Select Business</option>
+                                <option *ngFor="let b of businesses" [value]="b">{{ b }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('business')?.invalid && leadForm.get('business')?.touched"
+                                class="invalid-feedback small">Please select business</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Product *</label>
+                            <select class="form-select form-select-sm" formControlName="product">
+                                <option value="">Select Product</option>
+                                <option *ngFor="let p of products" [value]="p.productName">{{ p.productName }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('product')?.invalid && leadForm.get('product')?.touched"
+                                class="invalid-feedback small">Please select product</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Expected Product</label>
+                            <input type="number" class="form-control form-control-sm" formControlName="expectedProduct">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Enquiry *</label>
+                            <select class="form-select form-select-sm" formControlName="enquiry">
+                                <option value="">Select Enquiry</option>
+                                <option *ngFor="let e of enquiries" [value]="e.enquirySourceName">{{ e.enquirySourceName
+                                    }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('enquiry')?.invalid && leadForm.get('enquiry')?.touched"
+                                class="invalid-feedback small">Please select enquiry type</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">References *</label>
+                            <select class="form-select form-select-sm" formControlName="reference">
+                                <option value="">Select Reference</option>
+                                <option *ngFor="let r of references" [value]="r">{{ r }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('reference')?.invalid && leadForm.get('reference')?.touched"
+                                class="invalid-feedback small">Please select reference</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Purpose *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="purpose">
+                            <div *ngIf="leadForm.get('purpose')?.invalid && leadForm.get('purpose')?.touched"
+                                class="invalid-feedback small">Please enter purpose</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Quotation *</label>
+                            <select class="form-select form-select-sm" formControlName="quotation">
+                                <option value="">Select Quotation</option>
+                                <option *ngFor="let q of quotations" [value]="q">{{ q }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('quotation')?.invalid && leadForm.get('quotation')?.touched"
+                                class="invalid-feedback small">Please select quotation</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Quotation Date *</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="quotationDate">
+                            <div *ngIf="leadForm.get('quotationDate')?.invalid && leadForm.get('quotationDate')?.touched"
+                                class="invalid-feedback small">Please select date</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Discussion</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="discussion">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Lead Status *</label>
+                            <select class="form-select form-select-sm" formControlName="leadStatus">
+                                <option value="">Select Status</option>
+                                <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('leadStatus')?.invalid && leadForm.get('leadStatus')?.touched"
+                                class="invalid-feedback small">Please select status</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Lead Priority *</label>
+                            <select class="form-select form-select-sm" formControlName="leadPriority">
+                                <option value="">Select Priority</option>
+                                <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('leadPriority')?.invalid && leadForm.get('leadPriority')?.touched"
+                                class="invalid-feedback small">Please select priority</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Chances of Closure</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="chancesOfClosure">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Visit Type *</label>
+                            <select class="form-select form-select-sm" formControlName="visitType">
+                                <option value="">Select Type</option>
+                                <option *ngFor="let v of visitTypes" [value]="v">{{ v }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('visitType')?.invalid && leadForm.get('visitType')?.touched"
+                                class="invalid-feedback small">Please select visit type</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Visit With *</label>
+                            <select class="form-select form-select-sm" formControlName="visitWith">
+                                <option value="">Select Person</option>
+                                <option *ngFor="let v of visitWithList" [value]="v">{{ v }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('visitWith')?.invalid && leadForm.get('visitWith')?.touched"
+                                class="invalid-feedback small">Please select person</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Lead Assign To *</label>
+                            <select class="form-select form-select-sm" formControlName="leadAssignTo">
+                                <option value="">Select Salesperson</option>
+                                <option *ngFor="let a of assignToList" [value]="a">{{ a }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('leadAssignTo')?.invalid && leadForm.get('leadAssignTo')?.touched"
+                                class="invalid-feedback small">Please select assign to</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Next Visit Date *</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="nextVisitDate">
+                            <div *ngIf="leadForm.get('nextVisitDate')?.invalid && leadForm.get('nextVisitDate')?.touched"
+                                class="invalid-feedback small">Please select date</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Next Visit Action *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="nextVisitAction">
+                            <div *ngIf="leadForm.get('nextVisitAction')?.invalid && leadForm.get('nextVisitAction')?.touched"
+                                class="invalid-feedback small">Please enter action</div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end gap-2 py-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary px-3" (click)="clearForm()">Clear</button>
+                <button type="submit" class="btn btn-sm btn-primary px-3" [disabled]="leadForm.invalid || isSubmitting">
+                    <span><i class="bi bi-save"></i> Submit</span>
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm ms-2"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

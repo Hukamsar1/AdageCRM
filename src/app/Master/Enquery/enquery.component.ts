@@ -72,6 +72,30 @@ export class EnquirySourceFormComponent implements OnInit {
             return;
         }
 
+        const name = this.form.get('enquirySourceName')?.value.trim();
+
+        if (!name) {
+            alert('Name is required');
+            return;
+        }
+
+        this.enquirySourceService.checkDuplicateEnquirySource(name, this.id ?? 0).subscribe({
+            next: (isDuplicate) => {
+                if (isDuplicate) {
+                    alert('This enquiry source already exists. Please choose another.');
+                    return;
+                }
+
+                // Proceed if no duplicate
+                this.saveEnquirySource();
+            },
+            error: () => {
+                this.showError('Error checking duplicate enquiry source');
+            }
+        });
+    }
+
+    private saveEnquirySource() {
         const data: EnquirySource = this.form.value;
 
         if (this.isEdit) {
@@ -82,7 +106,6 @@ export class EnquirySourceFormComponent implements OnInit {
                     this.router.navigate(['/enquiry-source-list']);
                 },
                 error: (error) => {
-                    console.error('Error details:', error);
                     this.showError(error.error?.message || 'Error updating Enquiry Source');
                 }
             });
@@ -92,13 +115,13 @@ export class EnquirySourceFormComponent implements OnInit {
                     this.showSuccess('Enquiry Source created successfully!');
                     this.router.navigate(['/enquiry-source-list']);
                 },
-                error: err => {
-                    console.error('Create failed', err);
+                error: (err) => {
                     this.showError('Error creating Enquiry Source');
                 }
             });
         }
     }
+
 
     private showSuccess(message: string): void {
         alert(message);

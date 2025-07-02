@@ -7,7 +7,7 @@ import { NotificationComponent } from "./shared/components/notification.componen
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { DepartmentComponent } from "./Master/Department/department.component";
 import { DepartmentListComponent } from "./Master/Department/department-list.component";
-import { LeadComponent } from "./Master/lead.component";
+import { LeadComponent } from "./Sale/lead.component";
 import { MainLayoutComponent } from "./layouts/mainlayout.component";
 import { DesignationComponent } from "./Master/Designation/designation.component";
 import { AreaComponent } from "./Master/Area/area.component";
@@ -30,8 +30,6 @@ export const appRoutes: Routes = [
     path: 'Mainlayout',
     component: MainLayoutComponent,
     children: [
-      { path: 'lead', component: LeadComponent },
-
       // Department
 
       { path: 'department/create', component: DepartmentComponent },
@@ -64,7 +62,13 @@ export const appRoutes: Routes = [
 
       { path: 'product-list', component: ProductListComponent },
       { path: 'product-create', component: ProductComponent },
-      { path: 'product/edit/:id', component: ProductComponent }
+      { path: 'product/edit/:id', component: ProductComponent },
+
+      // Lead
+
+      { path: 'leadcreate', component: LeadComponent },
+       { path: 'lead-list', component: LeadComponent },
+    
     ]
   }
 ];

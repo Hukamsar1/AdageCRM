@@ -13,34 +13,35 @@
             <div class="col-md-4">
               <label class="form-label small">First Name <span class="text-danger">*</span></label>
               <input type="text" class="form-control form-control-sm" formControlName="firstName">
-              <div *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched" 
-                   class="invalid-feedback small">Please enter first name</div>
+              <div *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched"
+                class="invalid-feedback small">Please enter first name</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Last Name <span class="text-danger">*</span></label>
               <input type="text" class="form-control form-control-sm" formControlName="lastName">
-              <div *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched" 
-                   class="invalid-feedback small">Please enter last name</div>
+              <div *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched"
+                class="invalid-feedback small">Please enter last name</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Phone <span class="text-danger">*</span></label>
               <input type="tel" class="form-control form-control-sm" formControlName="phone">
-              <div *ngIf="employeeForm.get('phone')?.invalid && employeeForm.get('phone')?.touched" 
-                   class="invalid-feedback small">
+              <div *ngIf="employeeForm.get('phone')?.invalid && employeeForm.get('phone')?.touched"
+                class="invalid-feedback small">
                 Please enter valid 10-digit phone number
               </div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Email <span class="text-danger">*</span></label>
               <input type="email" class="form-control form-control-sm" formControlName="email">
-              <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched" 
-                   class="invalid-feedback small">Please enter valid email</div>
+              <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched"
+                class="invalid-feedback small">Please enter valid email</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">DOB <span class="text-danger">*</span></label>
               <input type="date" class="form-control form-control-sm" formControlName="dob">
-              <div *ngIf="employeeForm.get('dob')?.invalid && employeeForm.get('dob')?.touched" 
-                   class="invalid-feedback small">Please select date</div>
+              <div *ngIf="dobErrors['minimumAge']" class="invalid-feedback small">
+                Employee must be at least 18 years old.
+              </div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Country <span class="text-danger">*</span></label>
@@ -48,38 +49,40 @@
                 <option value="">Select Country</option>
                 <option *ngFor="let country of countries" [value]="country.id">{{country.name}}</option>
               </select>
-              <div *ngIf="employeeForm.get('countryId')?.invalid && employeeForm.get('countryId')?.touched" 
-                   class="invalid-feedback small">Please select country</div>
+              <div *ngIf="employeeForm.get('countryId')?.invalid && employeeForm.get('countryId')?.touched"
+                class="invalid-feedback small">Please select country</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">State <span class="text-danger">*</span></label>
-              <select class="form-select form-select-sm" formControlName="stateId" [disabled]="!employeeForm.get('countryId')?.value">
+              <select class="form-select form-select-sm" formControlName="stateId"
+                [disabled]="!employeeForm.get('countryId')?.value">
                 <option value="">Select State</option>
                 <option *ngFor="let state of states" [value]="state.id">{{state.name}}</option>
               </select>
-              <div *ngIf="employeeForm.get('stateId')?.invalid && employeeForm.get('stateId')?.touched" 
-                   class="invalid-feedback small">Please select state</div>
+              <div *ngIf="employeeForm.get('stateId')?.invalid && employeeForm.get('stateId')?.touched"
+                class="invalid-feedback small">Please select state</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">City <span class="text-danger">*</span></label>
-              <select class="form-select form-select-sm" formControlName="cityId" [disabled]="!employeeForm.get('stateId')?.value">
+              <select class="form-select form-select-sm" formControlName="cityId"
+                [disabled]="!employeeForm.get('stateId')?.value">
                 <option value="">Select City</option>
                 <option *ngFor="let city of cities" [value]="city.id">{{city.name}}</option>
               </select>
-              <div *ngIf="employeeForm.get('cityId')?.invalid && employeeForm.get('cityId')?.touched" 
-                   class="invalid-feedback small">Please select city</div>
+              <div *ngIf="employeeForm.get('cityId')?.invalid && employeeForm.get('cityId')?.touched"
+                class="invalid-feedback small">Please select city</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Area of Working <span class="text-danger">*</span></label>
-               <input type="text" class="form-control form-control-sm" formControlName="areaId">
-              <div *ngIf="employeeForm.get('areaId')?.invalid && employeeForm.get('areaId')?.touched" 
-                   class="invalid-feedback small">Please Enter area</div>
+              <input type="text" class="form-control form-control-sm" formControlName="areaId">
+              <div *ngIf="employeeForm.get('areaId')?.invalid && employeeForm.get('areaId')?.touched"
+                class="invalid-feedback small">Please Enter area</div>
             </div>
             <div class="col-md-8">
               <label class="form-label small">Address <span class="text-danger">*</span></label>
               <textarea class="form-control form-control-sm" formControlName="address" rows="1"></textarea>
-              <div *ngIf="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched" 
-                   class="invalid-feedback small">Please enter address</div>
+              <div *ngIf="employeeForm.get('address')?.invalid && employeeForm.get('address')?.touched"
+                class="invalid-feedback small">Please enter address</div>
             </div>
           </div>
         </fieldset>
@@ -94,8 +97,8 @@
                 <option value="">Select Department</option>
                 <option *ngFor="let dept of departments" [value]="dept.departmentId">{{dept.departmentName}}</option>
               </select>
-              <div *ngIf="employeeForm.get('departmentId')?.invalid && employeeForm.get('departmentId')?.touched" 
-                   class="invalid-feedback small">Please select department</div>
+              <div *ngIf="employeeForm.get('departmentId')?.invalid && employeeForm.get('departmentId')?.touched"
+                class="invalid-feedback small">Please select department</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Designation <span class="text-danger">*</span></label>
@@ -103,8 +106,8 @@
                 <option value="">Select Designation</option>
                 <option *ngFor="let desg of designations" [value]="desg.id">{{desg.designationName}}</option>
               </select>
-              <div *ngIf="employeeForm.get('designationId')?.invalid && employeeForm.get('designationId')?.touched" 
-                   class="invalid-feedback small">Please select designation</div>
+              <div *ngIf="employeeForm.get('designationId')?.invalid && employeeForm.get('designationId')?.touched"
+                class="invalid-feedback small">Please select designation</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Reports To</label>
@@ -125,26 +128,26 @@
             <div class="col-md-4">
               <label class="form-label small">Account Holder <span class="text-danger">*</span></label>
               <input type="text" class="form-control form-control-sm" formControlName="accountHolder">
-              <div *ngIf="employeeForm.get('accountHolder')?.invalid && employeeForm.get('accountHolder')?.touched" 
-                   class="invalid-feedback small">Please enter name</div>
+              <div *ngIf="employeeForm.get('accountHolder')?.invalid && employeeForm.get('accountHolder')?.touched"
+                class="invalid-feedback small">Please enter name</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Account No <span class="text-danger">*</span></label>
               <input type="text" class="form-control form-control-sm" formControlName="accountNumber">
-              <div *ngIf="employeeForm.get('accountNumber')?.invalid && employeeForm.get('accountNumber')?.touched" 
-                   class="invalid-feedback small">Please enter account number</div>
+              <div *ngIf="employeeForm.get('accountNumber')?.invalid && employeeForm.get('accountNumber')?.touched"
+                class="invalid-feedback small">Please enter account number</div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">IFSC Code <span class="text-danger">*</span></label>
               <input type="text" class="form-control form-control-sm" formControlName="IFSC">
-              <div *ngIf="employeeForm.get('IFSC')?.invalid && employeeForm.get('IFSC')?.touched" 
-                   class="invalid-feedback small">Please enter IFSC</div>
+              <div *ngIf="employeeForm.get('IFSC')?.invalid && employeeForm.get('IFSC')?.touched"
+                class="invalid-feedback small">Please enter IFSC</div>
             </div>
             <div class="col-12">
               <label class="form-label small">Bank Address <span class="text-danger">*</span></label>
               <textarea class="form-control form-control-sm" formControlName="bankAddress" rows="1"></textarea>
-              <div *ngIf="employeeForm.get('bankAddress')?.invalid && employeeForm.get('bankAddress')?.touched" 
-                   class="invalid-feedback small">Please enter address</div>
+              <div *ngIf="employeeForm.get('bankAddress')?.invalid && employeeForm.get('bankAddress')?.touched"
+                class="invalid-feedback small">Please enter address</div>
             </div>
           </div>
         </fieldset>
@@ -159,7 +162,8 @@
                 <small *ngIf="isEditMode">(Optional on update)</small>
               </label>
               <div class="file-upload-container">
-                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event, 'aadhar')" accept=".pdf,.jpg,.png" id="aadharUpload">
+                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event, 'aadhar')"
+                  accept=".pdf,.jpg,.png" id="aadharUpload">
                 <label for="aadharUpload" class="file-upload-label small">
                   <i class="bi bi-cloud-upload me-1"></i> Choose File
                 </label>
@@ -167,20 +171,21 @@
                 <div class="file-name small text-success" *ngIf="!aadharFile && existingAadharPath">
                   File already uploaded
                 </div>
-                </div>
+              </div>
             </div>
             <div class="col-md-4">
               <label class="form-label small">Resume
-              <span *ngIf="!isEditMode" class="required-star">*</span>
-              <small *ngIf="isEditMode">(Optional on update)</small>
+                <span *ngIf="!isEditMode" class="required-star">*</span>
+                <small *ngIf="isEditMode">(Optional on update)</small>
               </label>
               <div class="file-upload-container">
-                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event, 'resume')" accept=".pdf,.doc,.docx" id="resumeUpload">
+                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event, 'resume')"
+                  accept=".pdf,.doc,.docx" id="resumeUpload">
                 <label for="resumeUpload" class="file-upload-label small">
                   <i class="bi bi-cloud-upload me-1"></i> Choose File
                 </label>
                 <div class="file-name small" *ngIf="resumeFile">{{ resumeFile.name }}</div>
-                 <div class="file-name small text-success" *ngIf="!resumeFile && existingResumePath">
+                <div class="file-name small text-success" *ngIf="!resumeFile && existingResumePath">
                   File already uploaded
                 </div>
               </div>
@@ -191,7 +196,8 @@
                 <small *ngIf="isEditMode">(Optional on update)</small>
               </label>
               <div class="file-upload-container">
-                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event, 'appointment')" accept=".pdf,.doc,.docx" id="appointmentUpload">
+                <input type="file" class="form-control form-control-sm" (change)="onFileChange($event, 'appointment')"
+                  accept=".pdf,.doc,.docx" id="appointmentUpload">
                 <label for="appointmentUpload" class="file-upload-label small">
                   <i class="bi bi-cloud-upload me-1"></i> Choose File
                 </label>

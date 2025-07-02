@@ -62,4 +62,11 @@ updateEmployee(id: number, formData: FormData): Observable<any> {
   deleteEnquery(id: number, actionType: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
+
+  checkDuplicateEnquirySource(name: string, id: number) {
+  return this.http.get<boolean>(`https://localhost:44369/api/EnquirySource/CheckDuplicate`, {
+    params: { name, id }
+  });
+}
+
 }
