@@ -15,6 +15,7 @@ import { DesignationListComponent } from "./Master/Designation/designation-list.
 import { EmployeeComponent } from "./Master/Employee/employee.component";
 import { EmployeeListComponent } from "./Master/Employee/employee-list.component";
 import { EnquirySourceFormComponent } from "./Master/Enquery/enquery.component";
+import { ProductComponent } from "./Master/Enquery/Products/Product.component";
 
 export const appRoutes: Routes = [
   { path: '', component: HomePageComponent, pathMatch: 'full' },
@@ -42,6 +43,11 @@ export const appRoutes: Routes = [
       { path: 'enquiry-source-list/list', component: EnquirySourceFormComponent },
       { path: 'enquiry-source-list/create', component: EnquirySourceFormComponent },
       { path: 'enquiry-source-list/create/:id', component: EnquirySourceFormComponent },
+
+      // Product
+      { path: 'product-list', component: ProductComponent },
+      { path: 'product-create', component: ProductComponent },
+
     ]
   }
 ];

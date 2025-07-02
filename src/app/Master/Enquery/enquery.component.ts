@@ -8,7 +8,7 @@ import { EmployeeService } from 'src/app/core/Service/EmployeeService';
 @Component({
     selector: 'app-enquirysource',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule,],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './enquery.component.html',
     styleUrls: ['./enquery.component.scss']
 })
@@ -38,10 +38,13 @@ export class EnquirySourceFormComponent implements OnInit {
 
     loadData() {
         this.enquirySourceService.getById(this.id!).subscribe({
-            next: data => this.form.patchValue(data),
-            error: err => console.error('Load failed', err)
+            next: data => this.form.patchValue({
+                enquirySourceName: data.enquirySourceName
+            }),
+            error: err => this.showError('Failed to load Enquiry Source.')
         });
     }
+
 
     onSubmit() {
         if (this.form.invalid) {
@@ -53,15 +56,35 @@ export class EnquirySourceFormComponent implements OnInit {
 
         if (this.isEdit) {
             this.enquirySourceService.update(this.id!, data).subscribe({
-                next: () => this.router.navigate(['/enquiry-source-list']),
-                error: err => console.error('Update failed', err)
+                next: () => {
+                    this.form.reset();
+                    this.showSuccess('Enquiry Source updated successfully!');
+                    this.router.navigate(['/enquiry-source-list']);
+                },
+                error: (error) => {
+                    console.error('Error details:', error);
+                    this.showError(error.error?.message || 'Error updating Enquiry Source');
+                }
             });
         } else {
             this.enquirySourceService.EnquerySourcecreate(data).subscribe({
-                next: () => 
-                    this.router.navigate(['/enquiry-source-list']),
-                error: err => console.error('Create failed', err)
+                next: () => {
+                    this.showSuccess('Enquiry Source created successfully!');
+                    this.router.navigate(['/enquiry-source-list']);
+                },
+                error: err => {
+                    console.error('Create failed', err);
+                    this.showError('Error creating Enquiry Source');
+                }
             });
         }
+    }
+
+    private showSuccess(message: string): void {
+        alert(message);
+    }
+
+    private showError(message: string): void {
+        alert(message);
     }
 }
