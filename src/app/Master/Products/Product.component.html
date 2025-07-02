@@ -1,7 +1,7 @@
 <div class="container mt-5">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">Create New Product</h4>
+          <h4 class="mb-0">{{ isEdit ? 'Update' : 'Create' }} Product</h4>
       <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
         <i class="bi bi-arrow-left"></i> Back
       </button>
@@ -38,7 +38,8 @@
 
       <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
         <button type="submit" class="btn btn-success" [disabled]="ProductForm.invalid">
-          <i class="bi bi-save"></i> Save
+          <i class="bi bi-save"></i>
+          {{ isEdit ? 'Update' : 'Save' }}
         </button>
         <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
           <i class="bi bi-eraser"></i> Clear

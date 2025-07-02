@@ -40,10 +40,11 @@ updateEmployee(id: number, formData: FormData): Observable<any> {
   }
 
 
+// Enquery Service
 
   private baseUrl = 'https://localhost:44369/api/EnquirySource';
 
-  getById(id: number): Observable<EnquirySource> {
+  getEnquerySourceById(id: number): Observable<EnquirySource> {
     return this.http.get<EnquirySource>(`${this.baseUrl}/${id}`);
   }
 
@@ -55,10 +56,10 @@ updateEmployee(id: number, formData: FormData): Observable<any> {
     return this.http.put(`${this.baseUrl}/${id}`, source);
   }
 
-  getAll(): Observable<EnquirySource[]> {
-    return this.http.get<EnquirySource[]>(this.baseUrl);
+  getAllEnquery(): Observable<EnquirySource[]> {
+    return this.http.get<EnquirySource[]>(`${this.baseUrl}/GetList`);
   }
-  delete(id: number): Observable<any> {
+  deleteEnquery(id: number, actionType: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 }

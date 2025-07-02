@@ -3,11 +3,10 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-lead',
-  standalone:true,
-  imports:[RouterOutlet,CommonModule],
-  templateUrl: './lead.component.html',
-  styleUrls: ['./lead.component.scss']
+    selector: 'app-lead',
+    imports: [ CommonModule],
+    templateUrl: './lead.component.html',
+    styleUrls: ['./lead.component.scss']
 })
 export class LeadComponent {
 

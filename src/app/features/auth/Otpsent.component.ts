@@ -5,11 +5,10 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/Service/registerservice';
 
 @Component({
-  selector: 'app-signup',
-  standalone:true,
-  imports:[CommonModule, ReactiveFormsModule,FormsModule],
-  templateUrl: './Otpsent.component.html',
-  styleUrls: ['./Otpsent.component.scss'] // or .scss if using SCSS
+    selector: 'app-signup',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    templateUrl: './Otpsent.component.html',
+    styleUrls: ['./Otpsent.component.scss'] // or .scss if using SCSS
 })
 export class OTPSentComponent {
   signupForm!: FormGroup;

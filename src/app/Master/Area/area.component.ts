@@ -6,11 +6,10 @@ import { AreaService } from 'src/app/core/Service/areaService';
 import { finalize } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-location-form',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './area.component.html',
-  styleUrls: ['./area.component.scss']
+    selector: 'app-location-form',
+    imports: [ReactiveFormsModule, CommonModule],
+    templateUrl: './area.component.html',
+    styleUrls: ['./area.component.scss']
 })
 export class AreaComponent implements OnInit {
   locationForm: FormGroup;

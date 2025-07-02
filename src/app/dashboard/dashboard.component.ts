@@ -5,12 +5,9 @@ import { NgChartsModule } from 'ng2-charts';
 
 
 @Component({
- standalone: true,
-  selector: 'app-dashboard',
-  imports: [CommonModule,NgChartsModule],
-  templateUrl: './dashboard.component.html',
-
-  //styleUrls: ['./dashboard.component.scss']
+    selector: 'app-dashboard',
+    imports: [CommonModule, NgChartsModule],
+    templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
 

@@ -6,11 +6,10 @@ import { SidebarComponent } from '../Master/sidebar.component';
 type MenuKey = 'menu1' | 'menu2';
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, RouterLink, RouterOutlet,SidebarComponent],
-  selector: 'app-main-layout',
-  templateUrl: './mainlayout.component.html',
-  styleUrls: ['./mainlayout.component.scss'],
+    imports: [CommonModule, RouterOutlet, SidebarComponent],
+    selector: 'app-main-layout',
+    templateUrl: './mainlayout.component.html',
+    styleUrls: ['./mainlayout.component.scss']
 })
 export class MainLayoutComponent {
 

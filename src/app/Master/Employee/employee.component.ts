@@ -14,7 +14,6 @@ import { EmployeeService } from 'src/app/core/Service/EmployeeService';
 
 @Component({
     selector: 'app-employee-form',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './employee.component.html',
     styleUrls: ['./employee.component.scss']

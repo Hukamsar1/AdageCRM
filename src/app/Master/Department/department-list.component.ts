@@ -6,11 +6,10 @@ import { ColDef, GridApi, GridReadyEvent, ICellRendererParams } from 'ag-grid-co
 import { DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
 @Component({
-  selector: 'app-department-list',
-  standalone: true,
-  imports: [AgGridModule, CommonModule],
-  templateUrl: './department-list.component.html',
-  styleUrls: ['./department-list.component.scss'],
+    selector: 'app-department-list',
+    imports: [AgGridModule, CommonModule],
+    templateUrl: './department-list.component.html',
+    styleUrls: ['./department-list.component.scss']
 })
 export class DepartmentListComponent implements OnInit {
   @ViewChild('agGrid') agGrid!: AgGridAngular;

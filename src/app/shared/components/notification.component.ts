@@ -4,11 +4,10 @@ import { Subscription } from 'rxjs';
 import { NotificationMessage, NotificationService } from 'src/app/core/Service/notificationService';
 
 @Component({
-  selector: 'app-notification',
-  standalone:true,
-  imports:[CommonModule],
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.scss']
+    selector: 'app-notification',
+    imports: [CommonModule],
+    templateUrl: './notification.component.html',
+    styleUrls: ['./notification.component.scss']
 })
 export class NotificationComponent {
 message: { type: string; text: string } | null = null;

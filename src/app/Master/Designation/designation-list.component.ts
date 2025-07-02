@@ -8,10 +8,9 @@ import { Designation } from 'src/app/core/interface/Ideignation';
 
 @Component({
     selector: 'app-designation-list',
-    standalone: true,
     imports: [AgGridModule, CommonModule],
     templateUrl: './designation-list.component.html',
-    styleUrls: ['./designation-list.component.scss'],
+    styleUrls: ['./designation-list.component.scss']
 })
 export class DesignationListComponent implements OnInit {
     @ViewChild('agGrid') agGrid!: AgGridAngular;

@@ -5,7 +5,6 @@ import { RouterLink } from "@angular/router";
 declare var bootstrap: any;
 
 @Component({
-    standalone: true,
     selector: 'app-sidebar',
     imports: [RouterLink, CommonModule],
     template: `
@@ -29,8 +28,8 @@ declare var bootstrap: any;
       <a routerLink="/Mainlayout/area/create" routerLinkActive="active">Area</a>
       <a routerLink="/Mainlayout/designation/list" routerLinkActive="active">Designation</a>
       <a routerLink="/Mainlayout/employee/list" routerLinkActive="active">Empoloyee</a>
-      <a routerLink="/Mainlayout/enquiry-source-list/create" routerLinkActive="active">Enquery Source</a>
-      <a routerLink="/Mainlayout/product-create" routerLinkActive="active">Product</a>
+      <a routerLink="/Mainlayout/enquiry-list" routerLinkActive="active">Enquery Source</a>
+      <a routerLink="/Mainlayout/product-list" routerLinkActive="active">Product</a>
     </nav>
   </div>
 <div class="divider"></div>

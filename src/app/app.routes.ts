@@ -15,7 +15,9 @@ import { DesignationListComponent } from "./Master/Designation/designation-list.
 import { EmployeeComponent } from "./Master/Employee/employee.component";
 import { EmployeeListComponent } from "./Master/Employee/employee-list.component";
 import { EnquirySourceFormComponent } from "./Master/Enquery/enquery.component";
-import { ProductComponent } from "./Master/Enquery/Products/Product.component";
+import { ProductComponent } from "./Master/Products/Product.component";
+import { EnqueryListComponent } from "./Master/Enquery/enquery-list.component";
+import { ProductListComponent } from "./Master/Products/product-list.component";
 
 export const appRoutes: Routes = [
   { path: '', component: HomePageComponent, pathMatch: 'full' },
@@ -29,25 +31,40 @@ export const appRoutes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: 'lead', component: LeadComponent },
+
+      // Department
+
       { path: 'department/create', component: DepartmentComponent },
       { path: 'department/create/:id', component: DepartmentComponent },
       { path: 'department/list', component: DepartmentListComponent },
+
+      // Area
+
       { path: 'area/create', component: AreaComponent },
+
       // Updated designation routes:
+      
       { path: 'designation/create', component: DesignationComponent },
       { path: 'designation/create/:id', component: DesignationComponent }, // This is the key fix
       { path: 'designation/list', component: DesignationListComponent },
+
+      // Employee
+
       { path: 'employee/create', component: EmployeeComponent },
       { path: 'employee/edit/:id', component: EmployeeComponent },
       { path: 'employee/list', component: EmployeeListComponent },
-      { path: 'enquiry-source-list/list', component: EnquirySourceFormComponent },
-      { path: 'enquiry-source-list/create', component: EnquirySourceFormComponent },
-      { path: 'enquiry-source-list/create/:id', component: EnquirySourceFormComponent },
+
+      // Enquery
+
+      { path: 'enquiry-list', component: EnqueryListComponent },
+      { path: 'enquiry/create', component: EnquirySourceFormComponent },
+      { path: 'enquirylist/edit/:id', component: EnquirySourceFormComponent },
 
       // Product
-      { path: 'product-list', component: ProductComponent },
-      { path: 'product-create', component: ProductComponent },
 
+      { path: 'product-list', component: ProductListComponent },
+      { path: 'product-create', component: ProductComponent },
+      { path: 'product/edit/:id', component: ProductComponent }
     ]
   }
 ];
