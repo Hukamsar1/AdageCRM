@@ -18,6 +18,7 @@ import { EnquirySourceFormComponent } from "./Master/Enquery/enquery.component";
 import { ProductComponent } from "./Master/Products/Product.component";
 import { EnqueryListComponent } from "./Master/Enquery/enquery-list.component";
 import { ProductListComponent } from "./Master/Products/product-list.component";
+import { CompetitorFormComponent } from "./Master/ComptetorProduct/competitor.component";
 
 export const appRoutes: Routes = [
   { path: '', component: HomePageComponent, pathMatch: 'full' },
@@ -68,6 +69,11 @@ export const appRoutes: Routes = [
 
       { path: 'leadcreate', component: LeadComponent },
        { path: 'lead-list', component: LeadComponent },
+
+
+        { path: 'competetor-list', component: CompetitorFormComponent },
+      { path: 'competetor-create', component: CompetitorFormComponent },
+      { path: 'competetor/edit/:id', component: CompetitorFormComponent },
     
     ]
   }

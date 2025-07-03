@@ -33,6 +33,33 @@
                         </div>
 
                         <div class="col-md-4">
+                            <label class="form-label small">Title-Designation</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="titledesignation">
+                            <div *ngIf="leadForm.get('titledesignation')?.invalid && leadForm.get('titledesignation')?.touched"
+                                class="invalid-feedback small">Please enter Title-Designation</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Email</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="email">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Phone</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="phone">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Mobile</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="mobile">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Website</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="website">
+                        </div>
+
+                        <div class="col-md-4">
                             <label class="form-label small">Address</label>
                             <input type="text" class="form-control form-control-sm" formControlName="address">
                         </div>
@@ -87,13 +114,22 @@
                                 class="invalid-feedback small">Please select city</div>
                         </div>
 
-
+                       <div class="col-md-4">
+                            <label class="form-label small">Enquiry *</label>
+                            <select class="form-select form-select-sm" formControlName="enquiry">
+                                <option value="">Select Enquiry</option>
+                                <option *ngFor="let e of enquiries" [value]="e.enquirySourceName">{{ e.enquirySourceName
+                                    }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('enquiry')?.invalid && leadForm.get('enquiry')?.touched"
+                                class="invalid-feedback small">Please select enquiry type</div>
+                        </div>
 
                         <div class="col-md-4">
                             <label class="form-label small">Business *</label>
                             <select class="form-select form-select-sm" formControlName="business">
                                 <option value="">Select Business</option>
-                                <option *ngFor="let b of businesses" [value]="b">{{ b }}</option>
+                                <option *ngFor="let b of businesses" [value]="b.bussinessName">{{ b.bussinessName }}</option>
                             </select>
                             <div *ngIf="leadForm.get('business')?.invalid && leadForm.get('business')?.touched"
                                 class="invalid-feedback small">Please select business</div>
@@ -110,19 +146,13 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label small">Expected Product</label>
-                            <input type="number" class="form-control form-control-sm" formControlName="expectedProduct">
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label small">Enquiry *</label>
-                            <select class="form-select form-select-sm" formControlName="enquiry">
-                                <option value="">Select Enquiry</option>
-                                <option *ngFor="let e of enquiries" [value]="e.enquirySourceName">{{ e.enquirySourceName
-                                    }}</option>
+                            <label class="form-label small">Suggested Product</label>
+                             <select class="form-select form-select-sm" formControlName="suggestedProduct">
+                                <option value="">Select Product</option>
+                                <option *ngFor="let sp of suggestedProducts" [value]="sp.productName">{{ sp.productName }}</option>
                             </select>
-                            <div *ngIf="leadForm.get('enquiry')?.invalid && leadForm.get('enquiry')?.touched"
-                                class="invalid-feedback small">Please select enquiry type</div>
+                            <div *ngIf="leadForm.get('suggestedProduct')?.invalid && leadForm.get('suggestedProduct')?.touched"
+                                class="invalid-feedback small">Please select Suggested product</div>
                         </div>
 
                         <div class="col-md-4">

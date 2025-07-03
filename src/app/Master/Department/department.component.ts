@@ -128,6 +128,5 @@ export class DepartmentComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/Mainlayout/department/list']);
-
   }
 }

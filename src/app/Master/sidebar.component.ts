@@ -30,6 +30,7 @@ declare var bootstrap: any;
       <a routerLink="/Mainlayout/employee/list" routerLinkActive="active">Empoloyee</a>
       <a routerLink="/Mainlayout/enquiry-list" routerLinkActive="active">Enquery Source</a>
       <a routerLink="/Mainlayout/product-list" routerLinkActive="active">Product</a>
+      <a routerLink="/Mainlayout/competetor-create" routerLinkActive="active">Competitor Product</a>
     </nav>
   </div>
 <div class="divider"></div>

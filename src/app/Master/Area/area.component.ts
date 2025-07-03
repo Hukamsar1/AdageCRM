@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { AreaService } from 'src/app/core/Service/areaService';
 import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-location-form',
@@ -27,7 +28,8 @@ export class AreaComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder, 
-    private areaService: AreaService
+    private areaService: AreaService,
+    private router: Router,
   ) {
     this.locationForm = this.fb.group({
       country: ['', Validators.required],
@@ -199,4 +201,8 @@ onSubmit(): void {
     const control = this.locationForm.get(controlName);
     return control ? control.invalid && (control.dirty || control.touched) : false;
   }
+
+    goBack(): void {
+      this.router.navigate(['/Mainlayout/area/list']);
+    }
 }

@@ -11,4 +11,8 @@ export class LeadService {
   createLead(leadData: any): Observable<any> {
     return this.http.post(this.apiUrl, leadData);
   }
+
+    getAllBussiness(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/GetList`);
+  }
 }

@@ -485,4 +485,8 @@ private calculateAge(dob: Date): number {
     onClear(): void {
         this.employeeForm.reset();
     }
+
+      goBack(): void {
+    this.router.navigate(['/Mainlayout/employee/list']);
+  }
 }

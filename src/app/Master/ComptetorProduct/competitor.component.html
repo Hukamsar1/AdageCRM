@@ -1,0 +1,34 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">{{ isEdit ? 'Update' : 'Create' }} Competitor</h4>
+      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <form [formGroup]="CompetitorForm" (ngSubmit)="onSubmit()">
+      <div class="card-body p-4">
+        <div class="mb-3">
+          <label class="form-label">Competitor Name</label>
+          <input type="text" formControlName="competitorName" class="form-control" placeholder="Enter competitor name" />
+          <div *ngIf="CompetitorForm.get('competitorName')?.invalid && CompetitorForm.get('competitorName')?.touched" class="text-danger">
+            Competitor name is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
+        <button type="submit" class="btn btn-success" [disabled]="CompetitorForm.invalid">
+          <i class="bi bi-save"></i> {{ isEdit ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
+          <i class="bi bi-eraser"></i> Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          <i class="bi bi-x-circle"></i> Close
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

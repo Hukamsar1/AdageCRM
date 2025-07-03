@@ -17,14 +17,13 @@ import { AreaService } from '../core/Service/areaService';
 export class LeadComponent implements OnInit {
     leadForm!: FormGroup;
     isSubmitting = false;
-
-    // Dropdown lists (replace with real data or load from API)
-    businesses = ['Business A', 'Business B', 'Business C'];
-    products: any[] = []
+    businesses: any[] = [];
+    products: any[] = [];
     enquiries: any[] = [];
     countries: any[] = [];
     states: any[] = [];
     cities: any[] = [];
+    suggestedProducts: any[] = [];
     purposes = ['Purpose A', 'Purpose B'];
     references = ['Reference A', 'Reference B'];
     quotations = ['Quotation A', 'Quotation B'];
@@ -33,6 +32,7 @@ export class LeadComponent implements OnInit {
     visitTypes = ['Online', 'In-person'];
     visitWithList = ['Manager', 'Executive'];
     assignToList = ['Salesperson 1', 'Salesperson 2'];
+    error: string | null = null;
 
     constructor(private fb: FormBuilder,
         private router: Router,
@@ -40,7 +40,7 @@ export class LeadComponent implements OnInit {
         private leadService: LeadService,
         private productService: ProductService,
         private areaService: AreaService) { }
-    error: string | null = null;
+
     ngOnInit(): void {
         this.initForm();
         this.loadEnquery();
@@ -48,13 +48,19 @@ export class LeadComponent implements OnInit {
         this.loadCountries();
         this.loadEnquery();
         this.loadProduct();
+        this.loadBussiness();
     }
 
     private initForm(): void {
         this.leadForm = this.fb.group({
             businessName: ['', Validators.required],
             firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            lastName: [''],
+            titledesignation: ['', Validators.required],
+            email: ['', Validators.required],
+            phone: ['', Validators.required],
+            mobile : ['', Validators.required],
+            website : ['', Validators.required],
             address: [''],
             area: ['', Validators.required],
             countryId: ['', Validators.required],
@@ -63,7 +69,7 @@ export class LeadComponent implements OnInit {
             pinCode: [''],
             business: ['', Validators.required],
             product: ['', Validators.required],
-            expectedProduct: [0],
+            suggestedProduct: ['', Validators.required],
             enquiry: ['', Validators.required],
             reference: ['', Validators.required],
             purpose: ['', Validators.required],
@@ -102,6 +108,21 @@ export class LeadComponent implements OnInit {
                 }
             });
     }
+
+    loadBussiness(): void {
+        this.leadService.getAllBussiness().subscribe({
+            next: (data) => {
+                this.businesses = data;
+              alert("Successfully Bussiness Load");
+            },
+            error: (err) => {
+                this.error = 'Error loading Bussiness';
+                console.error(err);
+
+            }
+        });
+    }
+
 
     loadEnquery(): void {
         this.enqueryService.getAllEnquery().subscribe({
