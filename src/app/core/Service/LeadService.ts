@@ -9,7 +9,7 @@ export class LeadService {
   constructor(private http: HttpClient) {}
 
   createLead(leadData: any): Observable<any> {
-    return this.http.post(this.apiUrl, leadData);
+    return this.http.post(`${this.apiUrl}/Create`, leadData);
   }
 
     getAllBussiness(): Observable<any[]> {

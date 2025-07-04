@@ -7,7 +7,6 @@ import { NotificationComponent } from "./shared/components/notification.componen
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { DepartmentComponent } from "./Master/Department/department.component";
 import { DepartmentListComponent } from "./Master/Department/department-list.component";
-import { LeadComponent } from "./Sale/lead.component";
 import { MainLayoutComponent } from "./layouts/mainlayout.component";
 import { DesignationComponent } from "./Master/Designation/designation.component";
 import { AreaComponent } from "./Master/Area/area.component";
@@ -19,6 +18,8 @@ import { ProductComponent } from "./Master/Products/Product.component";
 import { EnqueryListComponent } from "./Master/Enquery/enquery-list.component";
 import { ProductListComponent } from "./Master/Products/product-list.component";
 import { CompetitorFormComponent } from "./Master/ComptetorProduct/competitor.component";
+import { CompetitorListComponent } from "./Master/ComptetorProduct/competitor-list.component";
+import { LeadComponent } from "./Sale/Lead/lead.component";
 
 export const appRoutes: Routes = [
   { path: '', component: HomePageComponent, pathMatch: 'full' },
@@ -26,11 +27,11 @@ export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: '', component: NotificationComponent },
-  { path: 'dashboard', component: DashboardComponent },
   {
     path: 'Mainlayout',
     component: MainLayoutComponent,
     children: [
+      { path: 'dashboard', component: DashboardComponent },
       // Department
 
       { path: 'department/create', component: DepartmentComponent },
@@ -71,7 +72,7 @@ export const appRoutes: Routes = [
        { path: 'lead-list', component: LeadComponent },
 
 
-        { path: 'competetor-list', component: CompetitorFormComponent },
+        { path: 'competetor-list', component: CompetitorListComponent },
       { path: 'competetor-create', component: CompetitorFormComponent },
       { path: 'competetor/edit/:id', component: CompetitorFormComponent },
     

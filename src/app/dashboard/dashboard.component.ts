@@ -1,31 +1,43 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartOptions, ChartData } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartOptions } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 
-
 @Component({
-    selector: 'app-dashboard',
-    imports: [CommonModule, NgChartsModule],
-    templateUrl: './dashboard.component.html'
+  standalone: true,
+  selector: 'app-crm-dashboard',
+  imports: [CommonModule, NgChartsModule],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-
-  summaryCards = [
-    { title: 'Total Sale', value: 0, color: 'bg-blue-500', icon: '💰' },
-    { title: 'Total Purchase', value: 0, color: 'bg-teal-500', icon: '🧾' },
-    { title: 'Total Income', value: 0, color: 'bg-orange-500', icon: '💵' },
-    { title: 'Total Expenses', value: 0, color: 'bg-red-500', icon: '💸' }
-  ];
-
-  chartOptions: ChartOptions<'line'> = {
+  chartOptions: ChartOptions = {
     responsive: true,
-    elements: { line: { tension: 0.4 } },
-    scales: { y: { beginAtZero: true } }
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    },
   };
-  
-  chartData: ChartData<'line'> = {
-    labels: ['May 25', 'May 28', 'June 1', 'June 7', 'June 15'],
-    datasets: [{ label: '', data: [0, 0, 0, 0, 0], borderColor: 'teal', backgroundColor: 'rgba(0,0,0,0)' }]
+
+  salesChart: ChartData<'line'> = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+    datasets: [
+      { data: [45, 37, 60, 70, 46, 33, 50], label: 'Sales' }
+    ]
+  };
+
+  leadsChart: ChartData<'bar'> = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+    datasets: [
+      { data: [12, 19, 14, 20, 16, 22, 30], label: 'Leads' }
+    ]
+  };
+
+  performanceChart: ChartData<'line'> = {
+    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2', 'Q3'],
+    datasets: [
+      { data: [70, 65, 80, 90, 85, 100, 95], label: 'Performance' }
+    ]
   };
 }

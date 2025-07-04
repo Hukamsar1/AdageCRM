@@ -9,16 +9,18 @@ declare var bootstrap: any;
     imports: [RouterLink, CommonModule],
     template: `
     <aside class="bg-dark text-white vh-100 p-2" [class.collapsed]="isCollapsed">
-  <button class="menu-btn d-flex align-items-center w-100">
-    <img src="assets/dashboard.png" style="width: 24px;height: 24px;" />
-    <span class="menu-label" style="margin-left:9px;">Dashboard</span>
-  </button>
+<button class="menu-btn d-flex align-items-center w-100" [routerLink]="'/Mainlayout/dashboard'" routerLinkActive="active">
+  <i class="bi bi-speedometer2"></i>  
+  <span class="menu-label" style="margin-left:9px;">Dashboard</span>
+</button>
+
   <div class="divider"></div>
 
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
     data-bs-toggle="collapse" data-bs-target="#masterMenu"
     aria-expanded="false" aria-controls="masterMenu">
-    <img src="assets/Master.png" class="menu-icon" />
+   <img src="assets/Master.png" class="menu-icon" style="min-width: 8px; width: 16px; color: white; margin-left:3px; height: 20px;" />
+
     <span class="menu-label">Master</span>
     <i class="bi bi-caret-right-fill arrow"></i>
   </button>
@@ -30,7 +32,7 @@ declare var bootstrap: any;
       <a routerLink="/Mainlayout/employee/list" routerLinkActive="active">Empoloyee</a>
       <a routerLink="/Mainlayout/enquiry-list" routerLinkActive="active">Enquery Source</a>
       <a routerLink="/Mainlayout/product-list" routerLinkActive="active">Product</a>
-      <a routerLink="/Mainlayout/competetor-create" routerLinkActive="active">Competitor Product</a>
+      <a routerLink="/Mainlayout/competetor-list" routerLinkActive="active">Competitor Product</a>
     </nav>
   </div>
 <div class="divider"></div>
@@ -59,7 +61,6 @@ declare var bootstrap: any;
   </button>
   <div class="collapse submenu-container" id="commissionMenu">
     <nav class="submenu-items">
-      <a routerLink="/commission-lead">Lead</a>
       <a routerLink="/commission-incentive">Incentive</a>
       <a routerLink="/commission-payment">Payment</a>
     </nav>

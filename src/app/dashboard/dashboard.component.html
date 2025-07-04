@@ -1,0 +1,56 @@
+<div class="dashboard-wrapper">
+  <div class="dashboard-header">
+    <div class="header-title">
+      <i class="bi bi-speedometer2"></i>
+      <span>Dashboard Overview</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline-light btn-sm">
+        <i class="bi bi-arrow-repeat"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+
+    <!-- Sales Overview Chart -->
+    <div class="dashboard-card">
+      <h5>Sales Overview</h5>
+      <canvas baseChart [data]="salesChart" [options]="chartOptions" chartType="line"></canvas>
+    </div>
+
+    <!-- Revenue Card -->
+    <div class="dashboard-card highlight">
+      <h5>Revenue</h5>
+      <p class="big-number">$25,000</p>
+      <p class="subtext">+12% from last month</p>
+    </div>
+
+    <!-- Leads Chart -->
+    <div class="dashboard-card">
+      <h5>Leads Trend</h5>
+      <canvas baseChart [data]="leadsChart" [options]="chartOptions" chartType="bar"></canvas>
+    </div>
+
+    <!-- Customers -->
+    <div class="dashboard-card highlight">
+      <h5>Customers</h5>
+      <p class="big-number">1,420</p>
+      <p class="subtext">+8% new this month</p>
+    </div>
+
+    <!-- Performance Chart -->
+    <div class="dashboard-card">
+      <h5>Performance</h5>
+      <canvas baseChart [data]="performanceChart" [options]="chartOptions" chartType="line"></canvas>
+    </div>
+
+    <!-- Conversion Rate -->
+    <div class="dashboard-card highlight">
+      <h5>Conversion Rate</h5>
+      <p class="big-number">32%</p>
+      <p class="subtext">Steady performance</p>
+    </div>
+
+  </div>
+</div>

@@ -1,5 +1,5 @@
 <div class="container mt-5">
-  <div class="card shadow-sm">
+  <div class="card shadow-sm mx-auto" style="max-width: 400px;">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
       <h4 class="mb-0">{{ isEdit ? 'Update' : 'Create' }} Competitor</h4>
       <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
@@ -7,20 +7,30 @@
       </button>
     </div>
 
-    <form [formGroup]="CompetitorForm" (ngSubmit)="onSubmit()">
-      <div class="card-body p-4">
+    <form [formGroup]="competitorForm" (ngSubmit)="onSubmit()">
+      <div class="card-body">
         <div class="mb-3">
-          <label class="form-label">Competitor Name</label>
-          <input type="text" formControlName="competitorName" class="form-control" placeholder="Enter competitor name" />
-          <div *ngIf="CompetitorForm.get('competitorName')?.invalid && CompetitorForm.get('competitorName')?.touched" class="text-danger">
-            Competitor name is required.
+          <label for="competitorName" class="form-label">Competitor Name</label>
+          <input
+            type="text"
+            id="competitorName"
+            class="form-control"
+            formControlName="competitorName"
+            placeholder="Enter Competitor Name"
+          />
+          <div *ngIf="competitorForm.get('competitorName')?.touched && competitorForm.get('competitorName')?.invalid" class="text-danger mt-1">
+            Competitor Name is required.
+          </div>
+          <div *ngIf="duplicateError" class="text-danger mt-1">
+            Competitor Name already exists.
           </div>
         </div>
       </div>
 
       <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
-        <button type="submit" class="btn btn-success" [disabled]="CompetitorForm.invalid">
-          <i class="bi bi-save"></i> {{ isEdit ? 'Update' : 'Save' }}
+        <button type="submit" class="btn btn-success" [disabled]="competitorForm.invalid">
+          <i class="bi bi-save"></i>
+          {{ isEdit ? 'Update' : 'Save' }}
         </button>
         <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
           <i class="bi bi-eraser"></i> Clear

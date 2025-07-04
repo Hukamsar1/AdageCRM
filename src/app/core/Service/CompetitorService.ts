@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
@@ -20,7 +20,21 @@ export class CompetitorService {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
-  getAll(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}`);
+  isDuplicate(name: string, id?: number): Observable<boolean> {
+    let params = new HttpParams().set('name', name);
+    if (id) {
+      params = params.set('id', id);
+    }
+    return this.http.get<boolean>(`${this.baseUrl}/is-duplicate`, { params });
   }
+
+getAllCompetitors(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/getlist`);
+}
+
+deleteCompetitor(id: number, actionType: string): Observable<any> {
+  return this.http.delete(`${this.baseUrl}/CompetitorDelete/${id}`);
+}
+
+
 }

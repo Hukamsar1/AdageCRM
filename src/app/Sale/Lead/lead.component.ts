@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
-import { LeadService } from '../core/Service/LeadService';
 import { finalize } from 'rxjs';
-import { EmployeeService } from '../core/Service/EmployeeService';
-import { ProductService } from '../core/Service/productService';
-import { AreaService } from '../core/Service/areaService';
+import { AreaService } from 'src/app/core/Service/areaService';
+import { CompetitorService } from 'src/app/core/Service/CompetitorService';
+import { EmployeeService } from 'src/app/core/Service/EmployeeService';
+import { LeadService } from 'src/app/core/Service/LeadService';
+import { ProductService } from 'src/app/core/Service/productService';
 
 @Component({
     selector: 'app-lead',
@@ -17,6 +18,7 @@ import { AreaService } from '../core/Service/areaService';
 export class LeadComponent implements OnInit {
     leadForm!: FormGroup;
     isSubmitting = false;
+    competitors: any[] = [];
     businesses: any[] = [];
     products: any[] = [];
     enquiries: any[] = [];
@@ -24,14 +26,16 @@ export class LeadComponent implements OnInit {
     states: any[] = [];
     cities: any[] = [];
     suggestedProducts: any[] = [];
-    purposes = ['Purpose A', 'Purpose B'];
+    purposes = ['Sent', 'Pending'];
+    purposeVisit = ['Demo','New','Demo','followup','Negotiation','Closure' ];
     references = ['Reference A', 'Reference B'];
-    quotations = ['Quotation A', 'Quotation B'];
-    statuses = ['New', 'Follow-up', 'Closed'];
+    quotations = ['Sent', 'Pending'];
+    statuses = ['Attempted to Contact', 'Contact In Future', 'Contacted', 'Not Contacted', 'Not Interested', 'Interested', 'Lost Lead', 'Won Lead', 'Junk Lead', 'Not Contacted','Pre Qualified','Not Qualified'];
     priorities = ['High', 'Medium', 'Low'];
-    visitTypes = ['Online', 'In-person'];
-    visitWithList = ['Manager', 'Executive'];
-    assignToList = ['Salesperson 1', 'Salesperson 2'];
+    visitTypes = ['Single', 'Joint'];
+    VisitAction = ['Follow Up','Negotiation','Demo','Closure' ]
+    visitWithList = ['Reporting Manager', 'Staff'];
+    assignToList = ['Partner', 'Staff'];
     error: string | null = null;
 
     constructor(private fb: FormBuilder,
@@ -39,16 +43,32 @@ export class LeadComponent implements OnInit {
         private enqueryService: EmployeeService,
         private leadService: LeadService,
         private productService: ProductService,
-        private areaService: AreaService) { }
+        private areaService: AreaService,
+        private comptitorservice: CompetitorService) { }
 
     ngOnInit(): void {
         this.initForm();
         this.loadEnquery();
-        this.loadProduct();
         this.loadCountries();
-        this.loadEnquery();
         this.loadProduct();
         this.loadBussiness();
+        this.loadCompetitors();
+
+
+        this.leadForm.get('quotation')?.valueChanges.subscribe(value => {
+    const dateControl = this.leadForm.get('quotationDate');
+
+    if (value === 'Sent') {
+      dateControl?.enable();
+      dateControl?.setValidators(Validators.required);
+    } else if (value === 'Pending') {
+      dateControl?.disable();
+      dateControl?.clearValidators();
+      dateControl?.setValue('');
+    }
+
+    dateControl?.updateValueAndValidity();
+  });
     }
 
     private initForm(): void {
@@ -73,12 +93,16 @@ export class LeadComponent implements OnInit {
             enquiry: ['', Validators.required],
             reference: ['', Validators.required],
             purpose: ['', Validators.required],
+            purposeofvisit: ['', Validators.required],
+            noofemployee: [''],
             quotation: ['', Validators.required],
-            quotationDate: ['', Validators.required],
+            quotationDate: [{ value: '', disabled: true }, Validators.required],
             discussion: [''],
             leadStatus: ['', Validators.required],
             leadPriority: ['', Validators.required],
             chancesOfClosure: [''],
+            EstimatedClosureDate:[''],
+            EstimateDeal:[''],
             visitType: ['', Validators.required],
             visitWith: ['', Validators.required],
             leadAssignTo: ['', Validators.required],
@@ -94,14 +118,12 @@ export class LeadComponent implements OnInit {
         }
 
         this.isSubmitting = true;
-
-        // Example: Send data to API
         this.leadService.createLead(this.leadForm.value)
             .pipe(finalize(() => this.isSubmitting = false))
             .subscribe({
                 next: () => {
                     alert('Lead saved successfully!');
-                    this.clearForm();
+                   // this.clearForm();
                 },
                 error: () => {
                     alert('An error occurred while saving the lead.');
@@ -109,11 +131,42 @@ export class LeadComponent implements OnInit {
             });
     }
 
+onProductChange(event: Event): void {
+  const selectedProduct = (event.target as HTMLSelectElement).value;
+
+  if (selectedProduct === 'Using Competitor') {
+    this.suggestedProducts = this.competitors.map(c => ({
+      name: c.competitorName
+    }));
+  } else {
+    this.suggestedProducts = this.products
+      .filter(p => p.productName !== 'Using Competitor')
+      .map(p => ({
+        name: p.productName
+      }));
+  }
+
+  // suggestedProduct field reset kar do
+  this.leadForm.patchValue({ suggestedProduct: '' });
+}
+
+  loadCompetitors(): void {
+        this.comptitorservice.getAllCompetitors().subscribe({
+            next: (data) => {
+                this.competitors = data;
+            },
+            error: (err) => {
+                this.error = 'Error loading competitors';
+                console.error(err);
+            }
+        });
+    }
+
     loadBussiness(): void {
         this.leadService.getAllBussiness().subscribe({
             next: (data) => {
                 this.businesses = data;
-              alert("Successfully Bussiness Load");
+              
             },
             error: (err) => {
                 this.error = 'Error loading Bussiness';
@@ -140,19 +193,32 @@ export class LeadComponent implements OnInit {
         });
     }
 
-    loadProduct(): void {
-        this.productService.getAllProducts().subscribe({
-            next: (data) => {
-                this.products = data.map(item => ({
-                    ...item,
-                }));
-            },
-            error: (err) => {
-                this.error = 'Error loading Enquery';
-                console.error(err);
-            }
-        });
+    // loadProduct(): void {
+    //     this.productService.getAllProducts().subscribe({
+    //         next: (data) => {
+    //             this.products = data.map(item => ({
+    //                 ...item,
+    //             }));
+    //         },
+    //         error: (err) => {
+    //             this.error = 'Error loading Enquery';
+    //             console.error(err);
+    //         }
+    //     });
+    // }
+
+loadProduct(): void {
+  this.productService.getAllProducts().subscribe({
+    next: (data) => {
+      this.products = data;
+    },
+    error: (err) => {
+      this.error = 'Error loading products';
+      console.error(err);
     }
+  });
+}
+
 
     loadCountries(): void {
         this.areaService.getCountries().subscribe({

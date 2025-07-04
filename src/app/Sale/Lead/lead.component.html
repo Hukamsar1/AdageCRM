@@ -114,7 +114,7 @@
                                 class="invalid-feedback small">Please select city</div>
                         </div>
 
-                       <div class="col-md-4">
+                        <div class="col-md-4">
                             <label class="form-label small">Enquiry *</label>
                             <select class="form-select form-select-sm" formControlName="enquiry">
                                 <option value="">Select Enquiry</option>
@@ -129,7 +129,8 @@
                             <label class="form-label small">Business *</label>
                             <select class="form-select form-select-sm" formControlName="business">
                                 <option value="">Select Business</option>
-                                <option *ngFor="let b of businesses" [value]="b.bussinessName">{{ b.bussinessName }}</option>
+                                <option *ngFor="let b of businesses" [value]="b.bussinessName">{{ b.bussinessName }}
+                                </option>
                             </select>
                             <div *ngIf="leadForm.get('business')?.invalid && leadForm.get('business')?.touched"
                                 class="invalid-feedback small">Please select business</div>
@@ -137,7 +138,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Product *</label>
-                            <select class="form-select form-select-sm" formControlName="product">
+                            <select class="form-select form-select-sm" formControlName="product"
+                                (change)="onProductChange($event)">
                                 <option value="">Select Product</option>
                                 <option *ngFor="let p of products" [value]="p.productName">{{ p.productName }}</option>
                             </select>
@@ -147,10 +149,11 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Suggested Product</label>
-                             <select class="form-select form-select-sm" formControlName="suggestedProduct">
-                                <option value="">Select Product</option>
-                                <option *ngFor="let sp of suggestedProducts" [value]="sp.productName">{{ sp.productName }}</option>
+                            <select class="form-select form-select-sm" formControlName="suggestedProduct">
+                                <option value="">Select Suggested Product</option>
+                                <option *ngFor="let sp of suggestedProducts" [value]="sp.name">{{ sp.name }}</option>
                             </select>
+
                             <div *ngIf="leadForm.get('suggestedProduct')?.invalid && leadForm.get('suggestedProduct')?.touched"
                                 class="invalid-feedback small">Please select Suggested product</div>
                         </div>
@@ -166,10 +169,23 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label small">Purpose *</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="purpose">
+                            <label class="form-label small">Purpose of Visit</label>
+                            <select class="form-select form-select-sm" formControlName="purposeofvisit">
+                                <option value="">Select Quotation</option>
+                                <option *ngFor="let p of purposeVisit" [value]="p">{{ p }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('purposeofvisit')?.invalid && leadForm.get('purposeofvisit')?.touched"
+                                class="invalid-feedback small">Please select Purpose Of Visit</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Proposal *</label>
+                            <select class="form-select form-select-sm" formControlName="purpose">
+                                <option value="">Select Quotation</option>
+                                <option *ngFor="let p of purposes" [value]="p">{{ p }}</option>
+                            </select>
                             <div *ngIf="leadForm.get('purpose')?.invalid && leadForm.get('purpose')?.touched"
-                                class="invalid-feedback small">Please enter purpose</div>
+                                class="invalid-feedback small">Please select Proposal</div>
                         </div>
 
                         <div class="col-md-4">
@@ -187,11 +203,6 @@
                             <input type="date" class="form-control form-control-sm" formControlName="quotationDate">
                             <div *ngIf="leadForm.get('quotationDate')?.invalid && leadForm.get('quotationDate')?.touched"
                                 class="invalid-feedback small">Please select date</div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label small">Discussion</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="discussion">
                         </div>
 
                         <div class="col-md-4">
@@ -215,9 +226,33 @@
                         </div>
 
                         <div class="col-md-4">
+                            <label class="form-label small">NO.Of Employee</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="noofemployee">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Annual Revenue</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="AnnualRevenue">
+                        </div>
+
+                        <div class="col-md-4">
                             <label class="form-label small">Chances of Closure</label>
                             <input type="text" class="form-control form-control-sm" formControlName="chancesOfClosure">
                         </div>
+                         <div class="col-md-4">
+                            <label class="form-label small">Estimate deal</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="EstimateDeal">
+                        </div>
+                         <div class="col-md-4">
+                            <label class="form-label small">Estimated Closure Date </label>
+                            <input type="date" class="form-control form-control-sm" formControlName="EstimatedClosureDate">
+                        </div>
+
+                         <div class="col-md-4">
+                            <label class="form-label small">Discussion</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="discussion">
+                        </div>
+
 
                         <div class="col-md-4">
                             <label class="form-label small">Visit Type *</label>
@@ -258,9 +293,12 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Next Visit Action *</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="nextVisitAction">
+                            <select class="form-select form-select-sm" formControlName="nextVisitAction">
+                                <option value="">Select Next Visit</option>
+                                <option *ngFor="let v of VisitAction" [value]="v">{{ v }}</option>
+                            </select>
                             <div *ngIf="leadForm.get('nextVisitAction')?.invalid && leadForm.get('nextVisitAction')?.touched"
-                                class="invalid-feedback small">Please enter action</div>
+                                class="invalid-feedback small">Please select Next Visit Action</div>
                         </div>
                     </div>
                 </fieldset>
