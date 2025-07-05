@@ -169,3 +169,12 @@ textarea.form-control-sm {
     font-size: 10px;
   }
 }
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  color: #888;
+  opacity: 0.7;
+}

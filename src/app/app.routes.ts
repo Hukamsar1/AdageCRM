@@ -20,6 +20,7 @@ import { ProductListComponent } from "./Master/Products/product-list.component";
 import { CompetitorFormComponent } from "./Master/ComptetorProduct/competitor.component";
 import { CompetitorListComponent } from "./Master/ComptetorProduct/competitor-list.component";
 import { LeadComponent } from "./Sale/Lead/lead.component";
+import { LeadListComponent } from "./Sale/Lead/lead-list.component";
 
 export const appRoutes: Routes = [
   { path: '', component: HomePageComponent, pathMatch: 'full' },
@@ -69,7 +70,7 @@ export const appRoutes: Routes = [
       // Lead
 
       { path: 'leadcreate', component: LeadComponent },
-       { path: 'lead-list', component: LeadComponent },
+       { path: 'lead-list', component: LeadListComponent },
 
 
         { path: 'competetor-list', component: CompetitorListComponent },

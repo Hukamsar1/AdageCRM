@@ -4,6 +4,22 @@
             <h5 class="mb-0 fs-6">Lead Registration</h5>
         </div>
 
+        <!-- Lead Type Radio -->
+        <div class="d-flex align-items-center gap-4" style="margin-left: 18px;">
+            <label class="form-label fw-bold mb-0 fs-12">Lead Type:</label>
+            <div class="form-check fs-13">
+                <input class="form-check-input" type="radio" id="newLead" name="leadType" value="new"
+                    [(ngModel)]="leadType" (change)="onLeadTypeChange()" />
+                <label class="form-check-label fs-12" for="newLead">New</label>
+            </div>
+            <div class="form-check fs-13">
+                <input class="form-check-input" type="radio" id="followupLead" name="leadType" value="followup"
+                    [(ngModel)]="leadType" (change)="onLeadTypeChange()" />
+                <label class="form-check-label fs-12" for="followupLead">Followup</label>
+            </div>
+        </div>
+
+
         <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
             <div class="card-body p-3">
 
@@ -13,10 +29,24 @@
                     <div class="row g-2">
                         <div class="col-md-4">
                             <label class="form-label small">Business Name *</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="businessName">
+
+                            <!-- When NOT followup: show text input -->
+                            <input *ngIf="!businessNameAsDropdown" type="text" class="form-control form-control-sm"
+                                formControlName="businessName" />
+
+                            <!-- When followup: show dropdown -->
+                            <select *ngIf="businessNameAsDropdown" class="form-select form-select-sm"
+                                (change)="onBusinessSelected($event)">
+                                <option value="">Select Business</option>
+                                <option *ngFor="let b of existingBusinessList" [value]="b.businessName">
+                                    {{ b.businessName }}
+                                </option>
+                            </select>
+
                             <div *ngIf="leadForm.get('businessName')?.invalid && leadForm.get('businessName')?.touched"
-                                class="invalid-feedback small">Please enter business name</div>
+                                class="invalid-feedback small">Please select or enter business name</div>
                         </div>
+
 
                         <div class="col-md-4">
                             <label class="form-label small">Contact Person First Name *</label>
@@ -34,8 +64,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Title-Designation</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="titledesignation">
-                            <div *ngIf="leadForm.get('titledesignation')?.invalid && leadForm.get('titledesignation')?.touched"
+                            <input type="text" class="form-control form-control-sm" formControlName="titleDesignation">
+                            <div *ngIf="leadForm.get('titleDesignation')?.invalid && leadForm.get('titleDesignation')?.touched"
                                 class="invalid-feedback small">Please enter Title-Designation</div>
                         </div>
 
@@ -139,7 +169,7 @@
                         <div class="col-md-4">
                             <label class="form-label small">Product *</label>
                             <select class="form-select form-select-sm" formControlName="product"
-                                (change)="onProductChange($event)">
+                                (change)="onProductChange($event)" [disabled]="isFollowup">
                                 <option value="">Select Product</option>
                                 <option *ngFor="let p of products" [value]="p.productName">{{ p.productName }}</option>
                             </select>
@@ -171,7 +201,7 @@
                         <div class="col-md-4">
                             <label class="form-label small">Purpose of Visit</label>
                             <select class="form-select form-select-sm" formControlName="purposeofvisit">
-                                <option value="">Select Quotation</option>
+                                <option value="">Select Purpose of Visit</option>
                                 <option *ngFor="let p of purposeVisit" [value]="p">{{ p }}</option>
                             </select>
                             <div *ngIf="leadForm.get('purposeofvisit')?.invalid && leadForm.get('purposeofvisit')?.touched"
@@ -232,27 +262,27 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Annual Revenue</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="AnnualRevenue">
+                            <input type="text" class="form-control form-control-sm" formControlName="annualRevenue">
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label small">Chances of Closure</label>
                             <input type="text" class="form-control form-control-sm" formControlName="chancesOfClosure">
                         </div>
-                         <div class="col-md-4">
+                        <div class="col-md-4">
                             <label class="form-label small">Estimate deal</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="EstimateDeal">
+                            <input type="text" class="form-control form-control-sm" formControlName="estimateDeal">
                         </div>
-                         <div class="col-md-4">
+                        <div class="col-md-4">
                             <label class="form-label small">Estimated Closure Date </label>
-                            <input type="date" class="form-control form-control-sm" formControlName="EstimatedClosureDate">
+                            <input type="date" class="form-control form-control-sm"
+                                formControlName="estimatedClosureDate">
                         </div>
 
-                         <div class="col-md-4">
+                        <div class="col-md-4">
                             <label class="form-label small">Discussion</label>
                             <input type="text" class="form-control form-control-sm" formControlName="discussion">
                         </div>
-
 
                         <div class="col-md-4">
                             <label class="form-label small">Visit Type *</label>
@@ -286,7 +316,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Next Visit Date *</label>
-                            <input type="date" class="form-control form-control-sm" formControlName="nextVisitDate">
+                            <input type="date" class="form-control form-control-sm" formControlName="nextVisitDate"
+                                [min]="today">
                             <div *ngIf="leadForm.get('nextVisitDate')?.invalid && leadForm.get('nextVisitDate')?.touched"
                                 class="invalid-feedback small">Please select date</div>
                         </div>
@@ -306,9 +337,8 @@
 
             <div class="card-footer d-flex justify-content-end gap-2 py-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary px-3" (click)="clearForm()">Clear</button>
-                <button type="submit" class="btn btn-sm btn-primary px-3" [disabled]="leadForm.invalid || isSubmitting">
+                <button type="submit" class="btn btn-sm btn-primary px-3">
                     <span><i class="bi bi-save"></i> Submit</span>
-                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm ms-2"></span>
                 </button>
             </div>
         </form>

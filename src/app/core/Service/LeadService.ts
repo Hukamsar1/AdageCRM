@@ -15,4 +15,19 @@ export class LeadService {
     getAllBussiness(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/GetList`);
   }
+
+  getAllBussinessDAta(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/GetAll`);
+  }
+
+  getAllCompanyName(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/GetCompanyNameList`);
+  }
+
+  getAllDataByCompanyName(businessName: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/GetDataByCompanyName`, {
+      params: { businessName }
+    });
+  }
+
 }
