@@ -118,7 +118,7 @@ export class LeadListComponent implements OnInit {
                 this.error = 'Error loading designations';
                 console.error(err);
                 this.loading = false;
-            }
+            }           
         });
     }
 

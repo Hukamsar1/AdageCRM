@@ -4,29 +4,43 @@
             <h5 class="mb-0 fs-6">Lead Registration</h5>
         </div>
 
-        <!-- Lead Type Radio -->
-        <div class="d-flex align-items-center gap-4" style="margin-left: 18px;">
-            <label class="form-label fw-bold mb-0 fs-12">Lead Type:</label>
-            <div class="form-check fs-13">
-                <input class="form-check-input" type="radio" id="newLead" name="leadType" value="new"
-                    [(ngModel)]="leadType" (change)="onLeadTypeChange()" />
-                <label class="form-check-label fs-12" for="newLead">New</label>
-            </div>
-            <div class="form-check fs-13">
-                <input class="form-check-input" type="radio" id="followupLead" name="leadType" value="followup"
-                    [(ngModel)]="leadType" (change)="onLeadTypeChange()" />
-                <label class="form-check-label fs-12" for="followupLead">Followup</label>
-            </div>
-        </div>
-
-
         <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+
+            <!-- RADIO BUTTONS MOVED INSIDE FORM -->
+            <div class="d-flex align-items-center gap-4 p-2" style="margin-left: 18px;">
+                <label class="form-label fw-bold mb-0 fs-12">Lead Type:</label>
+                <div class="form-check fs-13">
+                    <input class="form-check-input" type="radio" id="newLead" name="leadType" value="new"
+                        formControlName="leadType" (change)="onLeadTypeChange()" />
+                    <label class="form-check-label fs-12" for="newLead">New</label>
+                </div>
+                <div class="form-check fs-13">
+                    <input class="form-check-input" type="radio" id="followupLead" name="leadType" value="followup"
+                        formControlName="leadType" (change)="onLeadTypeChange()" />
+                    <label class="form-check-label fs-12" for="followupLead">Followup</label>
+                </div>
+            </div>
+            <!-- END RADIO BUTTONS -->
+
+
             <div class="card-body p-3">
 
                 <!-- Lead Details Section -->
                 <fieldset class="form-section mb-3">
                     <legend class="section-legend fs-6">Lead Details</legend>
                     <div class="row g-2">
+
+                        <div class="col-md-4">
+                            <label class="form-label small">Lead Category *</label>
+                            <select class="form-select form-select-sm" formControlName="leadCategory">
+                                <option value="">Select Lead Category</option>
+                                <option *ngFor="let lead of LeadTypes" [value]="lead">{{ lead }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('leadCategory')?.invalid && leadForm.get('leadCategory')?.touched"
+                                class="invalid-feedback small">Please select Lead Category</div>
+                        </div>
+
+
                         <div class="col-md-4">
                             <label class="form-label small">Business Name *</label>
 
@@ -69,10 +83,15 @@
                                 class="invalid-feedback small">Please enter Title-Designation</div>
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label small">Email</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="email">
-                        </div>
+                       <div class="col-md-4">
+  <label class="form-label small">Email</label>
+  <input type="email" formControlName="email" class="form-control form-control-sm" />
+  <div *ngIf="leadForm.get('email')?.invalid && leadForm.get('email')?.touched"
+       class="invalid-feedback d-block small">
+    Please enter a valid email.
+  </div>
+</div>
+
 
                         <div class="col-md-4">
                             <label class="form-label small">Phone</label>
@@ -80,14 +99,24 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label small">Mobile</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="mobile">
-                        </div>
+  <label class="form-label small">Mobile</label>
+  <input type="text" formControlName="mobile" class="form-control form-control-sm" />
+  <div *ngIf="leadForm.get('mobile')?.errors?.['invalidMobile'] && leadForm.get('mobile')?.touched"
+       class="invalid-feedback d-block small">
+    Mobile must start with 6-9 and be exactly 10 digits.
+  </div>
+</div>
+
 
                         <div class="col-md-4">
-                            <label class="form-label small">Website</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="website">
-                        </div>
+  <label class="form-label small">Website</label>
+  <input type="text" formControlName="website" class="form-control form-control-sm" />
+  <div *ngIf="leadForm.get('website')?.errors?.['invalidWebsite'] && leadForm.get('website')?.touched"
+       class="invalid-feedback d-block small">
+    Please enter a valid website.
+  </div>
+</div>
+
 
                         <div class="col-md-4">
                             <label class="form-label small">Address</label>
@@ -102,10 +131,15 @@
                         </div>
 
 
-                        <div class="col-md-4">
-                            <label class="form-label small">Pin Code</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="pinCode">
-                        </div>
+                       <div class="col-md-4">
+  <label class="form-label small">Pin Code</label>
+  <input type="text" formControlName="pinCode" class="form-control form-control-sm" />
+  <div *ngIf="leadForm.get('pinCode')?.errors?.['invalidPinCode'] && leadForm.get('pinCode')?.touched"
+       class="invalid-feedback d-block small">
+    Pin Code must be exactly 6 digits.
+  </div>
+</div>
+
 
                         <div class="col-md-4">
                             <label class="form-label small">Country <span class="text-danger">*</span></label>
@@ -233,6 +267,9 @@
                             <input type="date" class="form-control form-control-sm" formControlName="quotationDate">
                             <div *ngIf="leadForm.get('quotationDate')?.invalid && leadForm.get('quotationDate')?.touched"
                                 class="invalid-feedback small">Please select date</div>
+                                <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat']">
+  Date must be in YYYY-MM-DD format.
+</div>
                         </div>
 
                         <div class="col-md-4">
@@ -277,6 +314,9 @@
                             <label class="form-label small">Estimated Closure Date </label>
                             <input type="date" class="form-control form-control-sm"
                                 formControlName="estimatedClosureDate">
+                                <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat']">
+  Date must be in YYYY-MM-DD format.
+</div>
                         </div>
 
                         <div class="col-md-4">
@@ -306,21 +346,36 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Lead Assign To *</label>
-                            <select class="form-select form-select-sm" formControlName="leadAssignTo">
+                            <select class="form-select form-select-sm" formControlName="leadAssignTo"
+                                (change)="assignToSecondFetchData($event)">
                                 <option value="">Select Salesperson</option>
                                 <option *ngFor="let a of assignToList" [value]="a">{{ a }}</option>
                             </select>
+
                             <div *ngIf="leadForm.get('leadAssignTo')?.invalid && leadForm.get('leadAssignTo')?.touched"
                                 class="invalid-feedback small">Please select assign to</div>
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label small">Next Visit Date *</label>
-                            <input type="date" class="form-control form-control-sm" formControlName="nextVisitDate"
-                                [min]="today">
-                            <div *ngIf="leadForm.get('nextVisitDate')?.invalid && leadForm.get('nextVisitDate')?.touched"
-                                class="invalid-feedback small">Please select date</div>
+                            <label class="form-label small">{{ assignToSecondLabel }}</label>
+                            <select class="form-select form-select-sm" formControlName="leadAssignSecond">
+                                <option value="">Select Person</option>
+                                <option *ngFor="let a of assignToSecondList" [value]="a.id">{{ a.name }}</option>
+                            </select>
+                            <div *ngIf="leadForm.get('leadAssignSecond')?.invalid && leadForm.get('leadAssignSecond')?.touched"
+                                class="invalid-feedback small">Please select assign to</div>
                         </div>
+
+
+                        <div class="col-md-4">
+  <label class="form-label small">Next Visit Date</label>
+  <input type="date" formControlName="nextVisitDate" class="form-control form-control-sm" />
+  <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat'] && leadForm.get('nextVisitDate')?.touched"
+       class="invalid-feedback d-block small">
+    Date must be in YYYY-MM-DD format.
+  </div>
+</div>
+
 
                         <div class="col-md-4">
                             <label class="form-label small">Next Visit Action *</label>

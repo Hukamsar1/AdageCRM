@@ -8,6 +8,13 @@ import { CompetitorService } from 'src/app/core/Service/CompetitorService';
 import { EmployeeService } from 'src/app/core/Service/EmployeeService';
 import { LeadService } from 'src/app/core/Service/LeadService';
 import { ProductService } from 'src/app/core/Service/productService';
+import { CustomValidators } from 'src/app/features/auth/custom-validators';
+
+interface AssignToSecondOption {
+    id: number;
+    name: string;
+}
+
 
 @Component({
     selector: 'app-lead',
@@ -37,70 +44,82 @@ export class LeadComponent implements OnInit {
     VisitAction = ['Follow Up', 'Negotiation', 'Demo', 'Closure']
     visitWithList = ['Reporting Manager', 'Staff'];
     assignToList = ['Partner', 'Staff'];
+    LeadTypes = ['Partner', 'Customer'];
+    assignToSecondList: any[] = [];
     error: string | null = null;
     today = new Date().toISOString().split('T')[0];
-    leadType: string = 'new';
+    leadType: string = '';
     isFollowup: boolean = false;
     businessNameAsDropdown = false;    // controls input vs select
     existingBusinessList: any[] = [];  // for dropdown options
-
-
+    assignToSecondLabel = 'Lead Assign *';
 
     constructor(private fb: FormBuilder,
         private router: Router,
-        private enqueryService: EmployeeService,
+        private employeeenqueryService: EmployeeService,
         private leadService: LeadService,
         private productService: ProductService,
         private areaService: AreaService,
-        private comptitorservice: CompetitorService) { }
+        private comptitorservice: CompetitorService
+    ) { }
 
     ngOnInit(): void {
-  this.initForm();
-  this.loadEnquery();
-  this.loadCountries();
-  this.loadProduct();
-  this.loadBussiness();
-  this.loadCompetitors();
-  this.loadCompanyName(); 
+        this.initForm();
+        this.loadEnquery();
+        this.loadCountries();
+        this.loadProduct();
+        this.loadBussiness();
+        this.loadCompetitors();
+        this.loadCompanyName();
 
-  this.leadForm.get('quotation')?.valueChanges.subscribe(value => {
-    const dateControl = this.leadForm.get('quotationDate');
-    if (value === 'Sent') {
-      dateControl?.enable();
-      dateControl?.setValidators(Validators.required);
-    } else {
-      dateControl?.disable();
-      dateControl?.clearValidators();
-      dateControl?.setValue('');
+        this.leadForm.get('quotation')?.valueChanges.subscribe(value => {
+            const dateControl = this.leadForm.get('quotationDate');
+            if (value === 'Sent') {
+                dateControl?.enable();
+                dateControl?.setValidators(Validators.required);
+            } else {
+                dateControl?.disable();
+                dateControl?.clearValidators();
+                dateControl?.setValue('');
+            }
+            dateControl?.updateValueAndValidity();
+        });
+
+        this.assignToSecondLabel = 'Lead Assign *';
+
+
+        let lastValue = this.leadForm.get('leadType')?.value;
+        this.leadForm.get('leadType')?.valueChanges.subscribe(newValue => {
+            if (newValue !== lastValue) {
+                lastValue = newValue;
+                this.onLeadTypeChange();
+            }
+        });
+
+        // Call once on load too
+        this.onLeadTypeChange();
     }
-    dateControl?.updateValueAndValidity();
-  });
-
-  // Watch leadType changes
-  this.leadForm.get('leadType')?.valueChanges.subscribe(() => this.onLeadTypeChange());
-
-  // Call once on load too
-  this.onLeadTypeChange();
-}
 
 
     private initForm(): void {
+        const today = new Date().toISOString().substring(0, 10);
         this.leadForm = this.fb.group({
-            leadType: ['', Validators.required],
+            leadCategory: [null, Validators.required],
+            leadType: ['new', Validators.required],
             businessName: ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: [''],
             titleDesignation: ['', Validators.required],
-            email: ['', Validators.email],    // or Validators.required if you want
+            email: ['', [Validators.required, Validators.email]],
             phone: [''],
-            mobile: ['', Validators.required],
-            website: [''],
+            mobile: ['', [Validators.required, CustomValidators.mobile]],
+            website: ['', [CustomValidators.website]],
             address: [''],
             area: ['', Validators.required],
             countryId: ['', Validators.required],
             stateId: ['', Validators.required],
             cityId: ['', Validators.required],
-            pinCode: [''],
+            pinCode: ['', [Validators.required, CustomValidators.pinCode]],
             business: ['', Validators.required],
             product: ['', Validators.required],
             suggestedProduct: [''],
@@ -110,130 +129,177 @@ export class LeadComponent implements OnInit {
             purposeofvisit: ['', Validators.required],
             noofemployee: [''],
             quotation: ['', Validators.required],
-            quotationDate: [{ value: '', disabled: true }, Validators.required],
+            quotationDate: ['', [Validators.required, CustomValidators.dateFormat]],
             discussion: [''],
             leadStatus: ['', Validators.required],
             leadPriority: ['', Validators.required],
             chancesOfClosure: [''],
-            annualRevenue: [''],    // use *all lowercase* to match formControlName
-            estimateDeal: [''],    // likewise
-            estimatedClosureDate: [''],
+            annualRevenue: [''],
+            estimateDeal: [''],
+            estimatedClosureDate: ['', [CustomValidators.dateFormat]],
             visitType: ['', Validators.required],
             visitWith: ['', Validators.required],
             leadAssignTo: ['', Validators.required],
-            nextVisitDate: ['', Validators.required],
+            leadAssignSecond: ['', Validators.required],
+            nextVisitDate: ['', [Validators.required, CustomValidators.dateFormat]],
             nextVisitAction: ['', Validators.required]
         });
     }
 
-   onLeadTypeChange(): void {
-  this.isFollowup = this.leadType === 'followup';
-  this.businessNameAsDropdown = this.isFollowup;
+    onLeadTypeChange(): void {
+        const selectedType = this.leadForm.get('leadType')?.value;
+        this.isFollowup = selectedType === 'followup';
+        this.businessNameAsDropdown = this.isFollowup;
 
-  // Turant form enable/disable karo
-  const fieldsToDisableInFollowup = [
-    'businessName',
-    'firstName',
-    'lastName',
-    'titleDesignation',
-    'email',
-    'phone',
-    'mobile',
-    'website',
-    'enquiry',
-    'noofemployee',
-    'annualRevenue',
-    'address',
-    'business',
-    'product'
-  ];
-
-  Object.keys(this.leadForm.controls).forEach(key => {
-    const control = this.leadForm.get(key);
-    if (control) {
-      if (this.isFollowup && fieldsToDisableInFollowup.includes(key)) {
-        control.disable();
-      } else {
-        control.enable();
-      }
-    }
-  });
-
-  if (!this.isFollowup) {
-    this.leadForm.get('businessName')?.reset();
-  }
-}
-
-
-
-onBusinessSelected(event: Event): void {
-  const target = event.target as HTMLSelectElement;
-  const selectedcompname = target?.value;
-
-  if (!selectedcompname) return;
-
-  this.leadService.getAllDataByCompanyName(selectedcompname).subscribe({
-    next: (business) => {
-      const compData = business[0];
-
-      // Load dependent dropdowns first
-      this.loadStates(compData.countryId);
-      this.loadCities(compData.stateId);
-
-      // Pehle patch karo
-      this.leadForm.patchValue(this.mapBusinessResponse(business));
-
-      // Disable specific fields *after* patching if followup hai
-      if (this.isFollowup) {
+        // Turant form enable/disable karo
         const fieldsToDisableInFollowup = [
-          'businessName',
-          'firstName',
-          'lastName',
-          'titleDesignation',
-          'email',
-          'phone',
-          'mobile',
-          'website',
-          'enquiry',
-          'noofemployee',
-          'annualRevenue',
-          'address',
-          'business',
-          'product'
+            'businessName',
+            'firstName',
+            'lastName',
+            'titleDesignation',
+            'email',
+            'phone',
+            'mobile',
+            'website',
+            'enquiry',
+            'noofemployee',
+            'annualRevenue',
+            'address',
+            'business',
+            'product'
         ];
 
-        fieldsToDisableInFollowup.forEach(key => {
-          this.leadForm.get(key)?.disable();
+        Object.keys(this.leadForm.controls).forEach(key => {
+            const control = this.leadForm.get(key);
+            if (control) {
+                if (this.isFollowup && fieldsToDisableInFollowup.includes(key)) {
+                    control.disable({ emitEvent: false });
+                } else {
+                    control.enable({ emitEvent: false });
+                }
+            }
         });
-      }
 
-      // Suggested products update
-      if (compData.product === 'Using Competitor') {
-        this.suggestedProducts = this.competitors.map(c => ({ name: c.competitorName }));
-      } else {
-        this.suggestedProducts = this.products
-          .filter(p => p.productName !== 'Using Competitor')
-          .map(p => ({ name: p.productName }));
-      }
-
-      // Quotation date enable/disable
-      if (compData.quotation === 'Sent') {
-        this.leadForm.get('quotationDate')?.enable();
-      } else {
-        this.leadForm.get('quotationDate')?.disable();
-      }
-    },
-    error: (err) => {
-      console.error('Error fetching business details:', err);
-      alert('Error fetching business details. Please try again.');
+        if (!this.isFollowup) {
+            this.leadForm.get('businessName')?.reset('', { emitEvent: false });
+        }
     }
-  });
-}
+
+    assignToSecondFetchData(event: Event): void {
+        const assignToDrop = event.target as HTMLSelectElement;
+        const selectedValue = assignToDrop?.value?.toLowerCase();
+
+        if (!selectedValue) {
+            this.assignToSecondList = [];
+            this.assignToSecondLabel = 'Lead Assign *';
+            return;
+        }
+
+        if (selectedValue === 'partner') {
+            this.assignToSecondLabel = 'Lead Assign Partner';
+            this.leadService.getAllBussiness().subscribe({
+                next: (businesses) => {
+                    this.assignToSecondList = businesses.map(b => ({
+                        id: String(b.bussinessId),
+                        name: b.bussinessName
+                    }));
+                },
+                error: () => {
+                    alert('Failed to load business data');
+                    this.assignToSecondList = [];
+                }
+            });
+        }
+        else if (selectedValue === 'staff') {
+            this.assignToSecondLabel = 'Lead Assign Staff';
+            this.employeeenqueryService.getAllEmployees().subscribe({
+                next: (employees) => {
+                    this.assignToSecondList = employees.map(e => ({
+                        id: String(e.employeeId),
+                        name: `${e.firstName} ${e.lastName}`
+                    }));
+                },
+                error: () => {
+                    alert('Failed to load employee data');
+                    this.assignToSecondList = [];
+                }
+            });
+        }
+    }
+
+
+
+
+    onBusinessSelected(event: Event): void {
+        const target = event.target as HTMLSelectElement;
+        const selectedcompname = target?.value;
+
+        if (!selectedcompname) return;
+
+        this.leadService.getAllDataByCompanyName(selectedcompname).subscribe({
+            next: (business) => {
+                const compData = business[0];
+
+                // Load dependent dropdowns first
+                this.loadStates(compData.countryId);
+                this.loadCities(compData.stateId);
+
+                // Pehle patch karo
+                this.leadForm.patchValue(this.mapBusinessResponse(business));
+
+                // Disable specific fields *after* patching if followup hai
+                if (this.isFollowup) {
+                    const fieldsToDisableInFollowup = [
+                        'businessName',
+                        'firstName',
+                        'lastName',
+                        'titleDesignation',
+                        'email',
+                        'phone',
+                        'mobile',
+                        'website',
+                        'enquiry',
+                        'noofemployee',
+                        'annualRevenue',
+                        'address',
+                        'business',
+                        'product'
+                    ];
+
+                    fieldsToDisableInFollowup.forEach(key => {
+                        this.leadForm.get(key)?.disable();
+                    });
+                }
+
+                // Suggested products update
+                if (compData.product === 'Using Competitor') {
+                    this.suggestedProducts = this.competitors.map(c => ({ name: c.competitorName }));
+                } else {
+                    this.suggestedProducts = this.products
+                        .filter(p => p.productName !== 'Using Competitor')
+                        .map(p => ({ name: p.productName }));
+                }
+
+                // Quotation date enable/disable
+                if (compData.quotation === 'Sent') {
+                    this.leadForm.get('quotationDate')?.enable();
+                } else {
+                    this.leadForm.get('quotationDate')?.disable();
+                }
+            },
+            error: (err) => {
+                console.error('Error fetching business details:', err);
+                alert('Error fetching business details. Please try again.');
+            }
+        });
+    }
 
 
     private mapBusinessResponse(business: any) {
         const compData = business[0];
         return {
+            leadType: compData.leadType,
+            leadCategory: compData.leadType,
             businessName: compData.businessName,
             firstName: compData.firstName,
             lastName: compData.lastName,
@@ -282,6 +348,7 @@ onBusinessSelected(event: Event): void {
     onSubmit(): void {
 
         this.isSubmitting = true;
+        console.log(this.leadForm.value);
         this.leadService.createLead(this.leadForm.value)
             .pipe(finalize(() => this.isSubmitting = false))
             .subscribe({
@@ -355,7 +422,7 @@ onBusinessSelected(event: Event): void {
     }
 
     loadEnquery(): void {
-        this.enqueryService.getAllEnquery().subscribe({
+        this.employeeenqueryService.getAllEnquery().subscribe({
             next: (data) => {
                 this.enquiries = data.map(item => ({
                     ...item,

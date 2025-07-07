@@ -26,6 +26,7 @@ export interface Department {
 }
 
 export interface Employee {
+  employeeId(employeeId: any): string;
   id?: number;
   firstName: string;
   lastName: string;
