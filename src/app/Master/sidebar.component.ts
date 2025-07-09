@@ -97,7 +97,7 @@ declare var bootstrap: any;
   </button>
   <div class="collapse submenu-container" id="reportsMenu">
     <nav class="submenu-items">
-      <a routerLink="/travel-lead">Customer</a>
+      <a routerLink="/Mainlayout/customer-report" routerLinkActive="active">Customer</a>
       <a routerLink="/travel-cost">Target Reports</a>
       <a routerLink="/travel-allowance">Achieavement Reports</a>
     </nav>

@@ -23,6 +23,7 @@ import { LeadComponent } from "./Sale/Order/Lead/lead.component";
 import { LeadListComponent } from "./Sale/Order/Lead/lead-list.component";
 import { OrderComponent } from "./Sale/Order/order/order.component";
 import { OrderListComponent } from "./Sale/Order/order/order-list.component";
+import { CustomerReportComponent } from "./Reports/customerReport.component";
 
 export const appRoutes: Routes = [
   { path: 'AdageCRM', component: HomePageComponent, pathMatch: 'full' },
@@ -84,6 +85,7 @@ export const appRoutes: Routes = [
       { path: 'order-create', component: OrderComponent },
       { path: 'order/edit/:id', component: OrderComponent },
     
+       { path: 'customer-report', component: CustomerReportComponent },
     ]
   }
 ];
