@@ -22,6 +22,7 @@ import { CompetitorListComponent } from "./Master/ComptetorProduct/competitor-li
 import { LeadComponent } from "./Sale/Order/Lead/lead.component";
 import { LeadListComponent } from "./Sale/Order/Lead/lead-list.component";
 import { OrderComponent } from "./Sale/Order/order/order.component";
+import { OrderListComponent } from "./Sale/Order/order/order-list.component";
 
 export const appRoutes: Routes = [
   { path: 'AdageCRM', component: HomePageComponent, pathMatch: 'full' },
@@ -79,7 +80,7 @@ export const appRoutes: Routes = [
       { path: 'competetor-create', component: CompetitorFormComponent },
       { path: 'competetor/edit/:id', component: CompetitorFormComponent },
     
-      { path: 'order-list', component: CompetitorListComponent },
+      { path: 'order-list', component: OrderListComponent },
       { path: 'order-create', component: OrderComponent },
       { path: 'order/edit/:id', component: OrderComponent },
     

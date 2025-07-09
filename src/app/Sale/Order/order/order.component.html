@@ -7,7 +7,7 @@
       </button>
     </div>
 
-    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="orderForm" (ngSubmit)="onOrderSubmit()">
       <div class="card-body p-4">
 
         <div class="mb-3">
@@ -40,10 +40,18 @@
           </div>
         </div>
 
-        <div class="mb-3" *ngIf="showAmountField">
-          <label class="form-label">Amount</label>
-          <input type="number" formControlName="amount" class="form-control" [disabled]="true" />
-          <small class="text-muted">Amount = Quantity × Rate × (1 + Tax/100)</small>
+        <div *ngIf="showAmountSection">
+          <div class="mb-3">
+            <label class="form-label">Discount (%)</label>
+            <input type="number" formControlName="discount" class="form-control" placeholder="Enter discount %" />
+            <small class="text-muted">Optional. Enter discount percentage to reduce total.</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Amount</label>
+            <input type="number" formControlName="amount" class="form-control" [disabled]="true" />
+            <small class="text-muted">Amount = (Qty × Rate + Tax) − Discount</small>
+          </div>
         </div>
 
       </div>

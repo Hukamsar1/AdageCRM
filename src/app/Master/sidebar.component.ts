@@ -5,9 +5,9 @@ import { RouterLink } from "@angular/router";
 declare var bootstrap: any;
 
 @Component({
-    selector: 'app-sidebar',
-    imports: [RouterLink, CommonModule],
-    template: `
+  selector: 'app-sidebar',
+  imports: [RouterLink, CommonModule],
+  template: `
     <aside class="bg-dark text-white vh-100 p-2" [class.collapsed]="isCollapsed">
 <button class="menu-btn d-flex align-items-center w-100" [routerLink]="'/Mainlayout/dashboard'" routerLinkActive="active">
   <i class="bi bi-speedometer2"></i>  
@@ -35,7 +35,9 @@ declare var bootstrap: any;
       <a routerLink="/Mainlayout/competetor-list" routerLinkActive="active">Competitor Product</a>
     </nav>
   </div>
+
 <div class="divider"></div>
+
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
     data-bs-toggle="collapse" data-bs-target="#saleMenu"
     aria-expanded="false" aria-controls="saleMenu">
@@ -46,10 +48,11 @@ declare var bootstrap: any;
   <div class="collapse submenu-container" id="saleMenu">
     <nav class="submenu-items">
       <a routerLink="/Mainlayout/lead-list" routerLinkActive="active">Lead</a>
-      <a routerLink="/Mainlayout/order-create" routerLinkActive="active">Order</a>
+      <a routerLink="/Mainlayout/order-list" routerLinkActive="active">Order</a>
       <a routerLink="/sale-list">Payment</a>
     </nav>
   </div>
+
   <div class="divider"></div>
 
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
@@ -65,6 +68,7 @@ declare var bootstrap: any;
       <a routerLink="/commission-payment">Payment</a>
     </nav>
   </div>
+
   <div class="divider"></div>
 
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
@@ -81,11 +85,28 @@ declare var bootstrap: any;
       <a routerLink="/travel-allowance">Allowance</a>
     </nav>
   </div>
+
+  <div class="divider"></div>
+
+   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
+    data-bs-toggle="collapse" data-bs-target="#reportsMenu"
+    aria-expanded="false" aria-controls="reportsMenu">
+<i class="bi bi-bar-chart"></i>
+    <span class="menu-label">Reports</span>
+    <i class="bi bi-caret-right-fill arrow"></i>
+  </button>
+  <div class="collapse submenu-container" id="reportsMenu">
+    <nav class="submenu-items">
+      <a routerLink="/travel-lead">Customer</a>
+      <a routerLink="/travel-cost">Target Reports</a>
+      <a routerLink="/travel-allowance">Achieavement Reports</a>
+    </nav>
+  </div>
   <div class="divider"></div>
 </aside>
 
     `,
-    styles: [`
+  styles: [`
     aside {
       width: 250px;
       transition: width 0.3s;
@@ -305,16 +326,16 @@ aside.collapsed .divider {
     `]
 })
 export class SidebarComponent implements OnChanges {
-    @Input() isCollapsed = false;
+  @Input() isCollapsed = false;
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['isCollapsed'] && this.isCollapsed) {
-            // Close all currently opened collapse menus
-            const openMenus = document.querySelectorAll('.collapse.show');
-            openMenus.forEach(menu => {
-                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(menu as Element, { toggle: false });
-                bsCollapse.hide();
-            });
-        }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isCollapsed'] && this.isCollapsed) {
+      // Close all currently opened collapse menus
+      const openMenus = document.querySelectorAll('.collapse.show');
+      openMenus.forEach(menu => {
+        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(menu as Element, { toggle: false });
+        bsCollapse.hide();
+      });
     }
+  }
 }
