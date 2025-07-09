@@ -19,11 +19,12 @@ import { EnqueryListComponent } from "./Master/Enquery/enquery-list.component";
 import { ProductListComponent } from "./Master/Products/product-list.component";
 import { CompetitorFormComponent } from "./Master/ComptetorProduct/competitor.component";
 import { CompetitorListComponent } from "./Master/ComptetorProduct/competitor-list.component";
-import { LeadComponent } from "./Sale/Lead/lead.component";
-import { LeadListComponent } from "./Sale/Lead/lead-list.component";
+import { LeadComponent } from "./Sale/Order/Lead/lead.component";
+import { LeadListComponent } from "./Sale/Order/Lead/lead-list.component";
+import { OrderComponent } from "./Sale/Order/order/order.component";
 
 export const appRoutes: Routes = [
-  { path: '', component: HomePageComponent, pathMatch: 'full' },
+  { path: 'AdageCRM', component: HomePageComponent, pathMatch: 'full' },
   { path: 'Otpsent', component: OTPSentComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
@@ -70,12 +71,17 @@ export const appRoutes: Routes = [
       // Lead
 
       { path: 'leadcreate', component: LeadComponent },
-       { path: 'lead-list', component: LeadListComponent },
+      { path: 'lead-list', component: LeadListComponent },
+      { path: 'leadcreate/edit/:id', component: LeadComponent },
 
 
-        { path: 'competetor-list', component: CompetitorListComponent },
+      { path: 'competetor-list', component: CompetitorListComponent },
       { path: 'competetor-create', component: CompetitorFormComponent },
       { path: 'competetor/edit/:id', component: CompetitorFormComponent },
+    
+      { path: 'order-list', component: CompetitorListComponent },
+      { path: 'order-create', component: OrderComponent },
+      { path: 'order/edit/:id', component: OrderComponent },
     
     ]
   }

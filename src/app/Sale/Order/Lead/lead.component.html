@@ -1,8 +1,14 @@
 <div class="container mt-3">
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white py-2">
-            <h5 class="mb-0 fs-6">Lead Registration</h5>
-        </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+  <h5 class="mb-0 fs-6 text-white">
+    {{ isEditMode ? 'Update' : 'Create' }} Lead Registration
+  </h5>
+  <button type="button" class="btn btn-light btn-sm d-flex align-items-center" (click)="goBack()">
+    <i class="bi bi-arrow-left me-1"></i> Back
+  </button>
+</div>
+
 
         <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
 
@@ -45,7 +51,7 @@
                             <label class="form-label small">Business Name *</label>
 
                             <!-- When NOT followup: show text input -->
-                            <input *ngIf="!businessNameAsDropdown" type="text" class="form-control form-control-sm"
+                            <input *ngIf="!businessNameAsDropdown" type="text" (keypress)="allowOnlyCharacters($event)"  class="form-control form-control-sm"
                                 formControlName="businessName" />
 
                             <!-- When followup: show dropdown -->
@@ -64,58 +70,61 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">Contact Person First Name *</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="firstName">
+                            <input type="text" (keypress)="allowOnlyCharacters($event)" class="form-control form-control-sm" formControlName="firstName">
                             <div *ngIf="leadForm.get('firstName')?.invalid && leadForm.get('firstName')?.touched"
                                 class="invalid-feedback small">Please enter first name</div>
+                                <div *ngIf="leadForm.get('firstName')?.errors?.['onlyString']">
+      Only alphabets are allowed.
+    </div>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label small">Contact Person Last Name *</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="lastName">
+                            <input type="text" (keypress)="allowOnlyCharacters($event)" class="form-control form-control-sm" formControlName="lastName">
                             <div *ngIf="leadForm.get('lastName')?.invalid && leadForm.get('lastName')?.touched"
                                 class="invalid-feedback small">Please enter last name</div>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label small">Title-Designation</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="titleDesignation">
+                            <input type="text" (keypress)="allowOnlyCharacters($event)" class="form-control form-control-sm" formControlName="titleDesignation">
                             <div *ngIf="leadForm.get('titleDesignation')?.invalid && leadForm.get('titleDesignation')?.touched"
                                 class="invalid-feedback small">Please enter Title-Designation</div>
                         </div>
 
-                       <div class="col-md-4">
-  <label class="form-label small">Email</label>
-  <input type="email" formControlName="email" class="form-control form-control-sm" />
-  <div *ngIf="leadForm.get('email')?.invalid && leadForm.get('email')?.touched"
-       class="invalid-feedback d-block small">
-    Please enter a valid email.
-  </div>
-</div>
+                        <div class="col-md-4">
+                            <label class="form-label small">Email</label>
+                            <input type="email" formControlName="email" class="form-control form-control-sm" />
+                            <div *ngIf="leadForm.get('email')?.invalid && leadForm.get('email')?.touched"
+                                class="invalid-feedback d-block small">
+                                Please enter a valid email.
+                            </div>
+                        </div>
 
 
                         <div class="col-md-4">
                             <label class="form-label small">Phone</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="phone">
+                            <input type="text" (keypress)="allowOnlyNumbers($event)" class="form-control form-control-sm" formControlName="phone">
                         </div>
 
                         <div class="col-md-4">
-  <label class="form-label small">Mobile</label>
-  <input type="text" formControlName="mobile" class="form-control form-control-sm" />
-  <div *ngIf="leadForm.get('mobile')?.errors?.['invalidMobile'] && leadForm.get('mobile')?.touched"
-       class="invalid-feedback d-block small">
-    Mobile must start with 6-9 and be exactly 10 digits.
-  </div>
-</div>
+                            <label class="form-label small">Mobile</label>
+                            <input type="tel" formControlName="mobile" (keypress)="allowOnlyNumbers($event)" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control form-control-sm" />
+                            <div *ngIf="leadForm.get('mobile')?.errors?.['invalidMobile'] && leadForm.get('mobile')?.touched"
+                                class="invalid-feedback d-block small">
+                                Mobile must start with 6-9 and be exactly 10 digits.
+                            </div>
+                        </div>
 
 
                         <div class="col-md-4">
-  <label class="form-label small">Website</label>
-  <input type="text" formControlName="website" class="form-control form-control-sm" />
-  <div *ngIf="leadForm.get('website')?.errors?.['invalidWebsite'] && leadForm.get('website')?.touched"
-       class="invalid-feedback d-block small">
-    Please enter a valid website.
-  </div>
-</div>
+                            <label class="form-label small">Website</label>
+                            <input type="text" formControlName="website" class="form-control form-control-sm" />
+                            <div *ngIf="leadForm.get('website')?.errors?.['invalidWebsite'] && leadForm.get('website')?.touched"
+                                class="invalid-feedback d-block small">
+                                Please enter a valid website.
+                            </div>
+                        </div>
 
 
                         <div class="col-md-4">
@@ -131,14 +140,14 @@
                         </div>
 
 
-                       <div class="col-md-4">
-  <label class="form-label small">Pin Code</label>
-  <input type="text" formControlName="pinCode" class="form-control form-control-sm" />
-  <div *ngIf="leadForm.get('pinCode')?.errors?.['invalidPinCode'] && leadForm.get('pinCode')?.touched"
-       class="invalid-feedback d-block small">
-    Pin Code must be exactly 6 digits.
-  </div>
-</div>
+                        <div class="col-md-4">
+                            <label class="form-label small">Pin Code</label>
+                            <input type="text" formControlName="pinCode" (keypress)="allowOnlyNumbers($event)" maxlength="6" pattern="[0-9]{6}" class="form-control form-control-sm" />
+                            <div *ngIf="leadForm.get('pinCode')?.errors?.['invalidPinCode'] && leadForm.get('pinCode')?.touched"
+                                class="invalid-feedback d-block small">
+                                Pin Code must be exactly 6 digits.
+                            </div>
+                        </div>
 
 
                         <div class="col-md-4">
@@ -267,9 +276,9 @@
                             <input type="date" class="form-control form-control-sm" formControlName="quotationDate">
                             <div *ngIf="leadForm.get('quotationDate')?.invalid && leadForm.get('quotationDate')?.touched"
                                 class="invalid-feedback small">Please select date</div>
-                                <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat']">
-  Date must be in YYYY-MM-DD format.
-</div>
+                            <div *ngIf="leadForm.get('quotationDate')?.errors?.['invalidDateFormat']">
+                                Date must be in YYYY-MM-DD format.
+                            </div>
                         </div>
 
                         <div class="col-md-4">
@@ -294,7 +303,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label small">NO.Of Employee</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="noofemployee">
+                            <input type="text" (keypress)="allowOnlyNumbers($event)" class="form-control form-control-sm" formControlName="noofemployee">
                         </div>
 
                         <div class="col-md-4">
@@ -308,20 +317,20 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small">Estimate deal</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="estimateDeal">
+                            <input type="text" (keypress)="allowOnlyNumbers($event)" class="form-control form-control-sm" formControlName="estimateDeal">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small">Estimated Closure Date </label>
                             <input type="date" class="form-control form-control-sm"
                                 formControlName="estimatedClosureDate">
-                                <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat']">
-  Date must be in YYYY-MM-DD format.
-</div>
+                            <div *ngIf="leadForm.get('estimatedClosureDate')?.errors?.['invalidDateFormat']">
+                                Date must be in YYYY-MM-DD format.
+                            </div>
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label small">Discussion</label>
-                            <input type="text" class="form-control form-control-sm" formControlName="discussion">
+                            <input type="text" class="form-control form-control-sm" (keypress)="allowOnlyCharacters($event)" formControlName="discussion">
                         </div>
 
                         <div class="col-md-4">
@@ -368,13 +377,13 @@
 
 
                         <div class="col-md-4">
-  <label class="form-label small">Next Visit Date</label>
-  <input type="date" formControlName="nextVisitDate" class="form-control form-control-sm" />
-  <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat'] && leadForm.get('nextVisitDate')?.touched"
-       class="invalid-feedback d-block small">
-    Date must be in YYYY-MM-DD format.
-  </div>
-</div>
+                            <label class="form-label small">Next Visit Date</label>
+                            <input type="date" formControlName="nextVisitDate" class="form-control form-control-sm" />
+                            <div *ngIf="leadForm.get('nextVisitDate')?.errors?.['invalidDateFormat'] && leadForm.get('nextVisitDate')?.touched"
+                                class="invalid-feedback d-block small">
+                                Date must be in YYYY-MM-DD format.
+                            </div>
+                        </div>
 
 
                         <div class="col-md-4">
@@ -393,7 +402,7 @@
             <div class="card-footer d-flex justify-content-end gap-2 py-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary px-3" (click)="clearForm()">Clear</button>
                 <button type="submit" class="btn btn-sm btn-primary px-3">
-                    <span><i class="bi bi-save"></i> Submit</span>
+                    <span> <i class="bi bi-save"></i> {{ isEditMode ? 'Update' : 'Submit' }}</span>
                 </button>
             </div>
         </form>

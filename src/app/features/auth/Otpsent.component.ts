@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UserService } from 'src/app/core/Service/registerservice';
 
 @Component({
     selector: 'app-signup',
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
     templateUrl: './Otpsent.component.html',
     styleUrls: ['./Otpsent.component.scss'] // or .scss if using SCSS
 })

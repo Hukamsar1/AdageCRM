@@ -1,0 +1,65 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">{{ isEdit ? 'Update' : 'Create' }} Order</h4>
+      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+      <div class="card-body p-4">
+
+        <div class="mb-3">
+          <label class="form-label">Customer</label>
+          <select class="form-select form-select-sm" formControlName="customer">
+            <option value="">Select Customer</option>
+            <option *ngFor="let cus of Customers" [value]="cus.businessName">{{ cus.businessName }}</option>
+          </select>
+          <div *ngIf="orderForm.get('customer')?.invalid && orderForm.get('customer')?.touched" class="text-danger">
+            Please select Customer
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Product</label>
+          <select class="form-select form-select-sm" formControlName="product">
+            <option value="">Select Product</option>
+            <option *ngFor="let pro of Products" [value]="pro.productName">{{ pro.productName }}</option>
+          </select>
+          <div *ngIf="orderForm.get('product')?.invalid && orderForm.get('product')?.touched" class="text-danger">
+            Please select Product
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Quantity</label>
+          <input type="number" formControlName="quantity" class="form-control" placeholder="Enter quantity" />
+          <div *ngIf="orderForm.get('quantity')?.invalid && orderForm.get('quantity')?.touched" class="text-danger">
+            Quantity is required and must be greater than 0.
+          </div>
+        </div>
+
+        <div class="mb-3" *ngIf="showAmountField">
+          <label class="form-label">Amount</label>
+          <input type="number" formControlName="amount" class="form-control" [disabled]="true" />
+          <small class="text-muted">Amount = Quantity × Rate × (1 + Tax/100)</small>
+        </div>
+
+      </div>
+
+      <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
+        <button type="submit" class="btn btn-success" [disabled]="orderForm.invalid">
+          <i class="bi bi-save"></i>
+          {{ isEdit ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
+          <i class="bi bi-eraser"></i> Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          <i class="bi bi-x-circle"></i> Close
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

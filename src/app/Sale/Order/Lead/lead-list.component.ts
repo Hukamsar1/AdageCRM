@@ -56,48 +56,71 @@ export class LeadListComponent implements OnInit {
                 headerName: 'Actions',
                 width: 120,
                 cellRenderer: (params: any) => `
-          <div class="text-center">
-            <button class="btn btn-warning me-1 btn-sm" 
-              style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
-              data-action="edit" data-id="${params.data.designationId}" title="Edit">
-              <i class="bi bi-pencil"></i>
-            </button>
-            <button class="btn btn-danger btn-sm" 
-              style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
-              data-action="delete" data-id="${params.data.designationId}" title="Delete">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        `
+  <div class="text-center">
+    <button class="btn btn-warning me-1 btn-sm" 
+      style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
+      data-action="edit" title="Edit">
+      <i class="bi bi-pencil"></i>
+    </button>
+    <button class="btn btn-danger btn-sm" 
+      style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
+      data-action="delete" title="Delete">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+`
+
             }
         ];
     }
 
     onCellClicked(event: any): void {
-        const target = event.event.target;
-        const action = target.closest('button')?.getAttribute('data-action');
-        const id = target.closest('button')?.getAttribute('data-id');
+  // Find which button was clicked in the cell
+  const target = event.event?.target as HTMLElement;
+  const button = target.closest('button');
+  const action = button?.getAttribute('data-action');
 
-        if (action === 'edit' && id) {
-            this.router.navigate([`/Mainlayout/create-list/${id}`]); // This matches the new route
-        } else if (action === 'delete' && id) {
-           // this.confirmAndDelete(+id);
+  // Always get the ID from row data!
+  const id = event.data?.leadId;
+
+  if (!action || !id) {
+    console.warn('Invalid action or id', action, id);
+    return;
+  }
+
+  if (action === 'edit') {
+    this.router.navigate([`/Mainlayout/leadcreate/edit/${id}`]);
+  } else if (action === 'delete') {
+     this.confirmAndDelete(+id);
+  }
+}
+
+
+    
+     confirmAndDelete(id: number): void {
+        if (confirm('Are you sure you want to delete this Lead?')) {
+            this.loading = true;
+            this.leadservice.deleteLead(id, 'delete').subscribe({
+                next: () => {
+                    this.showSuccess('Lead deleted successfully!');
+                    this.loadLead();  // Refresh the table
+                },
+                error: (err) => {
+                    this.showError('Error deleting Lead');
+                    console.error(err);
+                    this.loading = false;
+                }
+            });
         }
     }
 
-    // confirmAndDelete(id: number): void {
-    //     if (confirm('Are you sure you want to delete this designation?')) {
-    //         this.loading = true;
-    //         this.leadservice.getAllBussiness(id, 'delete').subscribe({
-    //             next: () => this.loadDesignations(),
-    //             error: (err) => {
-    //                 this.error = 'Error deleting designation';
-    //                 console.error(err);
-    //                 this.loading = false;
-    //             }
-    //         });
-    //     }
-    // }
+    private showSuccess(message: string): void {
+        alert(message);
+    }
+
+    private showError(message: string): void {
+        alert(message);
+    }
 
 
     onGridReady(params: GridReadyEvent): void {

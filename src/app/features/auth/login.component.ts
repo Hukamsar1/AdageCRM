@@ -1,45 +1,52 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { UserService } from 'src/app/core/Service/registerservice';
 
 @Component({
-    selector: 'app-login',
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule,ReactiveFormsModule,RouterModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  loginForm: FormGroup;
+  isLoading = false;
 
-  email: string = '';
-  password: string = '';
-  isLoading: boolean = false;
+  errorMessage = '';
 
-  constructor() {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: UserService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
 
-  // Called when the Sign In button is clicked
   onSignIn(): void {
-    if (!this.email || !this.password) {
-      alert('Please enter both email and password.');
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
 
     this.isLoading = true;
-
-    // Simulate an async login call
-    setTimeout(() => {
-      this.isLoading = false;
-      // Here you would normally navigate or call your auth service
-      console.log('Logged in with:', { email: this.email, password: this.password });
-
-      // Navigate to dashboard after successful login
-      // this.router.navigate(['/dashboard']); // <-- uncomment if Router is injected
-    }, 1000);
-  }
-
-  // Dummy action for "Set My PIN"
-  onSetPin(): void {
-    alert('Redirecting to Set PIN page...');
-    // this.router.navigate(['/set-pin']); // <-- uncomment if Router is injected
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        console.log('Login successful', res);
+        // Redirect to dashboard
+        this.router.navigate(['/Mainlayout/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Login failed:', err);
+        this.errorMessage = err?.error?.message || 'Login failed';
+      },
+    });
   }
 }

@@ -111,7 +111,7 @@ export class ProductListComponent implements OnInit {
                 this.loading = false;
             },
             error: (err) => {
-                this.error = 'Error loading Enquery';
+                this.error = 'Error loading Product';
                 console.error(err);
                 this.loading = false;
             }
