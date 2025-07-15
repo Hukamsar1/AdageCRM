@@ -49,7 +49,7 @@ declare var bootstrap: any;
     <nav class="submenu-items">
       <a routerLink="/Mainlayout/lead-list" routerLinkActive="active">Lead</a>
       <a routerLink="/Mainlayout/order-list" routerLinkActive="active">Order</a>
-      <a routerLink="/sale-list">Payment</a>
+      <a routerLink="/Mainlayout/payment-list" routerLinkActive="active">Payment</a>
     </nav>
   </div>
 
@@ -59,13 +59,13 @@ declare var bootstrap: any;
     data-bs-toggle="collapse" data-bs-target="#commissionMenu"
     aria-expanded="false" aria-controls="commissionMenu">
     <i class="bi bi-bullseye me-2"></i>
-    <span class="menu-label">Commission & Target</span>
+    <span class="menu-label">Target</span>
     <i class="bi bi-caret-right-fill arrow"></i>
   </button>
   <div class="collapse submenu-container" id="commissionMenu">
     <nav class="submenu-items">
-      <a routerLink="/commission-incentive">Incentive</a>
-      <a routerLink="/commission-payment">Payment</a>
+      <a routerLink="/Mainlayout/targrtIncentive-create" routerLinkActive="active">Target & Incentive</a>
+      <a routerLink="/Mainlayout/payment-create" routerLinkActive="active">Payment</a>
     </nav>
   </div>
 

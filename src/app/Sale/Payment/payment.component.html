@@ -1,0 +1,79 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">{{ isEdit ? 'Update' : 'Create' }} Payment</h4>
+      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <form [formGroup]="paymentForm" (ngSubmit)="onPaymentSubmit()">
+      <div class="card-body p-4">
+
+        <!-- all your input fields here -->
+        <div class="mb-3">
+          <label class="form-label">Date</label>
+          <input type="date" formControlName="date" class="form-control">
+          <div *ngIf="paymentForm.get('date')?.invalid && paymentForm.get('date')?.touched" class="text-danger">
+            Please select Date
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Voucher No.</label>
+          <input type="text" formControlName="voucherno" class="form-control" placeholder="Voucher No.">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Party</label>
+          <select class="form-select form-select-sm" formControlName="Ledger">
+            <option *ngFor="let customer of Ladgers" [value]="customer">{{ customer }}</option>
+          </select>
+          <div *ngIf="paymentForm.get('Ledger')?.invalid && paymentForm.get('Ledger')?.touched" class="text-danger">
+            Please select Ladger
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mode oF Payment</label>
+          <select class="form-select form-select-sm" formControlName="ModeofPayment">
+            <option value="">Select Payment Mode</option>
+            <option *ngFor="let paym of PaymentsMode" [value]="paym">{{ paym }}</option>
+          </select>
+          <div *ngIf="paymentForm.get('ModeofPayment')?.invalid && paymentForm.get('ModeofPayment')?.touched" class="text-danger">
+            Please select Mode oF Payment
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Amount</label>
+          <input type="number" formControlName="amount" class="form-control" placeholder="Enter Amount" />
+          <div *ngIf="paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched" class="text-danger">
+            Amount is required and must be greater than 0.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Remark</label>
+          <input type="text" formControlName="remark" class="form-control" />
+          <div *ngIf="paymentForm.get('remark')?.invalid && paymentForm.get('remark')?.touched" class="text-danger">
+            Remark is required !
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
+        <button type="submit" class="btn btn-success" [disabled]="paymentForm.invalid">
+          <i class="bi bi-save"></i>
+          {{ isEdit ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
+          <i class="bi bi-eraser"></i> Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          <i class="bi bi-x-circle"></i> Close
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -29,4 +29,9 @@ export class AreaService {
   saveLocation(locationData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/Area/Location/Save`, locationData);
   }
+
+  getAllCities(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/Area/GetAllCities`);
+}
+
 }

@@ -148,3 +148,24 @@ $border-color: #dee2e6;
     font-size: 0.75rem;
   }
 }
+
+
+// Card footer buttons
+.card-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    i {
+      font-size: 0.85rem;
+    }
+  }
+}

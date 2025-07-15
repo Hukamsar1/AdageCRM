@@ -24,7 +24,7 @@ export class OrderComponent implements OnInit {
     selectedRate: number = 0;
     selectedTax: number = 0;
     showAmountSection = false;
-
+    selectedProduct: any = null;
     error: string | null = null;
 
     constructor(
@@ -65,6 +65,21 @@ export class OrderComponent implements OnInit {
         this.orderForm.get('discount')?.valueChanges.subscribe(() => {
             this.calculateAmount();
         });
+
+        // Rate & Tax
+        this.orderForm.get('product')?.valueChanges.subscribe(value => {
+            this.selectedProduct = this.Products.find(p => p.productName === value) || null;
+
+            if (this.selectedProduct) {
+                this.selectedRate = this.selectedProduct.rate;
+                this.selectedTax = this.selectedProduct.tax;
+            } else {
+                this.selectedRate = 0;
+                this.selectedTax = 0;
+            }
+            this.showAmountSection = false;
+            this.orderForm.patchValue({ amount: '', discount: '' });
+        });
     }
 
     private checkEditMode(): void {
@@ -82,34 +97,45 @@ export class OrderComponent implements OnInit {
         this.loading = true;
         this.orderService.getOrderById(id).subscribe({
             next: (order) => {
-                this.orderForm.patchValue({
-                    customer: order.customer,
-                    product: order.product,
-                    quantity: order.quantity,
-                    discount: order.discount,
-                    amount: order.amount
+                // Load Products and Customers first
+                this.productService.getAllProducts().subscribe(products => {
+                    this.Products = products;
+                    this.leadservice.getClosureData().subscribe(customers => {
+                        this.Customers = customers;
+
+                        // Now patch form
+                        this.orderForm.patchValue({
+                            customer: order.customer,
+                            product: order.product,
+                            quantity: order.quantity,
+                            discount: order.discount,
+                            amount: order.amount
+                        });
+
+                        this.loading = false;
+                    });
                 });
-                this.loading = false;
             },
             error: (error) => {
-                console.error('Error loading Product:', error);
+                console.error('Error loading Order:', error);
                 this.loading = false;
             }
         });
     }
 
+
     FormCreate() {
-    this.orderForm = this.fb.group({
-      customer:    ['', Validators.required],
-      product:     ['', Validators.required],
-      quantity:    [null, [Validators.required, Validators.min(1)]],
-      discount:    [0],
-      amount:      [{ value: 0, disabled: true }],
-      ActionType:  [''],
-      createdDate: [''],
-      isUpdated:   [''],
-      isDeleted:   [false],
-    });
+        this.orderForm = this.fb.group({
+            customer: ['', Validators.required],
+            product: ['', Validators.required],
+            quantity: [null, [Validators.required, Validators.min(1)]],
+            discount: [0],
+            amount: [{ value: 0, disabled: true }],
+            ActionType: [''],
+            createdDate: [''],
+            isUpdated: [''],
+            isDeleted: [false],
+        });
     }
 
     calculateAmount() {
@@ -141,31 +167,6 @@ export class OrderComponent implements OnInit {
         this.orderForm.get('amount')?.setValue(finalAmount.toFixed(2));
         this.showAmountSection = true;
     }
-
-    // onSubmit() {
-    //     if (this.orderForm.valid) {
-    //         const orderData = this.orderForm.getRawValue();
-
-    //         orderData.ActionType = this.isEdit ? 'update' : 'create';
-    //         orderData.createdDate = new Date().toISOString();
-    //         orderData.isUpdated = new Date().toISOString();
-    //         orderData.isDeleted = false;
-    //         this.orderService.saveOrder(orderData).subscribe({
-    //             next: (response) => {
-    //                 this.showSuccess('Order saved successfully!');
-    //                 console.log('API Response:', response);
-    //                 this.clearForm();
-    //                 this.goBack();
-    //             },
-    //             error: (error) => {
-    //                 this.showError('Failed to save order.');
-    //                 console.error('API Error:', error);
-    //             }
-    //         });
-    //     } else {
-    //         this.showError('Please fill all required fields correctly.');
-    //     }
-    // }
 
     loadProducts(): void {
         this.loading = true;
@@ -203,7 +204,7 @@ export class OrderComponent implements OnInit {
     }
 
     closeForm() {
-        this.orderForm.reset();
+        this.router.navigate(['/Mainlayout/order-list']);
         this.showAmountSection = false;
     }
 
@@ -220,36 +221,45 @@ export class OrderComponent implements OnInit {
     }
 
     onOrderSubmit() {
-    if (this.orderForm.invalid) {
-      this.orderForm.markAllAsTouched();
-      return;
-    }
+        if (this.orderForm.invalid) {
+            this.orderForm.markAllAsTouched();
+            return;
+        }
 
-    const payload = this.orderForm.getRawValue();
-    payload.ActionType  = this.isEdit ? 'update' : 'create';
-    payload.createdDate = new Date().toISOString();
-    payload.isUpdated   = new Date().toISOString();
-    payload.isDeleted   = false;
+        const payload = this.orderForm.getRawValue();
+        payload.ActionType = this.isEdit ? 'update' : 'create';
+        payload.createdDate = new Date().toISOString();
+        payload.isUpdated = new Date().toISOString();
+        payload.isDeleted = false;
 
-    if (this.isEdit) {
-      // use the same orderId you stored
-      this.orderService.updateOrder(this.orderId, payload).subscribe({
-        next: () => {
-          this.showSuccess('Order updated successfully!');
-          this.router.navigate(['/Mainlayout/order-list']);
-        },
-        error: err => this.showError(err.error?.message || 'Error updating order')
-      });
-    } else {
-      this.orderService.saveOrder(payload).subscribe({
-        next: () => {
-          this.showSuccess('Order created successfully!');
-          this.router.navigate(['/Mainlayout/order-list']);
-        },
-        error:    err => this.showError('Failed to save order.')
-      });
+        if (this.isEdit) {
+            // use the same orderId you stored
+            this.orderService.updateOrder(this.orderId, payload).subscribe({
+                next: () => {
+                    this.showSuccess('Order updated successfully!');
+                    this.router.navigate(['/Mainlayout/order-list']);
+                },
+                error: err => this.showError(err.error?.message || 'Error updating order')
+            });
+        } else {
+            this.orderService.saveOrder(payload).subscribe({
+                next: () => {
+                    this.showSuccess('Order created successfully!');
+                    const selectedId = this.orderForm.get('customer')?.value;
+                    const selectedCustomer = this.Customers.find(c => c.leadId === +selectedId);
+
+                    this.router.navigate(['/Mainlayout/payment-create'], {
+                        queryParams: {
+                            customerId: selectedCustomer.leadId,
+                            customerName: selectedCustomer.businessName
+                        }
+                    });
+
+                },
+                error: err => this.showError('Failed to save order.')
+            });
+        }
     }
-  }
 
     // private UpdateSaveOrder() {
     //     if (this.orderForm.valid) {

@@ -45,8 +45,8 @@ export class ProductListComponent implements OnInit {
         this.columnDefs = [
             { headerName: 'ProductId', field: 'productId', width: 80 },
             { headerName: 'Product Name', field: 'productName' },
-            { headerName: 'Rate', field: 'tax', width: 80 },
-            { headerName: 'Tax', field: 'rate', width: 80 },
+            { headerName: 'Rate', field: 'rate', width: 80 },
+            { headerName: 'Tax', field: 'tax', width: 80 },
             {
                 headerName: 'Actions',
                 width: 120,

@@ -105,7 +105,7 @@ showSuccess(message: string) {
   }
 
   closeForm() {
-    this.router.navigate(['/competetor-list']);
+    this.router.navigate(['/Mainlayout/competetor-list']);
   }
 
   goBack() {

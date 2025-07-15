@@ -28,6 +28,14 @@ export class ProductService {
     return this.http.get<any[]>(`${this.apiUrl}/ProductList`);
   }
 
+ /** GET ALL */
+  ProductShowForLead(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ProductShow`);
+  }
+
+    ProducLoadSuggest(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ProductforSuggest`);
+  }
   /** GET BY ID */
   getProductById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/ProductGetById/${id}`);

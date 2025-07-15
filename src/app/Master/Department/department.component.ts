@@ -123,7 +123,7 @@ export class DepartmentComponent implements OnInit {
   }
 
   closeForm(): void {
-    this.router.navigate(['/departmenylist']);
+    this.router.navigate(['/Mainlayout/department/list']);
   }
 
   goBack(): void {

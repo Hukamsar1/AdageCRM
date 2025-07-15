@@ -29,6 +29,7 @@ export class LeadComponent implements OnInit {
     competitors: any[] = [];
     businesses: any[] = [];
     products: any[] = [];
+    suggestProductsN: any[] = [];
     enquiries: any[] = [];
     countries: any[] = [];
     states: any[] = [];
@@ -75,6 +76,7 @@ export class LeadComponent implements OnInit {
         this.loadProduct();
         this.loadBussiness();
         this.loadCompetitors();
+        this.loadProductSuggestDropdown();
         this.loadCompanyName();
         this.checkEditMode();
 
@@ -400,7 +402,7 @@ export class LeadComponent implements OnInit {
             this.suggestedProducts = this.competitors.map(c => ({ name: c.competitorName }));
             control?.setValidators(Validators.required);
         } else {
-            this.suggestedProducts = this.products
+            this.suggestedProducts = this.suggestProductsN
                 .filter(p => p.productName !== 'Using Competitor')
                 .map(p => ({ name: p.productName }));
             control?.clearValidators();
@@ -468,7 +470,7 @@ export class LeadComponent implements OnInit {
     }
 
     loadProduct(): void {
-        this.productService.getAllProducts().subscribe({
+        this.productService.ProductShowForLead().subscribe({
             next: (data) => {
                 this.products = data;
             },
@@ -479,6 +481,17 @@ export class LeadComponent implements OnInit {
         });
     }
 
+    loadProductSuggestDropdown(): void {
+        this.productService.ProducLoadSuggest().subscribe({
+            next: (data) => {
+                this.suggestProductsN = data;
+            },
+            error: (err) => {
+                this.error = 'Error loading products';
+                console.error(err);
+            }
+        });
+    }
 
     loadCountries(): void {
         this.areaService.getCountries().subscribe({
@@ -587,7 +600,7 @@ export class LeadComponent implements OnInit {
                     cityId: lead.cityId,
                     pinCode: lead.pinCode,
                     business: lead.business,
-                    product: lead.product,
+                    product: lead.product, 
                     suggestedProduct: lead.suggestedProduct,
                     enquiry: lead.enquiry,
                     reference: lead.reference,
@@ -623,7 +636,7 @@ export class LeadComponent implements OnInit {
                 if (lead.product === 'Using Competitor') {
                     this.suggestedProducts = this.competitors.map(c => ({ name: c.competitorName }));
                 } else {
-                    this.suggestedProducts = this.products
+                    this.suggestedProducts = this.suggestProductsN
                         .filter(p => p.productName !== 'Using Competitor')
                         .map(p => ({ name: p.productName }));
                 }

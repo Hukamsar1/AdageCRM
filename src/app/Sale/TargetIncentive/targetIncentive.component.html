@@ -1,0 +1,116 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">{{ isEditMode ? 'Update' : 'Create' }} Target Incentive</h4>
+      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <form [formGroup]="TargetIncentiveForm" (ngSubmit)="onTargetIncentiveSubmit()">
+      <div class="card-body p-4">
+
+        <!-- Period Time -->
+        <div class="mb-3">
+          <label class="form-label">Period Time</label>
+          <select class="form-select" formControlName="periodTime">
+            <option value="" disabled selected>Select Period Time</option>
+            <option *ngFor="let option of periodOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+
+        <!-- Monthly: Month Dropdown -->
+        <div *ngIf="periodTime === 'Monthly'" class="mb-3">
+          <label class="form-label">Month</label>
+          <select class="form-select" formControlName="month">
+            <option value="" disabled selected>Select Month</option>
+            <option *ngFor="let month of monthOptions" [value]="month">{{ month }}</option>
+          </select>
+        </div>
+
+        <!-- Monthly: Week Dropdown appears only if Month is selected -->
+        <div *ngIf="periodTime === 'Monthly' && month" class="mb-3">
+          <label class="form-label">Week</label>
+          <select class="form-select" formControlName="week">
+            <option value="" disabled selected>Select Week</option>
+            <option *ngFor="let week of weekOptions" [value]="week">{{ week }}</option>
+          </select>
+        </div>
+
+        <!-- Daterange Fields -->
+        <div *ngIf="periodTime === 'Daterange'" class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">From Date</label>
+            <input type="date" class="form-control" formControlName="fromDate">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">To Date</label>
+            <input type="date" class="form-control" formControlName="toDate">
+          </div>
+        </div>
+
+        <!-- Target Type -->
+        <div class="mb-3">
+          <label class="form-label">Target Type</label>
+          <select class="form-select" formControlName="targetType">
+            <option value="" disabled selected>Select Target Type</option>
+            <option *ngFor="let type of targetTypeOptions" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            {{ targetType === 'Amount Based' ? 'Amount' : targetType === 'Number Based' ? 'Number' : 'Target Value' }}
+          </label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="targetValue"
+            placeholder="Enter {{ targetType === 'Amount Based' ? 'Amount' : 'Number' }}">
+        </div>
+
+        <!-- Incentive Type -->
+        <div class="mb-3">
+          <label class="form-label">Incentive Type</label>
+          <select class="form-select" formControlName="incentiveType">
+            <option value="" disabled selected>Select Incentive Type</option>
+            <option *ngFor="let type of incentiveTypeOptions" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">
+            {{ incentiveType === 'Amount' ? 'Amount' : incentiveType === 'Percentage' ? 'Percentage' : 'Incentive Value' }}
+          </label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="incentiveValue"
+            placeholder="Enter {{ incentiveType === 'Amount' ? 'Amount' : 'Percentage' }}">
+        </div>
+
+        <!-- Unit Type -->
+        <div class="mb-3">
+          <label class="form-label">Unit Type</label>
+          <select class="form-select" formControlName="unitType">
+            <option value="" disabled selected>Select Unit Type</option>
+            <option *ngFor="let type of unitTypeOptions" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
+        <button type="submit" class="btn btn-success" [disabled]="TargetIncentiveForm.invalid">
+          <i class="bi bi-save"></i>
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
+          <i class="bi bi-eraser"></i> Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          <i class="bi bi-x-circle"></i> Close
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

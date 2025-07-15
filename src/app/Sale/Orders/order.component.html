@@ -14,7 +14,7 @@
           <label class="form-label">Customer</label>
           <select class="form-select form-select-sm" formControlName="customer">
             <option value="">Select Customer</option>
-            <option *ngFor="let cus of Customers" [value]="cus.businessName">{{ cus.businessName }}</option>
+            <option *ngFor="let cus of Customers" [value]="cus.leadId">{{ cus.businessName }}</option>
           </select>
           <div *ngIf="orderForm.get('customer')?.invalid && orderForm.get('customer')?.touched" class="text-danger">
             Please select Customer
@@ -31,6 +31,18 @@
             Please select Product
           </div>
         </div>
+
+        <div *ngIf="selectedProduct" class="row g-2 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Rate (₹)</label>
+            <input type="number" class="form-control" [value]="selectedProduct.rate" readonly />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Tax (%)</label>
+            <input type="number" class="form-control" [value]="selectedProduct.tax" readonly />
+          </div>
+        </div>
+
 
         <div class="mb-3">
           <label class="form-label">Quantity</label>
@@ -59,7 +71,7 @@
       <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
         <button type="submit" class="btn btn-success" [disabled]="orderForm.invalid">
           <i class="bi bi-save"></i>
-          {{ isEdit ? 'Update' : 'Save' }}
+          {{ isEdit ? 'Update' : 'Pay & Save' }}
         </button>
         <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
           <i class="bi bi-eraser"></i> Clear

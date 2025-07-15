@@ -19,73 +19,86 @@ import { EnqueryListComponent } from "./Master/Enquery/enquery-list.component";
 import { ProductListComponent } from "./Master/Products/product-list.component";
 import { CompetitorFormComponent } from "./Master/ComptetorProduct/competitor.component";
 import { CompetitorListComponent } from "./Master/ComptetorProduct/competitor-list.component";
-import { LeadComponent } from "./Sale/Order/Lead/lead.component";
-import { LeadListComponent } from "./Sale/Order/Lead/lead-list.component";
-import { OrderComponent } from "./Sale/Order/order/order.component";
-import { OrderListComponent } from "./Sale/Order/order/order-list.component";
+import { LeadComponent } from "./Sale/Lead/lead.component";
+import { LeadListComponent } from "./Sale/Lead/lead-list.component";
+import { OrderComponent } from "./Sale/Orders/order.component";
+import { OrderListComponent } from "./Sale/Orders/order-list.component";
 import { CustomerReportComponent } from "./Reports/customerReport.component";
+import { PaymentComponent } from "./Sale/Payment/payment.component";
+import { PaymentListComponent } from "./Sale/Payment/payment-list.component";
+import { TargrtIncentiveComponent } from "./Sale/TargetIncentive/targetIncentive.component";
 
 export const appRoutes: Routes = [
+  // Redirect root '' to /AdageCRM
+  { path: '', redirectTo: '/AdageCRM', pathMatch: 'full' },
+
+  // AdageCRM route
   { path: 'AdageCRM', component: HomePageComponent, pathMatch: 'full' },
+
   { path: 'Otpsent', component: OTPSentComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: '', component: NotificationComponent },
+
   {
     path: 'Mainlayout',
     component: MainLayoutComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      // Department
 
+      // Department
       { path: 'department/create', component: DepartmentComponent },
       { path: 'department/create/:id', component: DepartmentComponent },
       { path: 'department/list', component: DepartmentListComponent },
 
       // Area
-
       { path: 'area/create', component: AreaComponent },
 
-      // Updated designation routes:
-      
+      // Designation
       { path: 'designation/create', component: DesignationComponent },
-      { path: 'designation/create/:id', component: DesignationComponent }, // This is the key fix
+      { path: 'designation/create/:id', component: DesignationComponent },
       { path: 'designation/list', component: DesignationListComponent },
 
       // Employee
-
       { path: 'employee/create', component: EmployeeComponent },
       { path: 'employee/edit/:id', component: EmployeeComponent },
       { path: 'employee/list', component: EmployeeListComponent },
 
-      // Enquery
-
+      // Enquiry
       { path: 'enquiry-list', component: EnqueryListComponent },
       { path: 'enquiry/create', component: EnquirySourceFormComponent },
       { path: 'enquirylist/edit/:id', component: EnquirySourceFormComponent },
 
       // Product
-
       { path: 'product-list', component: ProductListComponent },
       { path: 'product-create', component: ProductComponent },
       { path: 'product/edit/:id', component: ProductComponent },
 
       // Lead
-
       { path: 'leadcreate', component: LeadComponent },
       { path: 'lead-list', component: LeadListComponent },
       { path: 'leadcreate/edit/:id', component: LeadComponent },
 
-
+      // Competitor
       { path: 'competetor-list', component: CompetitorListComponent },
       { path: 'competetor-create', component: CompetitorFormComponent },
       { path: 'competetor/edit/:id', component: CompetitorFormComponent },
-    
+
+      // Order
       { path: 'order-list', component: OrderListComponent },
       { path: 'order-create', component: OrderComponent },
       { path: 'order/edit/:id', component: OrderComponent },
-    
-       { path: 'customer-report', component: CustomerReportComponent },
+
+      // Payment
+      { path: 'payment-list', component: PaymentListComponent },
+      { path: 'payment-create', component: PaymentComponent },
+      { path: 'payment/edit/:id', component: PaymentComponent },
+
+      { path: 'targrtIncentive-list', component: PaymentListComponent },
+      { path: 'targrtIncentive-create', component: TargrtIncentiveComponent },
+      { path: 'targrtIncentive/edit/:id', component: TargrtIncentiveComponent },
+
+      // Customer Report
+      { path: 'customer-report', component: CustomerReportComponent },
     ]
   }
 ];

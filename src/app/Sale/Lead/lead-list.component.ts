@@ -3,8 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { AreaService } from 'src/app/core/Service/areaService';
 import { LeadService } from 'src/app/core/Service/LeadService';
-
 
 @Component({
     selector: 'lead-list',
@@ -28,24 +28,24 @@ export class LeadListComponent implements OnInit {
     private gridApi!: GridApi;
     loading = true;
     error: string | null = null;
-
-    // ✅ Master lists
-
+    cities: any[] = [];
+    allCities: any[] = [];
 
     constructor(
         private router: Router,
-        private leadservice: LeadService
+        private leadservice: LeadService,
+        private areaService: AreaService
     ) { }
 
     ngOnInit(): void {
         this.setupColumnDefs();
-        this.loadLead();
+        this.loadAllCitiesAndLeads();
     }
 
     setupColumnDefs(): void {
         this.columnDefs = [
             { headerName: 'Business Name', field: 'businessName', width: 80 },
-            { headerName: 'City', field: 'cityId' },
+            { headerName: 'City', field: 'cityName' },
             { headerName: 'Contact Person', field: 'firstName' },
             { headerName: 'Phone No.', field: 'phone' },
             { headerName: 'Business Name', field: 'business' },
@@ -75,29 +75,29 @@ export class LeadListComponent implements OnInit {
     }
 
     onCellClicked(event: any): void {
-  // Find which button was clicked in the cell
-  const target = event.event?.target as HTMLElement;
-  const button = target.closest('button');
-  const action = button?.getAttribute('data-action');
+        // Find which button was clicked in the cell
+        const target = event.event?.target as HTMLElement;
+        const button = target.closest('button');
+        const action = button?.getAttribute('data-action');
 
-  // Always get the ID from row data!
-  const id = event.data?.leadId;
+        // Always get the ID from row data!
+        const id = event.data?.leadId;
 
-  if (!action || !id) {
-    console.warn('Invalid action or id', action, id);
-    return;
-  }
+        if (!action || !id) {
+            console.warn('Invalid action or id', action, id);
+            return;
+        }
 
-  if (action === 'edit') {
-    this.router.navigate([`/Mainlayout/leadcreate/edit/${id}`]);
-  } else if (action === 'delete') {
-     this.confirmAndDelete(+id);
-  }
-}
+        if (action === 'edit') {
+            this.router.navigate([`/Mainlayout/leadcreate/edit/${id}`]);
+        } else if (action === 'delete') {
+            this.confirmAndDelete(+id);
+        }
+    }
 
 
-    
-     confirmAndDelete(id: number): void {
+
+    confirmAndDelete(id: number): void {
         if (confirm('Are you sure you want to delete this Lead?')) {
             this.loading = true;
             this.leadservice.deleteLead(id, 'delete').subscribe({
@@ -132,19 +132,36 @@ export class LeadListComponent implements OnInit {
         this.loading = true;
         this.leadservice.getAllBussinessDAta().subscribe({
             next: (data) => {
-                this.rowData = data.map(item => ({
-                    ...item,
-                }));
+                this.rowData = data.map(item => {
+                    const city = this.allCities.find(c => c.cityId === item.cityId);
+                    return {
+                        ...item,
+                        cityName: city ? city.cityName : ''
+                    };
+                });
                 this.loading = false;
             },
             error: (err) => {
-                this.error = 'Error loading designations';
+                this.error = 'Error loading leads';
                 console.error(err);
                 this.loading = false;
-            }           
+            }
         });
     }
 
+    loadAllCitiesAndLeads(): void {
+        this.loading = true;
+        this.areaService.getAllCities().subscribe({
+            next: (cities) => {
+                this.allCities = cities;
+                this.loadLead();  // now call loadLead only after cities are loaded
+            },
+            error: (err) => {
+                console.error('Error loading all cities:', err);
+                this.loading = false;
+            }
+        });
+    }
     createNewDepartment(): void {
         this.router.navigate(['/Mainlayout/leadcreate']);
     }

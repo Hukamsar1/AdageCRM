@@ -95,6 +95,7 @@ export class ProductComponent implements OnInit {
 private saveProduct() {
   const data = {
     ...this.ProductForm.value,
+    Productype:'OurP',
     actionType: this.isEdit ? 'update' : 'create',
     isDeleted: 0,
     createdDate: new Date().toISOString(),
@@ -142,7 +143,7 @@ private saveProduct() {
   }
 
   closeForm(): void {
-    this.router.navigate(['/product-list']);
+    this.router.navigate(['/Mainlayout/product-list']);
   }
 
   goBack(): void {

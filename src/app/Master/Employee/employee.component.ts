@@ -103,24 +103,24 @@ export class EmployeeComponent implements OnInit {
     }
 
 
- private minimumAgeValidator(minAge: number): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) {
-      return null; // empty -> required validator will catch
+    private minimumAgeValidator(minAge: number): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (!control.value) {
+                return null; // empty -> required validator will catch
+            }
+
+            const dob = new Date(control.value);
+            const today = new Date();
+
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            return age < minAge ? { minimumAge: { requiredAge: minAge, actualAge: age } } : null;
+        };
     }
-
-    const dob = new Date(control.value);
-    const today = new Date();
-
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-
-    return age < minAge ? { minimumAge: { requiredAge: minAge, actualAge: age } } : null;
-  };
-}
 
 
     private resetDependentControls(controlNames: string[]): void {
@@ -292,7 +292,7 @@ export class EmployeeComponent implements OnInit {
         });
     }
 
-    
+
     loadAreas(cityId: number): void {
         this.areaService.getAreas(cityId).subscribe({
             next: (areas) => {
@@ -309,92 +309,92 @@ export class EmployeeComponent implements OnInit {
 
     // employee.component.ts
     onSubmit(): void {
-    if (this.employeeForm.invalid) {
-        this.employeeForm.markAllAsTouched();
-        return;
-    }
-
- //  DOB age check
-    // const dobValue = this.employeeForm.get('dob')?.value;
-    // if (!dobValue) {
-    //     this.showError('Date of Birth is required');
-    //     return;
-    // }
-
-    // const age = this.calculateAge(new Date(dobValue));
-    // if (age < 18) {
-    //     this.showError('Employee must be at least 18 years old');
-    //     return;
-    // }
-
-    
-    this.isSubmitting = true;
-
-    //  Create ke time documents mandatory check
-    if (!this.isEditMode) {
-        if (!this.aadharFile || !this.resumeFile || !this.appointmentFile) {
-            this.isSubmitting = false;
-            this.showError('Please upload all required documents (Aadhar, Resume, Appointment Letter)');
+        if (this.employeeForm.invalid) {
+            this.employeeForm.markAllAsTouched();
             return;
         }
+
+        //  DOB age check
+        // const dobValue = this.employeeForm.get('dob')?.value;
+        // if (!dobValue) {
+        //     this.showError('Date of Birth is required');
+        //     return;
+        // }
+
+        // const age = this.calculateAge(new Date(dobValue));
+        // if (age < 18) {
+        //     this.showError('Employee must be at least 18 years old');
+        //     return;
+        // }
+
+
+        this.isSubmitting = true;
+
+        //  Create ke time documents mandatory check
+        if (!this.isEditMode) {
+            if (!this.aadharFile || !this.resumeFile || !this.appointmentFile) {
+                this.isSubmitting = false;
+                this.showError('Please upload all required documents (Aadhar, Resume, Appointment Letter)');
+                return;
+            }
+        }
+
+        // ✅ Prepare employee data
+        const employeeData = {
+            EmployeeId: this.isEditMode ? this.employeeid : 0,
+            FirstName: this.employeeForm.get('firstName')?.value,
+            LastName: this.employeeForm.get('lastName')?.value,
+            Phone: this.employeeForm.get('phone')?.value,
+            Email: this.employeeForm.get('email')?.value,
+            dob: new Date(this.employeeForm.get('dob')?.value).toISOString(),
+            CountryId: Number(this.employeeForm.get('countryId')?.value),
+            StateId: Number(this.employeeForm.get('stateId')?.value),
+            CityId: Number(this.employeeForm.get('cityId')?.value),
+            AreaId: this.employeeForm.get('areaId')?.value,
+            Address: this.employeeForm.get('address')?.value,
+            DepartmentId: Number(this.employeeForm.get('departmentId')?.value),
+            DesignationId: Number(this.employeeForm.get('designationId')?.value),
+            ReportToId: this.employeeForm.get('reportToId')?.value ? Number(this.employeeForm.get('reportToId')?.value) : null,
+            AccountHolder: this.employeeForm.get('accountHolder')?.value,
+            AccountNumber: this.employeeForm.get('accountNumber')?.value,
+            IFSC: this.employeeForm.get('IFSC')?.value,
+            BankAddress: this.employeeForm.get('bankAddress')?.value,
+            AadharFilePath: this.aadharFile ? null : this.existingAadharPath,
+            ResumeFilePath: this.resumeFile ? null : this.existingResumePath,
+            AppointmentLetterFilePath: this.appointmentFile ? null : this.existingAppointmentPath,
+            IsDeleted: 0,
+            ActionType: this.isEditMode ? 'Update' : 'Insert'
+        };
+
+        const formData = new FormData();
+        formData.append('employeeJson', JSON.stringify(employeeData));
+        if (this.aadharFile) formData.append('AadharFile', this.aadharFile, this.aadharFile.name);
+        if (this.resumeFile) formData.append('ResumeFile', this.resumeFile, this.resumeFile.name);
+        if (this.appointmentFile) formData.append('AppointmentLetterFile', this.appointmentFile, this.appointmentFile.name);
+
+        if (this.isEditMode) {
+            this.updateEmployee(formData);
+        } else {
+            this.createEmployee(formData);
+        }
+
+        this.logFormDataContents(formData);
     }
 
-    // ✅ Prepare employee data
-    const employeeData = {
-        EmployeeId: this.isEditMode ? this.employeeid : 0,
-        FirstName: this.employeeForm.get('firstName')?.value,
-        LastName: this.employeeForm.get('lastName')?.value,
-        Phone: this.employeeForm.get('phone')?.value,
-        Email: this.employeeForm.get('email')?.value,
-        dob: new Date(this.employeeForm.get('dob')?.value).toISOString(),
-        CountryId: Number(this.employeeForm.get('countryId')?.value),
-        StateId: Number(this.employeeForm.get('stateId')?.value),
-        CityId: Number(this.employeeForm.get('cityId')?.value),
-        AreaId: this.employeeForm.get('areaId')?.value,
-        Address: this.employeeForm.get('address')?.value,
-        DepartmentId: Number(this.employeeForm.get('departmentId')?.value),
-        DesignationId: Number(this.employeeForm.get('designationId')?.value),
-        ReportToId: this.employeeForm.get('reportToId')?.value ? Number(this.employeeForm.get('reportToId')?.value) : null,
-        AccountHolder: this.employeeForm.get('accountHolder')?.value,
-        AccountNumber: this.employeeForm.get('accountNumber')?.value,
-        IFSC: this.employeeForm.get('IFSC')?.value,
-        BankAddress: this.employeeForm.get('bankAddress')?.value,
-        AadharFilePath: this.aadharFile ? null : this.existingAadharPath,
-        ResumeFilePath: this.resumeFile ? null : this.existingResumePath,
-        AppointmentLetterFilePath: this.appointmentFile ? null : this.existingAppointmentPath,
-        IsDeleted: 0,
-        ActionType: this.isEditMode ? 'Update' : 'Insert'
-    };
-
-    const formData = new FormData();
-    formData.append('employeeJson', JSON.stringify(employeeData));
-    if (this.aadharFile) formData.append('AadharFile', this.aadharFile, this.aadharFile.name);
-    if (this.resumeFile) formData.append('ResumeFile', this.resumeFile, this.resumeFile.name);
-    if (this.appointmentFile) formData.append('AppointmentLetterFile', this.appointmentFile, this.appointmentFile.name);
-
-    if (this.isEditMode) {
-        this.updateEmployee(formData);
-    } else {
-        this.createEmployee(formData);
+    get dobErrors() {
+        return this.employeeForm.get('dob')?.errors ?? {};
     }
 
-    this.logFormDataContents(formData);
-}
 
-get dobErrors() {
-  return this.employeeForm.get('dob')?.errors ?? {};
-}
-
-
-private calculateAge(dob: Date): number {
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-        age--;
+    private calculateAge(dob: Date): number {
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        return age;
     }
-    return age;
-}
 
 
     private createEmployee(formData: FormData): void {
@@ -482,11 +482,16 @@ private calculateAge(dob: Date): number {
         alert(message);
     }
 
-    onClear(): void {
+    goBack(): void {
+        this.router.navigate(['/Mainlayout/employee/list']);
+    }
+
+    clearForm(): void {
         this.employeeForm.reset();
     }
 
-      goBack(): void {
-    this.router.navigate(['/Mainlayout/employee/list']);
-  }
+    closeForm(): void {
+        this.router.navigate(['/Mainlayout/employee/list']);
+    }
+
 }
