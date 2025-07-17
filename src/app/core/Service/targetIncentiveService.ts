@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 // This interface matches your .NET TargetIncentiveModel
@@ -20,6 +20,28 @@ export interface TargetIncentive {
   isDeleted: boolean;
   actionType: string;
 }
+
+export interface WeekTarget {
+  label: string;
+  range: string;
+  value: number;
+  calculatedValue: number;
+}
+
+export interface TargetIncentives {
+  periodTime: string;
+  month: string;
+  quarter: string;
+  year: string;
+  targetType: string;
+  targetValue: number;
+  actionType: string;
+  createdDate: string;
+  isUpdated: string;
+  isDeleted: boolean;
+  weekTargets: WeekTarget[];
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +69,11 @@ export class TargetIncentiveService {
 
   deleteTargetIncentive(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+    /** Save Target Incentive */
+  createTargetIncentive(data: TargetIncentive): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<any>(`${this.apiUrl}/TargetCreate`, data, { headers });
   }
 }

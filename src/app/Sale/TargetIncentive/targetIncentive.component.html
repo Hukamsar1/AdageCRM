@@ -14,89 +14,110 @@
         <div class="mb-3">
           <label class="form-label">Period Time</label>
           <select class="form-select" formControlName="periodTime">
-            <option value="" disabled selected>Select Period Time</option>
+            <option value="" disabled>Select Period Time</option>
             <option *ngFor="let option of periodOptions" [value]="option">{{ option }}</option>
           </select>
         </div>
 
-        <!-- Monthly: Month Dropdown -->
+        <!-- Monthly -->
         <div *ngIf="periodTime === 'Monthly'" class="mb-3">
           <label class="form-label">Month</label>
-          <select class="form-select" formControlName="month">
-            <option value="" disabled selected>Select Month</option>
+          <select class="form-select" formControlName="month" (change)="onMonthChange($event)">
+            <option value="" disabled>Select Month</option>
             <option *ngFor="let month of monthOptions" [value]="month">{{ month }}</option>
           </select>
         </div>
 
-        <!-- Monthly: Week Dropdown appears only if Month is selected -->
-        <div *ngIf="periodTime === 'Monthly' && month" class="mb-3">
-          <label class="form-label">Week</label>
-          <select class="form-select" formControlName="week">
-            <option value="" disabled selected>Select Week</option>
-            <option *ngFor="let week of weekOptions" [value]="week">{{ week }}</option>
+        <!-- Quarterly -->
+        <div *ngIf="periodTime === 'Quarterly'" class="mb-3">
+          <label class="form-label">Quarter</label>
+          <select class="form-select" formControlName="quarter">
+            <option value="" disabled>Select Quarter</option>
+            <option *ngFor="let q of quarterOptions" [value]="q">{{ q }}</option>
           </select>
         </div>
 
-        <!-- Daterange Fields -->
-        <div *ngIf="periodTime === 'Daterange'" class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">From Date</label>
-            <input type="date" class="form-control" formControlName="fromDate">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">To Date</label>
-            <input type="date" class="form-control" formControlName="toDate">
-          </div>
+        <!-- Yearly -->
+        <div *ngIf="periodTime === 'Yearly'" class="mb-3">
+          <label class="form-label">Year</label>
+          <select class="form-select" formControlName="year">
+            <option value="" disabled>Select Year</option>
+            <option *ngFor="let y of yearOptions" [value]="y">{{ y }}</option>
+          </select>
         </div>
 
         <!-- Target Type -->
         <div class="mb-3">
           <label class="form-label">Target Type</label>
           <select class="form-select" formControlName="targetType">
-            <option value="" disabled selected>Select Target Type</option>
+            <option value="" disabled>Select Target Type</option>
             <option *ngFor="let type of targetTypeOptions" [value]="type">{{ type }}</option>
           </select>
         </div>
 
-        <div class="mb-3">
+        <!-- Target Value -->
+        <div *ngIf="targetType" class="mb-3">
           <label class="form-label">
-            {{ targetType === 'Amount Based' ? 'Amount' : targetType === 'Number Based' ? 'Number' : 'Target Value' }}
+            {{ targetType === 'Amount Wise' ? 'Amount' : 'Number' }}
           </label>
-          <input
-            type="number"
-            class="form-control"
-            formControlName="targetValue"
-            placeholder="Enter {{ targetType === 'Amount Based' ? 'Amount' : 'Number' }}">
+          <input type="number" class="form-control" formControlName="targetValue"
+            [placeholder]="'Enter ' + (targetType === 'Amount Wise' ? 'Amount' : 'Number')">
         </div>
+
+        <!-- Dynamic Weeks -->
+        <div class="mb-3" *ngIf="selectedMonthWeeks.length > 0">
+  <label class="form-label fw-semibold">Weeks Target Values</label>
+  <div class="table-responsive">
+    <table class="table table-sm table-bordered text-center align-middle week-target-table">
+      <thead class="table-light">
+        <tr>
+          <th>Week</th>
+          <th>Range</th>
+          <th>Target %</th>
+          <th>Calculated Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let week of selectedMonthWeeks">
+          <td class="fw-semibold">{{ week.label }}</td>
+          <td class="text-muted small">{{ week.range }}</td>
+          <td class="fw-bold">{{ week.value }}%</td>
+          <td class="fw-bold">{{ week.calculatedValue | number }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
 
         <!-- Incentive Type -->
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label class="form-label">Incentive Type</label>
           <select class="form-select" formControlName="incentiveType">
-            <option value="" disabled selected>Select Incentive Type</option>
+            <option value="" disabled>Select Incentive Type</option>
             <option *ngFor="let type of incentiveTypeOptions" [value]="type">{{ type }}</option>
           </select>
-        </div>
+        </div> -->
 
-        <div class="mb-3">
+        <!-- Incentive Value -->
+        <!-- <div class="mb-3">
           <label class="form-label">
-            {{ incentiveType === 'Amount' ? 'Amount' : incentiveType === 'Percentage' ? 'Percentage' : 'Incentive Value' }}
+            {{ incentiveType === 'Amount' ? 'Amount' : 'Percentage' }}
           </label>
-          <input
-            type="number"
-            class="form-control"
-            formControlName="incentiveValue"
-            placeholder="Enter {{ incentiveType === 'Amount' ? 'Amount' : 'Percentage' }}">
-        </div>
+          <input type="number" class="form-control" formControlName="incentiveValue"
+                 [placeholder]="'Enter ' + (incentiveType === 'Amount' ? 'Amount' : 'Percentage')">
+        </div> -->
 
         <!-- Unit Type -->
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label class="form-label">Unit Type</label>
           <select class="form-select" formControlName="unitType">
-            <option value="" disabled selected>Select Unit Type</option>
+            <option value="" disabled>Select Unit Type</option>
             <option *ngFor="let type of unitTypeOptions" [value]="type">{{ type }}</option>
           </select>
-        </div>
+        </div> -->
       </div>
 
       <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">

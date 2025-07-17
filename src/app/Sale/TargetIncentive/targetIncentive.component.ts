@@ -1,16 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LeadService } from 'src/app/core/Service/LeadService';
-import { OrderService } from 'src/app/core/Service/OrderService ';
 import { PaymentService } from 'src/app/core/Service/PaymentService';
 import { TargetIncentiveService } from 'src/app/core/Service/targetIncentiveService';
 
 @Component({
     selector: 'app-targetIncentive-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, NgIf, NgFor,],
     templateUrl: './targetIncentive.component.html',
     styleUrls: ['./targetIncentive.component.scss']
 })
@@ -21,30 +19,46 @@ export class TargrtIncentiveComponent implements OnInit {
     targetIncentiveId!: number;
     id?: number;
 
-    // Dropdown Options
-    periodOptions = ['Monthly', 'Daterange'];
-    weekOptions = ['1st week', '2nd week', '3rd week', '4th week'];
+    periodOptions = ['Monthly', 'Quarterly', 'Yearly'];
     monthOptions = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
-    targetTypeOptions = ['Amount Based', 'Number Based'];
+    quarterOptions = [
+        'April-June',
+        'July-September',
+        'October-December',
+        'January-March'
+    ];
+
+    yearOptions = ['2025-26', '2026-27'];
+
+    targetTypeOptions = ['Amount Wise', 'Number Wise'];
     incentiveTypeOptions = ['Amount', 'Percentage'];
     unitTypeOptions = ['Per Unit', 'Whole'];
+
+   selectedMonthWeeks: { label: string, range: string, value: number | null, calculatedValue: number }[] = [];
+
     constructor(
         private fb: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
         private targetIncentiveService: TargetIncentiveService,
-        private paymentService: PaymentService
+        private paymentService: PaymentService,
+          private cdr: ChangeDetectorRef
+
     ) {
     }
 
     ngOnInit(): void {
-        this.FormCreate();
+        this.createForm();
         // this.checkEditMode();
         this.handlePeriodTimeChanges();
+        this.TargetIncentiveForm.get('targetValue')?.valueChanges.subscribe(() => {
+  this.updateCalculatedWeekValues();
+});
+
     }
 
     // private checkEditMode(): void {
@@ -58,28 +72,23 @@ export class TargrtIncentiveComponent implements OnInit {
     //     });
     // }
 
-    FormCreate() {
+    createForm() {
         this.TargetIncentiveForm = this.fb.group({
             periodTime: ['', Validators.required],
-            month: [''],         // 👈 NEW CONTROL
-            week: [''],
-            fromDate: [''],
-            toDate: [''],
-
+            month: [''],
+            quarter: [''],
+            year: [''],
             targetType: ['', Validators.required],
             targetValue: ['', Validators.required],
-
-            incentiveType: ['', Validators.required],
-            incentiveValue: ['', Validators.required],
-
-            unitType: ['', Validators.required],
+           // incentiveType: ['', Validators.required],
+           // incentiveValue: ['', Validators.required],
+          //  unitType: ['', Validators.required],
             ActionType: [''],
             createdDate: [''],
             isUpdated: [''],
             isDeleted: [false],
         });
     }
-
     // private PatchPaymentData(id: number): void {
     //     this.loading = true;
     //     this.paymentService.getPaymentById(id).subscribe({
@@ -110,29 +119,7 @@ export class TargrtIncentiveComponent implements OnInit {
 
     // }
 
-    handlePeriodTimeChanges() {
-        this.TargetIncentiveForm.get('periodTime')?.valueChanges.subscribe(value => {
-            if (value === 'Monthly') {
-                this.TargetIncentiveForm.patchValue({
-                    fromDate: '',
-                    toDate: ''
-                });
-            } else if (value === 'Daterange') {
-                this.TargetIncentiveForm.patchValue({
-                    month: '',
-                    week: ''
-                });
-            } else {
-                this.TargetIncentiveForm.patchValue({
-                    month: '',
-                    week: '',
-                    fromDate: '',
-                    toDate: ''
-                });
-            }
-        });
-    }
-
+    // For displaying selected PeriodTime
     get periodTime() {
         return this.TargetIncentiveForm.get('periodTime')?.value;
     }
@@ -144,27 +131,66 @@ export class TargrtIncentiveComponent implements OnInit {
     get incentiveType() {
         return this.TargetIncentiveForm.get('incentiveType')?.value;
     }
-    get month() {
-        return this.TargetIncentiveForm.get('month')?.value;
+
+    handlePeriodTimeChanges() {
+        this.TargetIncentiveForm.get('periodTime')?.valueChanges.subscribe(value => {
+            this.TargetIncentiveForm.patchValue({
+                month: '',
+                quarter: '',
+                year: ''
+            });
+            this.selectedMonthWeeks = [];
+        });
     }
 
-
-    private formatDateForInput(date: Date): string {
-        return date.toISOString().slice(0, 10);
+    onMonthChange(event: any) {
+        const month = event.target.value;
+        if (month) {
+            this.generateWeeksForMonth();
+        } else {
+            this.selectedMonthWeeks = [];
+        }
     }
+private updateCalculatedWeekValues(): void {
+  const targetAmount = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+
+  this.selectedMonthWeeks = this.selectedMonthWeeks.map(week => {
+    const percentage = week.value ?? 0;
+    const calculatedValue = Math.round((targetAmount * percentage) / 100);
+    return { ...week, calculatedValue };
+  });
+
+  this.cdr.detectChanges();
+}
+
+generateWeeksForMonth() {
+  this.selectedMonthWeeks = [
+    { label: 'Week 1', range: '01-07-25 to 07-07-25', value: 20, calculatedValue: 0 },
+    { label: 'Week 2', range: '08-07-25 to 15-07-25', value: 25, calculatedValue: 0 },
+    { label: 'Week 3', range: '16-07-25 to 23-07-25', value: 30, calculatedValue: 0 },
+    { label: 'Week 4', range: '24-07-25 to 31-07-25', value: 25, calculatedValue: 0 }
+  ];
+
+  this.updateCalculatedWeekValues();
+}
 
     onTargetIncentiveSubmit(): void {
         if (this.TargetIncentiveForm.invalid) {
             this.TargetIncentiveForm.markAllAsTouched();
             return;
         }
-        console.log('Form Data:', this.TargetIncentiveForm.value);
+
         const payload = this.TargetIncentiveForm.getRawValue();
+        payload.weekTargets = this.selectedMonthWeeks;  // Attach week details
+
         payload.createdDate = new Date().toISOString();
         payload.isUpdated = new Date().toISOString();
         payload.isDeleted = false;
         payload.ActionType = this.isEditMode ? 'update' : 'create';
 
+        console.log('Final Payload:', payload);
+
+        // Call Service
         if (this.isEditMode && this.targetIncentiveId !== null) {
             this.paymentService.updatePayment(this.targetIncentiveId, payload).subscribe(() => {
                 alert('Payment updated successfully');
@@ -172,16 +198,17 @@ export class TargrtIncentiveComponent implements OnInit {
                 // this.router.navigate(['/Mainlayout/payment-list']);
             });
         } else {
-            this.targetIncentiveService.addTargetIncentive(payload).subscribe(() => {
-                alert('Payment saved successfully');
-                this.TargetIncentiveForm.reset();
-                this.router.navigate(['/Mainlayout/payment-list']);
+            this.targetIncentiveService.createTargetIncentive(payload).subscribe(() => {
+                alert('Target Incentive saved successfully');
+                this.clearForm();
+              //  this.router.navigate(['/Mainlayout/targrtIncentive-list']);
             });
         }
     }
 
     clearForm() {
         this.TargetIncentiveForm.reset();
+        this.selectedMonthWeeks = [];
     }
 
     closeForm() {
