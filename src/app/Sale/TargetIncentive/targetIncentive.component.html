@@ -66,30 +66,65 @@
 
         <!-- Dynamic Weeks -->
         <div class="mb-3" *ngIf="selectedMonthWeeks.length > 0">
-  <label class="form-label fw-semibold">Weeks Target Values</label>
-  <div class="table-responsive">
-    <table class="table table-sm table-bordered text-center align-middle week-target-table">
-      <thead class="table-light">
-        <tr>
-          <th>Week</th>
-          <th>Range</th>
-          <th>Target %</th>
-          <th>Calculated Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let week of selectedMonthWeeks">
-          <td class="fw-semibold">{{ week.label }}</td>
-          <td class="text-muted small">{{ week.range }}</td>
-          <td class="fw-bold">{{ week.value }}%</td>
-          <td class="fw-bold">{{ week.calculatedValue | number }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+          <label class="form-label fw-semibold">Weeks Target Values</label>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center align-middle week-target-table">
+              <thead class="table-light">
+                <tr>
+                  <th>Week</th>
+                  <th>Range</th>
+                  <th>Target %</th>
+                  <th>Calculated Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let week of selectedMonthWeeks">
+                  <td class="fw-semibold">{{ week.label }}</td>
+                  <td class="text-muted small">{{ week.range }}</td>
+                  <td class="fw-bold">{{ week.value }}%</td>
+                  <td class="fw-bold">{{ week.calculatedValue | number }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
 
+        <!-- Quarterly Monthly Breakdown -->
+        <div class="mb-3" *ngIf="periodTime === 'Quarterly' && selectedQuarterMonths.length > 0">
+          <label class="form-label fw-semibold">Monthly Target Breakdown</label>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Month</th>
+                  <th>Target %</th>
+                  <th>Calculated Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- <tr *ngFor="let item of selectedQuarterMonths">
+          <td>{{ item.month }}</td>
+          <td>{{ item.percentage }}%</td>
+          <td>{{ item.calculatedValue | number }}</td>
+        </tr> -->
+
+
+                <tr *ngFor="let item of selectedQuarterMonths; let i = index">
+                  <td>{{ item.month }}</td>
+                  <td>
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center"
+       [value]="item.percentage | number:'1.2-2'" (input)="onQuarterInputChange(i, $event)">
+
+                  </td>
+
+                  <td>{{ item.calculatedValue | number }}</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
 
 
         <!-- Incentive Type -->

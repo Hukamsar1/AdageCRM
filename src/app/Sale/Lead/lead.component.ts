@@ -47,6 +47,8 @@ export class LeadComponent implements OnInit {
     assignToList = ['Partner', 'Staff'];
     LeadTypes = ['Partner', 'Customer'];
     assignToSecondList: any[] = [];
+    ImageFile: File | null = null;
+      selectedFile!: File;
     error: string | null = null;
     today = new Date().toISOString().split('T')[0];
     leadType: string = '';
@@ -54,10 +56,12 @@ export class LeadComponent implements OnInit {
     businessNameAsDropdown = false;    // controls input vs select
     existingBusinessList: any[] = [];  // for dropdown options
     assignToSecondLabel = 'Lead Assign *';
+    existingImagePath: string | null = null;
 
     isLoading = false;
     isEditMode = false;
     LeadId!: number;
+  userEmail: string = '';
 
     constructor(private fb: FormBuilder,
         private router: Router,
@@ -106,12 +110,15 @@ export class LeadComponent implements OnInit {
 
         // Call once on load too
         this.onLeadTypeChange();
+            this.userEmail = localStorage.getItem('userEmail') || 'Guest';
     }
 
 
     private initForm(): void {
+          const email = localStorage.getItem('userEmail') || '';
         const today = new Date().toISOString().substring(0, 10);
         this.leadForm = this.fb.group({
+            userEmail: [{ value: email, disabled: true }],
             leadCategory: [null, Validators.required],
             leadType: ['new', Validators.required],
             businessName: ['', Validators.required],
@@ -150,7 +157,8 @@ export class LeadComponent implements OnInit {
             leadAssignTo: ['', Validators.required],
             leadAssignSecond: ['', Validators.required],
             nextVisitDate: ['', [Validators.required, CustomValidators.dateFormat]],
-            nextVisitAction: ['', Validators.required]
+            nextVisitAction: ['', Validators.required],
+            ImageFile: [''],
         });
     }
 
@@ -235,8 +243,11 @@ export class LeadComponent implements OnInit {
         }
     }
 
-
-
+ onFileChange(event: any) {
+  if (event.target.files && event.target.files.length > 0) {
+    this.selectedFile = event.target.files[0];
+  }
+}
 
     onBusinessSelected(event: Event): void {
         const target = event.target as HTMLSelectElement;
@@ -345,6 +356,7 @@ export class LeadComponent implements OnInit {
             leadAssignTo: compData.leadAssignTo,
             nextVisitDate: this.formatDateForInput(compData.nextVisitDate),
             business: compData.business,
+            ImageFile: compData.imagePath
         };
     }
 
@@ -355,21 +367,34 @@ export class LeadComponent implements OnInit {
 
     onSubmit(): void {
     this.isSubmitting = true;
+  if (this.leadForm.invalid) 
+  {
+    alert('Please fill in all required fields. and check again.');
+    return
+  }
 
-    const formData = {
-        ...this.leadForm.value,
-        actionType: this.isEditMode ? 'update' : 'create'
-    };
+  const formData = new FormData();
+
+    const formValues = this.leadForm.getRawValue();
+      Object.keys(this.leadForm.controls).forEach((key) => {
+      formData.append(key, this.leadForm.get(key)?.value);
+    });
+
+    formData.append('actionType', this.isEditMode ? 'update' : 'create');
+  formData.append('leadId', this.isEditMode ? this.LeadId.toString() : '0');
+
+   if (this.selectedFile) {
+      formData.append('ImageFile', this.selectedFile);
+    }
 
     // Agar edit mode hai to ID form data me bhejo
     if (this.isEditMode) {
-        formData.leadId = this.LeadId;
+           formData.append('leadId', this.LeadId.toString());
         this.leadService.updateLead(formData)
             .pipe(finalize(() => this.isSubmitting = false))
             .subscribe({
                 next: () => {
                     alert('Lead updated successfully!');
-                    // Navigate ya refresh
                     this.router.navigate(['/Mainlayout/lead-list']);
                 },
                 error: () => {
@@ -377,12 +402,14 @@ export class LeadComponent implements OnInit {
                 }
             });
     } else {
+        console.log('Selected file:', this.selectedFile);
+        console.log('Form data:', formData);
         this.leadService.createLead(formData)
             .pipe(finalize(() => this.isSubmitting = false))
             .subscribe({
                 next: () => {
                     alert('Lead saved successfully!');
-                    this.router.navigate(['/Mainlayout/lead-list']);
+                   // this.router.navigate(['/Mainlayout/lead-list']);
                 },
                 error: () => {
                     alert('An error occurred while saving the lead.');
@@ -621,9 +648,10 @@ export class LeadComponent implements OnInit {
                     leadAssignTo: lead.leadAssignTo,
                     leadAssignSecond: String(lead.leadAssignSecond),
                     nextVisitDate: this.formatDateForInput(lead.nextVisitDate),
-                    nextVisitAction: lead.nextVisitAction
+                    nextVisitAction: lead.nextVisitAction,
+                    ImageFile: lead.imagePath ? lead.imagePath : lead.imagePath 
                 });
-
+                this.existingImagePath = lead.aadharFilePath ?? null;
                 // Load country, state, city dropdowns if needed
                 if (lead.countryId) {
                     this.loadStates(lead.countryId);

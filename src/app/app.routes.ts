@@ -23,10 +23,12 @@ import { LeadComponent } from "./Sale/Lead/lead.component";
 import { LeadListComponent } from "./Sale/Lead/lead-list.component";
 import { OrderComponent } from "./Sale/Orders/order.component";
 import { OrderListComponent } from "./Sale/Orders/order-list.component";
-import { CustomerReportComponent } from "./Reports/customerReport.component";
 import { PaymentComponent } from "./Sale/Payment/payment.component";
 import { PaymentListComponent } from "./Sale/Payment/payment-list.component";
 import { TargrtIncentiveComponent } from "./Sale/TargetIncentive/targetIncentive.component";
+import { CustomerReportComponent } from "./Reports/customer/customerReport.component";
+import { LeadReportComponent } from "./Reports/lead/lead.report.component";
+import { OrderReportComponent } from "./Reports/order/order.report.component";
 
 export const appRoutes: Routes = [
   // Redirect root '' to /AdageCRM
@@ -99,6 +101,8 @@ export const appRoutes: Routes = [
 
       // Customer Report
       { path: 'customer-report', component: CustomerReportComponent },
+      { path: 'order-report', component: OrderReportComponent },
+      { path: 'lead-report', component: LeadReportComponent },
     ]
   }
 ];

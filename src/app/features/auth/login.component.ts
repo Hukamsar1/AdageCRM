@@ -7,7 +7,7 @@ import { UserService } from 'src/app/core/Service/registerservice';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -39,7 +39,12 @@ export class LoginComponent {
       next: (res) => {
         this.isLoading = false;
         console.log('Login successful', res);
-        // Redirect to dashboard
+
+        // 🔐 Store user info in localStorage
+        localStorage.setItem('userEmail', res.email);
+        localStorage.setItem('userMobile', res.mobile);  // if needed
+
+        // ⏩ Redirect
         this.router.navigate(['/Mainlayout/dashboard']);
       },
       error: (err) => {
@@ -49,4 +54,5 @@ export class LoginComponent {
       },
     });
   }
+
 }

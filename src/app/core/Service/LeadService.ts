@@ -8,7 +8,7 @@ export class LeadService {
 
   constructor(private http: HttpClient) { }
 
-  createLead(leadData: any): Observable<any> {
+  createLead(leadData: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/Create`, leadData);
   }
 
@@ -24,7 +24,7 @@ export class LeadService {
   updateLead(data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/UpdateLead`, data);
   }
-
+  
 deleteLead(id: number, actionType: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/Delete/${id}?actionType=${actionType}`);
 }

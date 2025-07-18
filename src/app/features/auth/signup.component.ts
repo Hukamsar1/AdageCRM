@@ -54,8 +54,10 @@ isInvalid(controlName: string): boolean {
       this.userService.signup(formData).subscribe(
         (res) => {
           console.log('User registered successfully!', res);
-           this.notificationService.success('You are registered successfully!');
-           this.router.navigate(['/Mainlayout']);
+          alert('You are registered successfully!');
+          // this.notificationService.success('You are registered successfully!');
+           this.router.navigate(['/login']);
+
           //this.signupForm.reset();
         },
         (error) => {

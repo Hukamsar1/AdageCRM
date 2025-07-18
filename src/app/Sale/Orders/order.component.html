@@ -13,9 +13,12 @@
         <div class="mb-3">
           <label class="form-label">Customer</label>
           <select class="form-select form-select-sm" formControlName="customer">
-            <option value="">Select Customer</option>
-            <option *ngFor="let cus of Customers" [value]="cus.leadId">{{ cus.businessName }}</option>
-          </select>
+  <option [ngValue]="null">Select Customer</option>
+  <option *ngFor="let cus of Customers" [ngValue]="cus.businessName">
+    {{ cus.businessName }}
+  </option>
+</select>
+
           <div *ngIf="orderForm.get('customer')?.invalid && orderForm.get('customer')?.touched" class="text-danger">
             Please select Customer
           </div>

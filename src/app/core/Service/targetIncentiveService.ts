@@ -24,7 +24,13 @@ export interface TargetIncentive {
 export interface WeekTarget {
   label: string;
   range: string;
-  value: number;
+  value: number | null;
+  calculatedValue: number;
+}
+
+export interface QuarterTargetMonth {
+  month: string;
+  percentage: number;
   calculatedValue: number;
 }
 

@@ -80,6 +80,25 @@ export class OrderComponent implements OnInit {
             this.showAmountSection = false;
             this.orderForm.patchValue({ amount: '', discount: '' });
         });
+
+        this.orderForm.get('customer')?.valueChanges.subscribe((selectedName: string) => {
+            const selectedCustomer = this.Customers.find(c => c.businessName === selectedName);
+
+            if (selectedCustomer) {
+                this.orderForm.patchValue({
+                    cityId: selectedCustomer.cityId,
+                    leadId: selectedCustomer.leadId // ✅ safe to access now
+
+                });
+            } else {
+                this.orderForm.patchValue({
+                    cityId: '',
+                    leadId: ''
+
+                });
+            }
+        });
+
     }
 
     private checkEditMode(): void {
@@ -105,6 +124,7 @@ export class OrderComponent implements OnInit {
 
                         // Now patch form
                         this.orderForm.patchValue({
+                            cityId: order.cityId,
                             customer: order.customer,
                             product: order.product,
                             quantity: order.quantity,
@@ -126,6 +146,7 @@ export class OrderComponent implements OnInit {
 
     FormCreate() {
         this.orderForm = this.fb.group({
+            cityId: [''],
             customer: ['', Validators.required],
             product: ['', Validators.required],
             quantity: [null, [Validators.required, Validators.min(1)]],
@@ -261,6 +282,8 @@ export class OrderComponent implements OnInit {
         }
     }
 
+
+    
     // private UpdateSaveOrder() {
     //     if (this.orderForm.valid) {
     //         const orderData = this.orderForm.getRawValue();

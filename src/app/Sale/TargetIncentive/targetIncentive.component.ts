@@ -38,7 +38,9 @@ export class TargrtIncentiveComponent implements OnInit {
     incentiveTypeOptions = ['Amount', 'Percentage'];
     unitTypeOptions = ['Per Unit', 'Whole'];
 
-   selectedMonthWeeks: { label: string, range: string, value: number | null, calculatedValue: number }[] = [];
+    selectedQuarterMonths: { month: string, percentage: number, calculatedValue: number }[] = [];
+
+    selectedMonthWeeks: { label: string, range: string, value: number | null, calculatedValue: number }[] = [];
 
     constructor(
         private fb: FormBuilder,
@@ -46,7 +48,7 @@ export class TargrtIncentiveComponent implements OnInit {
         private route: ActivatedRoute,
         private targetIncentiveService: TargetIncentiveService,
         private paymentService: PaymentService,
-          private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef
 
     ) {
     }
@@ -56,8 +58,21 @@ export class TargrtIncentiveComponent implements OnInit {
         // this.checkEditMode();
         this.handlePeriodTimeChanges();
         this.TargetIncentiveForm.get('targetValue')?.valueChanges.subscribe(() => {
-  this.updateCalculatedWeekValues();
-});
+            this.updateCalculatedWeekValues();
+        });
+
+        this.TargetIncentiveForm.get('quarter')?.valueChanges.subscribe(q => {
+            if (this.periodTime === 'Quarterly') {
+                this.onQuarterChange(q);
+            }
+        });
+
+        this.TargetIncentiveForm.get('targetValue')?.valueChanges.subscribe(() => {
+            this.updateCalculatedWeekValues();
+            if (this.periodTime === 'Quarterly') {
+                this.updateQuarterCalculatedValues();
+            }
+        });
 
     }
 
@@ -80,9 +95,9 @@ export class TargrtIncentiveComponent implements OnInit {
             year: [''],
             targetType: ['', Validators.required],
             targetValue: ['', Validators.required],
-           // incentiveType: ['', Validators.required],
-           // incentiveValue: ['', Validators.required],
-          //  unitType: ['', Validators.required],
+            // incentiveType: ['', Validators.required],
+            // incentiveValue: ['', Validators.required],
+            //  unitType: ['', Validators.required],
             ActionType: [''],
             createdDate: [''],
             isUpdated: [''],
@@ -151,37 +166,101 @@ export class TargrtIncentiveComponent implements OnInit {
             this.selectedMonthWeeks = [];
         }
     }
-private updateCalculatedWeekValues(): void {
-  const targetAmount = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+    private updateCalculatedWeekValues(): void {
+        const targetAmount = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
 
-  this.selectedMonthWeeks = this.selectedMonthWeeks.map(week => {
-    const percentage = week.value ?? 0;
-    const calculatedValue = Math.round((targetAmount * percentage) / 100);
-    return { ...week, calculatedValue };
-  });
+        this.selectedMonthWeeks = this.selectedMonthWeeks.map(week => {
+            const percentage = week.value ?? 0;
+            const calculatedValue = Math.round((targetAmount * percentage) / 100);
+            return { ...week, calculatedValue };
+        });
 
-  this.cdr.detectChanges();
+        this.cdr.detectChanges();
+    }
+
+   onQuarterInputChange(index: number, event: Event): void {
+  const inputElement = event.target as HTMLInputElement;
+  const value = parseFloat(inputElement.value);
+
+  if (!isNaN(value) && this.selectedQuarterMonths[index]) {
+    this.selectedQuarterMonths[index].percentage = value;
+    this.updateQuarterCalculatedValues();
+  }
 }
 
-generateWeeksForMonth() {
-  this.selectedMonthWeeks = [
-    { label: 'Week 1', range: '01-07-25 to 07-07-25', value: 20, calculatedValue: 0 },
-    { label: 'Week 2', range: '08-07-25 to 15-07-25', value: 25, calculatedValue: 0 },
-    { label: 'Week 3', range: '16-07-25 to 23-07-25', value: 30, calculatedValue: 0 },
-    { label: 'Week 4', range: '24-07-25 to 31-07-25', value: 25, calculatedValue: 0 }
-  ];
 
-  this.updateCalculatedWeekValues();
+
+    get totalQuarterPercentage(): number {
+        return this.selectedQuarterMonths.reduce((sum, m) => sum + (m.percentage || 0), 0);
+    }
+
+get quarterControl() {
+  return this.TargetIncentiveForm.get('quarter');
 }
+
+get targetValueControl() {
+  return this.TargetIncentiveForm.get('targetValue');
+}
+
+    updateQuarterCalculatedValues() {
+        const target = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+
+        this.selectedQuarterMonths = this.selectedQuarterMonths.map(item => {
+            const calculatedValue = Math.round((target * item.percentage) / 100);
+            return { ...item, calculatedValue };
+        });
+
+        this.cdr.detectChanges();
+    }
+
+    generateWeeksForMonth() {
+        this.selectedMonthWeeks = [
+            { label: 'Week 1', range: '01-07-25 to 07-07-25', value: 20, calculatedValue: 0 },
+            { label: 'Week 2', range: '08-07-25 to 15-07-25', value: 25, calculatedValue: 0 },
+            { label: 'Week 3', range: '16-07-25 to 23-07-25', value: 30, calculatedValue: 0 },
+            { label: 'Week 4', range: '24-07-25 to 31-07-25', value: 25, calculatedValue: 0 }
+        ];
+
+        this.updateCalculatedWeekValues();
+    }
+
+    getQuarterMonths(quarter: string): string[] {
+        const mapping: { [key: string]: string[] } = {
+            'April-June': ['April', 'May', 'June'],
+            'July-September': ['July', 'August', 'September'],
+            'October-December': ['October', 'November', 'December'],
+            'January-March': ['January', 'February', 'March'],
+        };
+        return mapping[quarter] || [];
+    }
+
+    onQuarterChange(quarter: string) {
+        const months = this.getQuarterMonths(quarter);
+        // Distribute target % equally among 3 months
+        const percentagePerMonth = 100 / months.length;
+
+        this.selectedQuarterMonths = months.map(m => ({
+            month: m,
+            percentage: percentagePerMonth,
+            calculatedValue: 0
+        }));
+
+        this.updateQuarterCalculatedValues();
+    }
 
     onTargetIncentiveSubmit(): void {
         if (this.TargetIncentiveForm.invalid) {
             this.TargetIncentiveForm.markAllAsTouched();
             return;
         }
+        if (this.periodTime === 'Quarterly' && this.totalQuarterPercentage !== 100) {
+            alert('Total target percentage for quarter must be 100%.');
+            return;
+        }
 
         const payload = this.TargetIncentiveForm.getRawValue();
         payload.weekTargets = this.selectedMonthWeeks;  // Attach week details
+        payload.quarterTargetMonths = this.selectedQuarterMonths;
 
         payload.createdDate = new Date().toISOString();
         payload.isUpdated = new Date().toISOString();
@@ -201,7 +280,7 @@ generateWeeksForMonth() {
             this.targetIncentiveService.createTargetIncentive(payload).subscribe(() => {
                 alert('Target Incentive saved successfully');
                 this.clearForm();
-              //  this.router.navigate(['/Mainlayout/targrtIncentive-list']);
+                //  this.router.navigate(['/Mainlayout/targrtIncentive-list']);
             });
         }
     }
