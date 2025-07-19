@@ -7,6 +7,7 @@
       </button>
     </div>
 
+    <!--  Form start -->
     <form [formGroup]="TargetIncentiveForm" (ngSubmit)="onTargetIncentiveSubmit()">
       <div class="card-body p-4">
 
@@ -89,7 +90,6 @@
           </div>
         </div>
 
-
         <!-- Quarterly Monthly Breakdown -->
         <div class="mb-3" *ngIf="periodTime === 'Quarterly' && selectedQuarterMonths.length > 0">
           <label class="form-label fw-semibold">Monthly Target Breakdown</label>
@@ -103,58 +103,51 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- <tr *ngFor="let item of selectedQuarterMonths">
-          <td>{{ item.month }}</td>
-          <td>{{ item.percentage }}%</td>
-          <td>{{ item.calculatedValue | number }}</td>
-        </tr> -->
-
-
                 <tr *ngFor="let item of selectedQuarterMonths; let i = index">
                   <td>{{ item.month }}</td>
                   <td>
                     <input type="number" step="0.01" class="form-control form-control-sm text-center"
-       [value]="item.percentage | number:'1.2-2'" (input)="onQuarterInputChange(i, $event)">
-
+                      [value]="item.percentage | number:'1.2-2'" (input)="onQuarterInputChange(i, $event)">
                   </td>
-
                   <td>{{ item.calculatedValue | number }}</td>
                 </tr>
-
               </tbody>
             </table>
           </div>
         </div>
 
+        <!-- Yearly Target Breakdown -->
+        <div class="mb-3" *ngIf="TargetIncentiveForm.get('periodTime')?.value === 'Yearly' && yearlyBreakdown.length">
+          <label class="form-label fw-semibold">Yearly Target Breakdown</label>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Month</th>
+                  <th>Target %</th>
+                  <th>Calculated Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of yearlyBreakdown; let i = index">
+                  <td>{{ item.month }}</td>
+                  <td>
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center"
+                      [value]="item.percentage" (input)="onYearlyInputChange(i, $event)">
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center"
+                      [value]="item.calculatedValue" (input)="onYearlyCalculatedValueChange(i, $event)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-        <!-- Incentive Type -->
-        <!-- <div class="mb-3">
-          <label class="form-label">Incentive Type</label>
-          <select class="form-select" formControlName="incentiveType">
-            <option value="" disabled>Select Incentive Type</option>
-            <option *ngFor="let type of incentiveTypeOptions" [value]="type">{{ type }}</option>
-          </select>
-        </div> -->
-
-        <!-- Incentive Value -->
-        <!-- <div class="mb-3">
-          <label class="form-label">
-            {{ incentiveType === 'Amount' ? 'Amount' : 'Percentage' }}
-          </label>
-          <input type="number" class="form-control" formControlName="incentiveValue"
-                 [placeholder]="'Enter ' + (incentiveType === 'Amount' ? 'Amount' : 'Percentage')">
-        </div> -->
-
-        <!-- Unit Type -->
-        <!-- <div class="mb-3">
-          <label class="form-label">Unit Type</label>
-          <select class="form-select" formControlName="unitType">
-            <option value="" disabled>Select Unit Type</option>
-            <option *ngFor="let type of unitTypeOptions" [value]="type">{{ type }}</option>
-          </select>
-        </div> -->
       </div>
 
+      <!--  Moved inside the form -->
       <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
         <button type="submit" class="btn btn-success" [disabled]="TargetIncentiveForm.invalid">
           <i class="bi bi-save"></i>
@@ -168,5 +161,7 @@
         </button>
       </div>
     </form>
+    <!--  Form end -->
+
   </div>
 </div>
