@@ -11,6 +11,25 @@
     <form [formGroup]="TargetIncentiveForm" (ngSubmit)="onTargetIncentiveSubmit()">
       <div class="card-body p-4">
 
+        <!-- Zone  -->
+        <div class="mb-3">
+          <label class="form-label">Zone</label>
+          <select class="form-select" formControlName="Zone">
+            <option value="" disabled>Select Zone</option>
+            <option *ngFor="let zone of Zones" [value]="zone">{{ zone }}</option>
+          </select>
+        </div>
+
+        <!-- Employee -->
+        <div class="mb-3">
+          <label class="form-label">Employee</label>
+          <select class="form-select" formControlName="employee">
+            <option value="" disabled>Select Employee</option>
+            <option *ngFor="let employee of Employees" [value]="employee">{{ employee }}</option>
+          </select>
+        </div>
+
+
         <!-- Period Time -->
         <div class="mb-3">
           <label class="form-label">Period Time</label>

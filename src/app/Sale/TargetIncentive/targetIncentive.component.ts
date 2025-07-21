@@ -17,7 +17,8 @@ export class TargrtIncentiveComponent implements OnInit {
     isEditMode = false;
     loading = true;
     targetIncentiveId!: number;
-
+    Zones : any[] = [];
+    Employees : any[] = [];
     periodOptions = ['Monthly', 'Quarterly', 'Yearly'];
     monthOptions = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     quarterOptions = ['April-June', 'July-September', 'October-December', 'January-March'];
@@ -83,6 +84,8 @@ export class TargrtIncentiveComponent implements OnInit {
 
     createForm() {
         this.TargetIncentiveForm = this.fb.group({
+           // Zone:[''],
+          //  employee:[''],
             periodTime: ['', Validators.required],
             month: [''],
             quarter: [''],
@@ -110,9 +113,9 @@ export class TargrtIncentiveComponent implements OnInit {
         }
     }
 
-checkTotalYearlyPercentage(): number {
-  return this.yearlyBreakdown.reduce((sum, item) => sum + (+item.percentage || 0), 0);
-}
+    checkTotalYearlyPercentage(): number {
+        return this.yearlyBreakdown.reduce((sum, item) => sum + (+item.percentage || 0), 0);
+    }
 
     onYearlyPercentageChange(index: number, event: any): void {
         const inputValue = parseFloat(event.target.value) || 0;
@@ -121,6 +124,7 @@ checkTotalYearlyPercentage(): number {
         this.yearlyBreakdown[index].percentage = inputValue;
         this.yearlyBreakdown[index].calculatedValue = parseFloat(((totalTarget * inputValue) / 100).toFixed(2));
     }
+
     handlePeriodTimeChanges() {
         this.TargetIncentiveForm.get('periodTime')?.valueChanges.subscribe(value => {
             this.TargetIncentiveForm.patchValue({ month: '', quarter: '', year: '' });
@@ -133,34 +137,35 @@ checkTotalYearlyPercentage(): number {
             }
         });
     }
-generateYearlyBreakdown(totalAmount: number): void {
-  this.yearlyBreakdown = [];
-  const months = [
-    'April', 'May', 'June', 'July', 'August', 'September',
-    'October', 'November', 'December', 'January', 'February', 'March'
-  ];
 
-  const basePercentage = parseFloat((100 / 12).toFixed(2)); // 8.33
-  let totalSoFar = 0;
+    generateYearlyBreakdown(totalAmount: number): void {
+        this.yearlyBreakdown = [];
+        const months = [
+            'April', 'May', 'June', 'July', 'August', 'September',
+            'October', 'November', 'December', 'January', 'February', 'March'
+        ];
 
-  for (let i = 0; i < months.length; i++) {
-    let percentage = basePercentage;
+        const basePercentage = parseFloat((100 / 12).toFixed(2)); // 8.33
+        let totalSoFar = 0;
 
-    // Adjust last month to make total exactly 100%
-    if (i === months.length - 1) {
-      percentage = parseFloat((100 - totalSoFar).toFixed(2));
-    } else {
-      totalSoFar += percentage;
+        for (let i = 0; i < months.length; i++) {
+            let percentage = basePercentage;
+
+            // Adjust last month to make total exactly 100%
+            if (i === months.length - 1) {
+                percentage = parseFloat((100 - totalSoFar).toFixed(2));
+            } else {
+                totalSoFar += percentage;
+            }
+
+            const calculatedValue = parseFloat(((percentage / 100) * totalAmount).toFixed(2));
+            this.yearlyBreakdown.push({
+                month: months[i],
+                percentage: percentage,
+                calculatedValue: calculatedValue
+            });
+        }
     }
-
-    const calculatedValue = parseFloat(((percentage / 100) * totalAmount).toFixed(2));
-    this.yearlyBreakdown.push({
-      month: months[i],
-      percentage: percentage,
-      calculatedValue: calculatedValue
-    });
-  }
-}
 
     autoDistributeYearlyPercentages(): void {
         const equalPercent = +(100 / this.yearlyBreakdown.length).toFixed(2);
@@ -172,7 +177,6 @@ generateYearlyBreakdown(totalAmount: number): void {
 
         this.updateYearlyCalculatedValues();
     }
-
 
     onMonthChange(event: any) {
         const month = event.target.value;
@@ -194,18 +198,18 @@ generateYearlyBreakdown(totalAmount: number): void {
         this.updateCalculatedWeekValues();
     }
 
-   updateYearlyCalculatedValues(): void {
-    const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+    updateYearlyCalculatedValues(): void {
+        const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
 
-    this.yearlyBreakdown.forEach(item => {
-        item.calculatedValue = +(totalTarget * item.percentage / 100).toFixed(2);
+        this.yearlyBreakdown.forEach(item => {
+            item.calculatedValue = +(totalTarget * item.percentage / 100).toFixed(2);
 
-        // optional reverse sync
-        if (totalTarget > 0) {
-           item.percentage = parseFloat(((item.calculatedValue / totalTarget) * 100).toFixed(3));
-        }
-    });
-}
+            // optional reverse sync
+            if (totalTarget > 0) {
+                item.percentage = parseFloat(((item.calculatedValue / totalTarget) * 100).toFixed(3));
+            }
+        });
+    }
 
 
     private updateCalculatedWeekValues(): void {
@@ -275,20 +279,20 @@ generateYearlyBreakdown(totalAmount: number): void {
     }
 
     onYearlyCalculatedValueChange(index: number, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const value = parseFloat(input.value);
+        const input = event.target as HTMLInputElement;
+        const value = parseFloat(input.value);
 
-    if (!isNaN(value)) {
-        this.yearlyBreakdown[index].calculatedValue = value;
+        if (!isNaN(value)) {
+            this.yearlyBreakdown[index].calculatedValue = value;
 
-        // Recalculate percentage based on this value
-        const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
-        if (totalTarget > 0) {
-            const percentage = +(value / totalTarget * 100).toFixed(2);
-            this.yearlyBreakdown[index].percentage = percentage;
+            // Recalculate percentage based on this value
+            const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+            if (totalTarget > 0) {
+                const percentage = +(value / totalTarget * 100).toFixed(2);
+                this.yearlyBreakdown[index].percentage = percentage;
+            }
         }
     }
-}
 
 
     get totalQuarterPercentage(): number {
@@ -301,25 +305,42 @@ generateYearlyBreakdown(totalAmount: number): void {
             return;
         }
 
-       if (this.periodTime === 'Yearly') {
-    const totalCalculatedValue = this.yearlyBreakdown.reduce((sum, item) => sum + (+item.calculatedValue || 0), 0);
-    const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+        // Yearly target validation
+        if (this.periodTime === 'Yearly') {
+            const totalCalculatedValue = this.yearlyBreakdown.reduce(
+                (sum, item) => sum + (+item.calculatedValue || 0), 0
+            );
+            const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
 
-    const difference = +(totalTarget - totalCalculatedValue).toFixed(2);
+            const difference = +(totalTarget - totalCalculatedValue).toFixed(2);
 
-    if (Math.abs(difference) > 0.01) {
-        const status = difference > 0 ? 'less' : 'more';
-        alert(`Calculated total is ${Math.abs(difference)} ${status} than 100% of Target Value.`);
-        return;
-    }
-}
+            if (Math.abs(difference) > 0.01) {
+                const status = difference > 0 ? 'less' : 'more';
+                alert(`Calculated total is ${Math.abs(difference)} ${status} than 100% of Target Value.`);
+                return;
+            }
+        }
 
-
+        // Prepare payload
         const payload = this.TargetIncentiveForm.getRawValue();
-        payload.weekTargets = this.selectedMonthWeeks;
-        payload.quarterTargetMonths = this.selectedQuarterMonths;
-        payload.yearlyTargetMonths = this.yearlyBreakdown;
 
+        // Include only relevant period data
+        payload.weekTargets = this.periodTime === 'Monthly' ? this.selectedMonthWeeks : [];
+        payload.quarterTargetMonths = this.periodTime === 'Quarterly' ? this.selectedQuarterMonths : [];
+        payload.yearlyTargetMonths = this.periodTime === 'Yearly' ? this.yearlyBreakdown : [];
+
+        // Optional: Clean unused fields if present
+        if (this.periodTime !== 'Monthly') {
+            payload.month = '';
+        }
+        if (this.periodTime !== 'Quarterly') {
+            payload.quarter = '';
+        }
+        if (this.periodTime !== 'Yearly') {
+            payload.year = '';
+        }
+
+        // Audit fields
         payload.createdDate = new Date().toISOString();
         payload.isUpdated = new Date().toISOString();
         payload.isDeleted = false;
@@ -327,6 +348,7 @@ generateYearlyBreakdown(totalAmount: number): void {
 
         console.log('Final Payload:', payload);
 
+        // Submit data
         if (this.isEditMode && this.targetIncentiveId !== null) {
             this.paymentService.updatePayment(this.targetIncentiveId, payload).subscribe(() => {
                 alert('Payment updated successfully');
@@ -338,6 +360,7 @@ generateYearlyBreakdown(totalAmount: number): void {
             });
         }
     }
+
 
     clearForm() {
         this.TargetIncentiveForm.reset();
