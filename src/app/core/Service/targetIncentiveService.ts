@@ -58,7 +58,7 @@ export class TargetIncentiveService {
   constructor(private http: HttpClient) { }
 
   getAllTargetIncentives(): Observable<TargetIncentive[]> {
-    return this.http.get<TargetIncentive[]>(this.apiUrl);
+    return this.http.get<TargetIncentive[]>(`${this.apiUrl}/GetAll`);
   }
 
   getTargetIncentiveById(id: number): Observable<TargetIncentive> {

@@ -29,6 +29,7 @@ import { TargrtIncentiveComponent } from "./Sale/TargetIncentive/targetIncentive
 import { CustomerReportComponent } from "./Reports/customer/customerReport.component";
 import { LeadReportComponent } from "./Reports/lead/lead.report.component";
 import { OrderReportComponent } from "./Reports/order/order.report.component";
+import { targetIncentiveListComponent } from "./Sale/TargetIncentive/targetIncentive-list.component";
 
 export const appRoutes: Routes = [
   // Redirect root '' to /AdageCRM
@@ -95,7 +96,7 @@ export const appRoutes: Routes = [
       { path: 'payment-create', component: PaymentComponent },
       { path: 'payment/edit/:id', component: PaymentComponent },
 
-      { path: 'targrtIncentive-list', component: PaymentListComponent },
+      { path: 'targrtIncentive-list', component: targetIncentiveListComponent },
       { path: 'targrtIncentive-create', component: TargrtIncentiveComponent },
       { path: 'targrtIncentive/edit/:id', component: TargrtIncentiveComponent },
 

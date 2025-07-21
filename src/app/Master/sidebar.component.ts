@@ -64,7 +64,7 @@ declare var bootstrap: any;
   </button>
   <div class="collapse submenu-container" id="commissionMenu">
     <nav class="submenu-items">
-      <a routerLink="/Mainlayout/targrtIncentive-create" routerLinkActive="active">Target & Incentive</a>
+      <a routerLink="/Mainlayout/targrtIncentive-list" routerLinkActive="active">Target & Incentive</a>
     </nav>
   </div>
 

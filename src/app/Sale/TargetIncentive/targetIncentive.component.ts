@@ -299,67 +299,72 @@ export class TargrtIncentiveComponent implements OnInit {
         return this.selectedQuarterMonths.reduce((sum, m) => sum + (m.percentage || 0), 0);
     }
 
-    onTargetIncentiveSubmit(): void {
-        if (this.TargetIncentiveForm.invalid) {
-            this.TargetIncentiveForm.markAllAsTouched();
+getMonthNumber(monthName: string): number | null {
+    const months: { [key: string]: number } = {
+        January: 1, February: 2, March: 3, April: 4,
+        May: 5, June: 6, July: 7, August: 8,
+        September: 9, October: 10, November: 11, December: 12
+    };
+    return months[monthName] || null;
+}
+
+
+onTargetIncentiveSubmit(): void {
+    if (this.TargetIncentiveForm.invalid) {
+        this.TargetIncentiveForm.markAllAsTouched();
+        return;
+    }
+
+    if (this.periodTime === 'Yearly') {
+        const totalCalculatedValue = this.yearlyBreakdown.reduce(
+            (sum, item) => sum + (+item.calculatedValue || 0), 0
+        );
+        const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+
+        const difference = +(totalTarget - totalCalculatedValue).toFixed(2);
+        if (Math.abs(difference) > 0.01) {
+            const status = difference > 0 ? 'less' : 'more';
+            alert(`Calculated total is ${Math.abs(difference)} ${status} than 100% of Target Value.`);
             return;
         }
-
-        // Yearly target validation
-        if (this.periodTime === 'Yearly') {
-            const totalCalculatedValue = this.yearlyBreakdown.reduce(
-                (sum, item) => sum + (+item.calculatedValue || 0), 0
-            );
-            const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
-
-            const difference = +(totalTarget - totalCalculatedValue).toFixed(2);
-
-            if (Math.abs(difference) > 0.01) {
-                const status = difference > 0 ? 'less' : 'more';
-                alert(`Calculated total is ${Math.abs(difference)} ${status} than 100% of Target Value.`);
-                return;
-            }
-        }
-
-        // Prepare payload
-        const payload = this.TargetIncentiveForm.getRawValue();
-
-        // Include only relevant period data
-        payload.weekTargets = this.periodTime === 'Monthly' ? this.selectedMonthWeeks : [];
-        payload.quarterTargetMonths = this.periodTime === 'Quarterly' ? this.selectedQuarterMonths : [];
-        payload.yearlyTargetMonths = this.periodTime === 'Yearly' ? this.yearlyBreakdown : [];
-
-        // Optional: Clean unused fields if present
-        if (this.periodTime !== 'Monthly') {
-            payload.month = '';
-        }
-        if (this.periodTime !== 'Quarterly') {
-            payload.quarter = '';
-        }
-        if (this.periodTime !== 'Yearly') {
-            payload.year = '';
-        }
-
-        // Audit fields
-        payload.createdDate = new Date().toISOString();
-        payload.isUpdated = new Date().toISOString();
-        payload.isDeleted = false;
-        payload.ActionType = this.isEditMode ? 'update' : 'create';
-
-        console.log('Final Payload:', payload);
-
-        // Submit data
-        if (this.isEditMode && this.targetIncentiveId !== null) {
-            this.paymentService.updatePayment(this.targetIncentiveId, payload).subscribe(() => {
-                alert('Payment updated successfully');
-            });
-        } else {
-            this.targetIncentiveService.createTargetIncentive(payload).subscribe(() => {
-                alert('Target Incentive saved successfully');
-                this.clearForm();
-            });
-        }
     }
+
+    const raw = this.TargetIncentiveForm.getRawValue();
+    const payload: any = { ...raw };
+
+    // Convert month name to number for backend compatibility
+    payload.month = this.periodTime === 'Monthly' ? this.getMonthNumber(raw.month) : null;
+
+    // Ensure year is a number
+    payload.year = this.periodTime === 'Yearly' ? +raw.year || null : null;
+
+    // Clean unused fields
+    payload.quarter = this.periodTime === 'Quarterly' ? raw.quarter : null;
+
+    payload.weekTargets = this.periodTime === 'Monthly' ? this.selectedMonthWeeks : [];
+    payload.quarterTargetMonths = this.periodTime === 'Quarterly' ? this.selectedQuarterMonths : [];
+    payload.yearlyTargetMonths = this.periodTime === 'Yearly' ? this.yearlyBreakdown : [];
+
+    // Audit fields
+    payload.createdDate = new Date().toISOString();
+    payload.isUpdated = false;
+    payload.isDeleted = false;
+    payload.ActionType = this.isEditMode ? 'update' : 'create';
+
+    console.log('Final Payload:', payload);
+
+    if (this.isEditMode && this.targetIncentiveId !== null) {
+        this.paymentService.updatePayment(this.targetIncentiveId, payload).subscribe(() => {
+            alert('Payment updated successfully');
+        });
+    } else {
+        this.targetIncentiveService.createTargetIncentive(payload).subscribe(() => {
+            alert('Target Incentive saved successfully');
+            this.clearForm();
+        });
+    }
+}
+
 
 
     clearForm() {
