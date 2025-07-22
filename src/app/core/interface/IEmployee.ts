@@ -38,6 +38,7 @@ export interface Employee {
   designationId: number;
   reportToId?: number;
   areaId: number;
+  zoneId: number;
   countryId: number;
   stateId: number;
   cityId: number;

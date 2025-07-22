@@ -11,23 +11,29 @@
     <form [formGroup]="TargetIncentiveForm" (ngSubmit)="onTargetIncentiveSubmit()">
       <div class="card-body p-4">
 
-        <!-- Zone  -->
-        <!-- <div class="mb-3">
-          <label class="form-label">Zone</label>
-          <select class="form-select" formControlName="Zone">
-            <option value="" disabled>Select Zone</option>
-            <option *ngFor="let zone of Zones" [value]="zone">{{ zone }}</option>
-          </select>
-        </div> -->
+      <!-- Zone -->
+<div class="mb-3">
+  <label class="form-label">Zone</label>
+  <!-- call onZoneChange whenever the user picks a zone -->
+ <select class="form-select"
+        formControlName="ZoneId"
+        (change)="onZoneChange($event)">
+  <option value="" disabled>Select Zone</option>
+  <option *ngFor="let zone of Zones" [value]="zone.zoneId">{{ zone.zonename }}</option>
+</select>
 
-        <!-- Employee -->
-        <!-- <div class="mb-3">
-          <label class="form-label">Employee</label>
-          <select class="form-select" formControlName="employee">
-            <option value="" disabled>Select Employee</option>
-            <option *ngFor="let employee of Employees" [value]="employee">{{ employee }}</option>
-          </select>
-        </div> -->
+</div>
+
+<!-- Employee -->
+<div class="mb-3">
+  <label class="form-label">Employee</label>
+  <select class="form-select" formControlName="employeeId">
+    <option value="" disabled>Select Employee</option>
+    <option *ngFor="let emp of Employees" [value]="emp.employeeId">
+      {{ emp.firstName }} {{ emp.lastName }}
+    </option>
+  </select>
+</div>
 
 
         <!-- Period Time -->

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 // This interface matches your .NET TargetIncentiveModel
 export interface TargetIncentive {
   targetIncentiveId?: number;
+  id?: number;
   periodTime: string;
   month?: string;
   week?: string;
@@ -12,6 +13,11 @@ export interface TargetIncentive {
   toDate?: string;
   targetType: string;
   targetValue: number;
+  quarter?: string;
+  year?: string;
+  zone: string;
+  employee: string;
+  incentiveName: string;
   incentiveType: string;
   incentiveValue: number;
   unitType: string;
@@ -19,7 +25,19 @@ export interface TargetIncentive {
   isUpdated?: string;
   isDeleted: boolean;
   actionType: string;
+
+  // ✅ Add this for Yearly target breakdown
+  yearlyTargetMonths?: {
+    month: string;
+    percentage: number;
+    calculatedValue: number;
+  }[];
+
+  // ✅ Optionally, also include for other periods if needed
+  weekTargets?: WeekTarget[];
+  quarterTargetMonths?: QuarterTargetMonth[];
 }
+
 
 export interface WeekTarget {
   label: string;
@@ -62,16 +80,16 @@ export class TargetIncentiveService {
   }
 
   getTargetIncentiveById(id: number): Observable<TargetIncentive> {
-    return this.http.get<TargetIncentive>(`${this.apiUrl}/${id}`);
+    return this.http.get<TargetIncentive>(`${this.apiUrl}/GetById/${id}`);
   }
 
   addTargetIncentive(data: TargetIncentive): Observable<any> {
     return this.http.post(`${this.apiUrl}/Create`, data);
   }
 
-  updateTargetIncentive(id: number, data: TargetIncentive): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, data);
-  }
+updateTargetIncentive(id: number, data: TargetIncentive): Observable<any> {
+  return this.http.put(`${this.apiUrl}/Update/${id}`, data);
+}
 
   deleteTargetIncentive(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);

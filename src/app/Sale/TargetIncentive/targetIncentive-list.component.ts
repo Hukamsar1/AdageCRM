@@ -59,12 +59,12 @@ export class targetIncentiveListComponent implements OnInit {
           <div class="text-center">
             <button class="btn btn-warning me-1 btn-sm" 
               style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px; margin-left:50px;" 
-              data-action="edit" data-id="${params.data.targetIncentiveId}" title="Edit">
+              data-action="edit" data-id="${params.data.id}" title="Edit">
               <i class="bi bi-pencil"></i>
             </button>
             <button class="btn btn-danger btn-sm" 
               style="font-size:12px; padding:2px; width:18px; height:25px; margin-bottom:8px;" 
-              data-action="delete" data-id="${params.data.targetIncentiveId}" title="Delete">
+              data-action="delete" data-id="${params.data.id}" title="Delete">
               <i class="bi bi-trash"></i>
             </button>
           </div>

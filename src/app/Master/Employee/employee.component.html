@@ -78,6 +78,16 @@
               <div *ngIf="employeeForm.get('areaId')?.invalid && employeeForm.get('areaId')?.touched"
                 class="invalid-feedback small">Please Enter area</div>
             </div>
+             <!--  Zone-->
+       <div class="col-md-4">
+  <label class="form-label small">Zone</label>
+  <select class="form-select form-select-sm" formControlName="ZoneId">
+    <option value="" disabled>Select Zone</option>
+    <option *ngFor="let zone of Zones" [value]="zone.zoneId">{{ zone.zonename }}</option>
+  </select>
+</div>
+
+
             <div class="col-md-8">
               <label class="form-label small">Address <span class="text-danger">*</span></label>
               <textarea class="form-control form-control-sm" formControlName="address" rows="1"></textarea>

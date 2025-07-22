@@ -2,8 +2,21 @@ import { CommonModule, NgFor, NgForOf, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EmployeeService } from 'src/app/core/Service/EmployeeService';
 import { PaymentService } from 'src/app/core/Service/PaymentService';
 import { TargetIncentiveService } from 'src/app/core/Service/targetIncentiveService';
+
+interface Employee {
+    employeeId: number;
+    firstName: string;
+    lastName: string;
+    data: Employee[];
+    /* …other props… */
+}
+
+interface ApiResponse<T> {
+    data: T;
+}
 
 @Component({
     selector: 'app-targetIncentive-form',
@@ -17,8 +30,8 @@ export class TargrtIncentiveComponent implements OnInit {
     isEditMode = false;
     loading = true;
     targetIncentiveId!: number;
-    Zones : any[] = [];
-    Employees : any[] = [];
+    Zones: any[] = [];
+    Employees: any[] = [];
     periodOptions = ['Monthly', 'Quarterly', 'Yearly'];
     monthOptions = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     quarterOptions = ['April-June', 'July-September', 'October-December', 'January-March'];
@@ -53,12 +66,16 @@ export class TargrtIncentiveComponent implements OnInit {
         private route: ActivatedRoute,
         private targetIncentiveService: TargetIncentiveService,
         private paymentService: PaymentService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private employeeService: EmployeeService,
+        private cdRef: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
         this.createForm();
         this.handlePeriodTimeChanges();
+        this.checkEditMode();
+        this.loadZone();
 
         this.TargetIncentiveForm.get('targetValue')?.valueChanges.subscribe(() => {
             this.updateCalculatedWeekValues();
@@ -84,8 +101,8 @@ export class TargrtIncentiveComponent implements OnInit {
 
     createForm() {
         this.TargetIncentiveForm = this.fb.group({
-           // Zone:[''],
-          //  employee:[''],
+            ZoneId: ['', Validators.required],
+            employeeId: ['', Validators.required],
             periodTime: ['', Validators.required],
             month: [''],
             quarter: [''],
@@ -299,71 +316,204 @@ export class TargrtIncentiveComponent implements OnInit {
         return this.selectedQuarterMonths.reduce((sum, m) => sum + (m.percentage || 0), 0);
     }
 
-getMonthNumber(monthName: string): number | null {
-    const months: { [key: string]: number } = {
-        January: 1, February: 2, March: 3, April: 4,
-        May: 5, June: 6, July: 7, August: 8,
-        September: 9, October: 10, November: 11, December: 12
-    };
-    return months[monthName] || null;
-}
-
-
-onTargetIncentiveSubmit(): void {
-    if (this.TargetIncentiveForm.invalid) {
-        this.TargetIncentiveForm.markAllAsTouched();
-        return;
+    getMonthNumber(monthName: string): number | null {
+        const months: { [key: string]: number } = {
+            January: 1, February: 2, March: 3, April: 4,
+            May: 5, June: 6, July: 7, August: 8,
+            September: 9, October: 10, November: 11, December: 12
+        };
+        return months[monthName] || null;
     }
 
-    if (this.periodTime === 'Yearly') {
-        const totalCalculatedValue = this.yearlyBreakdown.reduce(
-            (sum, item) => sum + (+item.calculatedValue || 0), 0
-        );
-        const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+    loadEmployees(zoneId: number): void {
+       this.employeeService.getAllEmployeesByZone(zoneId).subscribe((response: any) => {
+  this.Employees = response;
+});
 
-        const difference = +(totalTarget - totalCalculatedValue).toFixed(2);
-        if (Math.abs(difference) > 0.01) {
-            const status = difference > 0 ? 'less' : 'more';
-            alert(`Calculated total is ${Math.abs(difference)} ${status} than 100% of Target Value.`);
+    }
+
+    onZoneChange(event: Event): void {
+        const selectedZoneId = Number((event.target as HTMLSelectElement).value);
+        if (!selectedZoneId) {
+            this.Employees = [];
+            this.TargetIncentiveForm.get('employee')?.reset();
             return;
+        }
+
+        this.loadEmployees(selectedZoneId);
+        this.TargetIncentiveForm.get('employee')?.reset();
+    }
+
+
+
+    onTargetIncentiveSubmit(): void {
+        if (this.TargetIncentiveForm.invalid) {
+            this.TargetIncentiveForm.markAllAsTouched();
+            return;
+        }
+
+        if (this.periodTime === 'Yearly') {
+            const totalCalculatedValue = this.yearlyBreakdown.reduce(
+                (sum, item) => sum + (+item.calculatedValue || 0), 0
+            );
+            const totalTarget = +this.TargetIncentiveForm.get('targetValue')?.value || 0;
+
+            const difference = +(totalTarget - totalCalculatedValue).toFixed(2);
+            if (Math.abs(difference) > 0.01) {
+                const status = difference > 0 ? 'less' : 'more';
+                alert(`Calculated total is ${Math.abs(difference)} ${status} than 100% of Target Value.`);
+                return;
+            }
+        }
+
+        const raw = this.TargetIncentiveForm.getRawValue();
+        const payload: any = { ...raw };
+
+        // Convert month name to number for backend compatibility
+        payload.month = this.periodTime === 'Monthly' ? this.getMonthNumber(raw.month) : null;
+
+        // Ensure year is a number
+        payload.year = this.periodTime === 'Yearly' ? raw.year : null;
+
+        // Clean unused fields
+        payload.quarter = this.periodTime === 'Quarterly' ? raw.quarter : null;
+
+        // payload.weekTargets = this.periodTime === 'Monthly' ? this.selectedMonthWeeks : [];
+        // payload.quarterTargetMonths = this.periodTime === 'Quarterly' ? this.selectedQuarterMonths : [];
+        // payload.yearlyTargetMonths = this.periodTime === 'Yearly' ? this.yearlyBreakdown : [];
+
+        // Map week targets with PeriodType
+        payload.weekTargets = this.periodTime === 'Monthly'
+            ? this.selectedMonthWeeks.map(week => ({
+                ...week,
+                periodType: 'Monthly'
+            }))
+            : [];
+
+        // Map quarter months with PeriodType
+        payload.quarterTargetMonths = this.periodTime === 'Quarterly'
+            ? this.selectedQuarterMonths.map(month => ({
+                ...month,
+                periodType: 'Quarterly'
+            }))
+            : [];
+
+        // Map yearly months with PeriodType
+        payload.yearlyTargetMonths = this.periodTime === 'Yearly'
+            ? this.yearlyBreakdown.map(month => ({
+                ...month,
+                periodType: 'Yearly'
+            }))
+            : [];
+
+        // Audit fields
+        payload.createdDate = new Date().toISOString();
+        payload.isUpdated = false;
+        payload.isDeleted = false;
+        payload.ActionType = this.isEditMode ? 'update' : 'create';
+
+        console.log('Final Payload:', payload);
+
+        if (this.isEditMode && this.targetIncentiveId !== null) {
+            this.targetIncentiveService.updateTargetIncentive(this.targetIncentiveId, payload).subscribe({
+                next: (res) => {
+                    alert(res?.message || 'Target Incentive updated successfully');
+                },
+                error: (err) => {
+                    console.error('Update failed:', err);
+                    alert('Update failed. Please try again.');
+                }
+            });
+
+        } else {
+            this.targetIncentiveService.createTargetIncentive(payload).subscribe(() => {
+                alert('Target Incentive saved successfully');
+                this.clearForm();
+            });
         }
     }
 
-    const raw = this.TargetIncentiveForm.getRawValue();
-    const payload: any = { ...raw };
-
-    // Convert month name to number for backend compatibility
-    payload.month = this.periodTime === 'Monthly' ? this.getMonthNumber(raw.month) : null;
-
-    // Ensure year is a number
-    payload.year = this.periodTime === 'Yearly' ? +raw.year || null : null;
-
-    // Clean unused fields
-    payload.quarter = this.periodTime === 'Quarterly' ? raw.quarter : null;
-
-    payload.weekTargets = this.periodTime === 'Monthly' ? this.selectedMonthWeeks : [];
-    payload.quarterTargetMonths = this.periodTime === 'Quarterly' ? this.selectedQuarterMonths : [];
-    payload.yearlyTargetMonths = this.periodTime === 'Yearly' ? this.yearlyBreakdown : [];
-
-    // Audit fields
-    payload.createdDate = new Date().toISOString();
-    payload.isUpdated = false;
-    payload.isDeleted = false;
-    payload.ActionType = this.isEditMode ? 'update' : 'create';
-
-    console.log('Final Payload:', payload);
-
-    if (this.isEditMode && this.targetIncentiveId !== null) {
-        this.paymentService.updatePayment(this.targetIncentiveId, payload).subscribe(() => {
-            alert('Payment updated successfully');
-        });
-    } else {
-        this.targetIncentiveService.createTargetIncentive(payload).subscribe(() => {
-            alert('Target Incentive saved successfully');
-            this.clearForm();
+    private checkEditMode(): void {
+        this.route.paramMap.subscribe(params => {
+            const id = params.get('id');
+            if (id) {
+                this.isEditMode = true;
+                this.targetIncentiveId = +id;
+                this.PatchtargetIncentiveData(this.targetIncentiveId);
+            }
         });
     }
-}
+
+    loadZone(): void {
+        this.employeeService.getAllZones().subscribe({
+            next: (zones) => {
+                this.Zones = zones;
+            },
+            error: (error) => {
+                console.error('Error loading Zone:', error);
+            }
+        });
+    }
+
+    private PatchtargetIncentiveData(id: number): void {
+        this.loading = true;
+
+        this.targetIncentiveService.getTargetIncentiveById(id).subscribe({
+            next: (targetIncentive) => {
+                console.log('Target Incentive loaded:', targetIncentive);
+
+                // Always patch common fields
+                this.TargetIncentiveForm.patchValue({
+                    targetIncentiveId: targetIncentive.id,
+                    periodTime: targetIncentive.periodTime,
+                    targetType: targetIncentive.targetType,
+                    targetValue: targetIncentive.targetValue
+                });
+
+                // Conditionally patch fields
+                if (targetIncentive.periodTime === 'Monthly' && targetIncentive.month != null) {
+                    const monthNumber = +targetIncentive.month; // ensure it's a number
+                    const monthName = this.getMonthName(monthNumber);
+                    this.TargetIncentiveForm.patchValue({
+                        month: monthName
+                    });
+
+                    this.generateWeeksForMonth(); // regenerate weekly breakdown if needed
+                }
+                else if (targetIncentive.periodTime === 'Quarterly') {
+                    this.TargetIncentiveForm.patchValue({
+                        quarter: targetIncentive.quarter
+                    });
+                } else if (targetIncentive.periodTime === 'Yearly') {
+                    this.TargetIncentiveForm.patchValue({
+                        year: targetIncentive.year
+                    });
+
+                    if (targetIncentive.yearlyTargetMonths) {
+                        this.yearlyBreakdown = targetIncentive.yearlyTargetMonths.map((monthData: any) => ({
+                            month: monthData.month,
+                            percentage: +monthData.percentage,
+                            calculatedValue: +monthData.calculatedValue,
+                        }));
+                    }
+                }
+
+                this.loading = false;
+            },
+            error: (error) => {
+                console.error('Error loading target incentive:', error);
+                this.loading = false;
+            },
+        });
+    }
+
+    getMonthName(monthNumber: number): string {
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return monthNames[monthNumber - 1] || '';
+    }
 
 
 

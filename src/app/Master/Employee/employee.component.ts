@@ -10,7 +10,7 @@ import { AreaService } from 'src/app/core/Service/areaService';
 import { DesignationService } from 'src/app/core/Service/degnationService';
 import { Department, DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
-import { EmployeeService } from 'src/app/core/Service/EmployeeService';
+import { EmployeeService, Zone } from 'src/app/core/Service/EmployeeService';
 
 @Component({
     selector: 'app-employee-form',
@@ -41,7 +41,7 @@ export class EmployeeComponent implements OnInit {
     isLoading = false;
     isEditMode = false;
     employeeid!: number;
-
+Zones : any[] = [];
     constructor(
         private fb: FormBuilder,
         private employeeService: EmployeeService,
@@ -61,6 +61,7 @@ export class EmployeeComponent implements OnInit {
             stateId: ['', Validators.required],
             cityId: ['', Validators.required],
             areaId: ['', Validators.required],
+           ZoneId: [null, Validators.required],
             address: ['', Validators.required],
             departmentId: ['', Validators.required],
             designationId: ['', Validators.required],
@@ -140,6 +141,7 @@ export class EmployeeComponent implements OnInit {
         this.loadDepartments();
         this.loadDesignations();
         // this.loadReportToList();
+        this.loadZone();
     }
 
     loadDepartments(): void {
@@ -149,6 +151,17 @@ export class EmployeeComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Error loading departments:', error);
+            }
+        });
+    }
+
+    loadZone(): void {
+        this.employeeService.getAllZones().subscribe({
+            next: (zones: Zone[]) => {
+                this.Zones = zones;
+            },
+            error: (error) => {
+                console.error('Error loading Zone:', error);
             }
         });
     }
@@ -243,6 +256,7 @@ export class EmployeeComponent implements OnInit {
                     stateId: employee.stateId,
                     cityId: employee.cityId,
                     areaId: employee.areaId,
+                    ZoneId: employee.zoneId,
                     address: employee.address,
                     departmentId: employee.departmentId,
                     designationId: employee.designationId,
@@ -351,6 +365,7 @@ export class EmployeeComponent implements OnInit {
             StateId: Number(this.employeeForm.get('stateId')?.value),
             CityId: Number(this.employeeForm.get('cityId')?.value),
             AreaId: this.employeeForm.get('areaId')?.value,
+            ZoneId: Number(this.employeeForm.get('ZoneId')?.value),
             Address: this.employeeForm.get('address')?.value,
             DepartmentId: Number(this.employeeForm.get('departmentId')?.value),
             DesignationId: Number(this.employeeForm.get('designationId')?.value),
