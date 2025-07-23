@@ -1,0 +1,89 @@
+@import "ag-grid-community/styles/ag-grid.css";
+@import "ag-grid-community/styles/ag-theme-alpine.css";
+
+.ag-theme-alpine {
+  --ag-borders: solid;
+  --ag-border-color: #dee2e6;
+  --ag-cell-horizontal-border: solid 1px var(--ag-border-color);
+  --ag-header-column-separator-display: block;
+  --ag-header-column-separator-color: var(--ag-border-color);
+  --ag-font-size: 14px;
+
+  .ag-row-blank {
+    background-color: #f9f9f9;
+    color: #999;
+    font-style: italic;
+  }
+}
+
+.ag-header-cell {
+  background: #007bff !important;
+  color: white !important;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ag-header-cell-label {
+  justify-content: center !important;
+}
+
+.ag-cell {
+  border-right: 1px solid #dee2e6 !important;
+  display: flex;
+  align-items: center;
+}
+
+.grid-container {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  width: 100%;
+  min-height: 150px;
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+  margin: 1rem 0;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ag-cell-action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 5px;
+  width: 100%;
+}
+
+.ag-cell-action-buttons .btn {
+  padding: 0.1rem 0.2rem;
+  line-height: 1;
+  font-size: 0.6rem;
+  border-radius: 0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ag-cell-action-buttons .btn .bi {
+  font-size: 0.7rem;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+}
+
+.ag-cell-action-buttons .btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+.ag-cell-action-buttons .btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+.card-header {
+  padding: 0.5%;
+}

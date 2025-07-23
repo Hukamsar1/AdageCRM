@@ -4,11 +4,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Employee, EnquirySource } from '../interface/IEmployee';
 
+export interface Zone {
+  zoneId: number;
+  zonename: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
   private apiUrl = 'https://localhost:44369/api/Employee';
+  private apiUrls = 'https://localhost:44369/api/Area';
 
   constructor(private http: HttpClient) { }
 
@@ -19,6 +26,16 @@ export class EmployeeService {
   getAllEmployees(): Observable<Employee[]> {
     return this.http.get<Employee[]>(`${this.apiUrl}/getEmployeeList`);
   }
+
+getAllEmployeesByZone(zoneId: number): Observable<{ data: Employee[] }> {
+  return this.http.get<{ data: Employee[] }>(`${this.apiUrl}/getEmployeeZone/${zoneId}`);
+}
+
+
+getAllZones(): Observable<Zone[]> {
+  return this.http.get<Zone[]>(`${this.apiUrls}/GetAllZone`);
+}
+
   // employee.service.ts
 updateEmployee(id: number, formData: FormData): Observable<any> {
   return this.http.put(`${this.apiUrl}/${id}`, formData, {
@@ -40,10 +57,11 @@ updateEmployee(id: number, formData: FormData): Observable<any> {
   }
 
 
+// Enquery Service
 
   private baseUrl = 'https://localhost:44369/api/EnquirySource';
 
-  getById(id: number): Observable<EnquirySource> {
+  getEnquerySourceById(id: number): Observable<EnquirySource> {
     return this.http.get<EnquirySource>(`${this.baseUrl}/${id}`);
   }
 
@@ -55,10 +73,17 @@ updateEmployee(id: number, formData: FormData): Observable<any> {
     return this.http.put(`${this.baseUrl}/${id}`, source);
   }
 
-  getAll(): Observable<EnquirySource[]> {
-    return this.http.get<EnquirySource[]>(this.baseUrl);
+  getAllEnquery(): Observable<EnquirySource[]> {
+    return this.http.get<EnquirySource[]>(`${this.baseUrl}/GetList`);
   }
-  delete(id: number): Observable<any> {
+  deleteEnquery(id: number, actionType: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
+
+  checkDuplicateEnquirySource(name: string, id: number) {
+  return this.http.get<boolean>(`https://localhost:44369/api/EnquirySource/CheckDuplicate`, {
+    params: { name, id }
+  });
+}
+
 }

@@ -1,0 +1,192 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">{{ isEditMode ? 'Update' : 'Create' }} Target Incentive</h4>
+      <button type="button" class="btn btn-light btn-sm" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back
+      </button>
+    </div>
+
+    <!--  Form start -->
+    <form [formGroup]="TargetIncentiveForm" (ngSubmit)="onTargetIncentiveSubmit()">
+      <div class="card-body p-4">
+
+      <!-- Zone -->
+<div class="mb-3">
+  <label class="form-label">Zone</label>
+  <!-- call onZoneChange whenever the user picks a zone -->
+ <select class="form-select"
+        formControlName="ZoneId"
+        (change)="onZoneChange($event)">
+  <option value="" disabled>Select Zone</option>
+  <option *ngFor="let zone of Zones" [value]="zone.zoneId">{{ zone.zonename }}</option>
+</select>
+
+</div>
+
+<!-- Employee -->
+<div class="mb-3">
+  <label class="form-label">Employee</label>
+  <select class="form-select" formControlName="employeeId">
+    <option value="" disabled>Select Employee</option>
+    <option *ngFor="let emp of Employees" [value]="emp.employeeId">
+      {{ emp.firstName }} {{ emp.lastName }}
+    </option>
+  </select>
+</div>
+
+
+        <!-- Period Time -->
+        <div class="mb-3">
+          <label class="form-label">Period Time</label>
+          <select class="form-select" formControlName="periodTime">
+            <option value="" disabled>Select Period Time</option>
+            <option *ngFor="let option of periodOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+
+        <!-- Monthly -->
+        <div *ngIf="periodTime === 'Monthly'" class="mb-3">
+          <label class="form-label">Month</label>
+          <select class="form-select" formControlName="month" (change)="onMonthChange($event)">
+            <option value="" disabled>Select Month</option>
+            <option *ngFor="let month of monthOptions" [value]="month">{{ month }}</option>
+          </select>
+        </div>
+
+        <!-- Quarterly -->
+        <div *ngIf="periodTime === 'Quarterly'" class="mb-3">
+          <label class="form-label">Quarter</label>
+          <select class="form-select" formControlName="quarter">
+            <option value="" disabled>Select Quarter</option>
+            <option *ngFor="let q of quarterOptions" [value]="q">{{ q }}</option>
+          </select>
+        </div>
+
+        <!-- Yearly -->
+        <div *ngIf="periodTime === 'Yearly'" class="mb-3">
+          <label class="form-label">Year</label>
+          <select class="form-select" formControlName="year">
+            <option value="" disabled>Select Year</option>
+            <option *ngFor="let y of yearOptions" [value]="y">{{ y }}</option>
+          </select>
+        </div>
+
+        <!-- Target Type -->
+        <div class="mb-3">
+          <label class="form-label">Target Type</label>
+          <select class="form-select" formControlName="targetType">
+            <option value="" disabled>Select Target Type</option>
+            <option *ngFor="let type of targetTypeOptions" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <!-- Target Value -->
+        <div *ngIf="targetType" class="mb-3">
+          <label class="form-label">
+            {{ targetType === 'Amount Wise' ? 'Amount' : 'Number' }}
+          </label>
+          <input type="number" class="form-control" formControlName="targetValue"
+            [placeholder]="'Enter ' + (targetType === 'Amount Wise' ? 'Amount' : 'Number')">
+        </div>
+
+        <!-- Dynamic Weeks -->
+        <div class="mb-3" *ngIf="selectedMonthWeeks.length > 0">
+          <label class="form-label fw-semibold">Weeks Target Values</label>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center align-middle week-target-table">
+              <thead class="table-light">
+                <tr>
+                  <th>Week</th>
+                  <th>Range</th>
+                  <th>Target %</th>
+                  <th>Calculated Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let week of selectedMonthWeeks">
+                  <td class="fw-semibold">{{ week.label }}</td>
+                  <td class="text-muted small">{{ week.range }}</td>
+                  <td class="fw-bold">{{ week.value }}%</td>
+                  <td class="fw-bold">{{ week.calculatedValue | number }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Quarterly Monthly Breakdown -->
+        <div class="mb-3" *ngIf="periodTime === 'Quarterly' && selectedQuarterMonths.length > 0">
+          <label class="form-label fw-semibold">Monthly Target Breakdown</label>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Month</th>
+                  <th>Target %</th>
+                  <th>Calculated Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of selectedQuarterMonths; let i = index">
+                  <td>{{ item.month }}</td>
+                  <td>
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center"
+                      [value]="item.percentage | number:'1.2-2'" (input)="onQuarterInputChange(i, $event)">
+                  </td>
+                  <td>{{ item.calculatedValue | number }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Yearly Target Breakdown -->
+        <div class="mb-3" *ngIf="TargetIncentiveForm.get('periodTime')?.value === 'Yearly' && yearlyBreakdown.length">
+          <label class="form-label fw-semibold">Yearly Target Breakdown</label>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Month</th>
+                  <th>Target %</th>
+                  <th>Calculated Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of yearlyBreakdown; let i = index">
+                  <td>{{ item.month }}</td>
+                  <td>
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center"
+                      [value]="item.percentage" (input)="onYearlyInputChange(i, $event)">
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" class="form-control form-control-sm text-center"
+                      [value]="item.calculatedValue" (input)="onYearlyCalculatedValueChange(i, $event)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!--  Moved inside the form -->
+      <div class="card-footer d-flex justify-content-end gap-2 p-3 bg-light border-top">
+        <button type="submit" class="btn btn-success" [disabled]="TargetIncentiveForm.invalid">
+          <i class="bi bi-save"></i>
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
+        <button type="button" class="btn btn-warning text-dark" (click)="clearForm()">
+          <i class="bi bi-eraser"></i> Clear
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          <i class="bi bi-x-circle"></i> Close
+        </button>
+      </div>
+    </form>
+    <!--  Form end -->
+
+  </div>
+</div>

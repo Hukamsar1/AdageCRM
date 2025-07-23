@@ -7,11 +7,10 @@ import { UserService } from 'src/app/core/Service/registerservice';
 import { NotificationService } from 'src/app/core/Service/notificationService';
 
 @Component({
-  selector: 'app-signup',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss'],
+    selector: 'app-signup',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    templateUrl: './signup.component.html',
+    styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit{
   signupForm!: FormGroup;
@@ -55,8 +54,10 @@ isInvalid(controlName: string): boolean {
       this.userService.signup(formData).subscribe(
         (res) => {
           console.log('User registered successfully!', res);
-           this.notificationService.success('You are registered successfully!');
-           this.router.navigate(['/Mainlayout']);
+          alert('You are registered successfully!');
+          // this.notificationService.success('You are registered successfully!');
+           this.router.navigate(['/login']);
+
           //this.signupForm.reset();
         },
         (error) => {

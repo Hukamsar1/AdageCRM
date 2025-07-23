@@ -5,11 +5,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
 @Component({
-  standalone: true,
-  selector: 'app-department',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './department.component.html',
-  styleUrls: ['./department.component.scss'] // optional if you want to style it
+    selector: 'app-department',
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    templateUrl: './department.component.html',
+    styleUrls: ['./department.component.scss'] // optional if you want to style it
 })
 export class DepartmentComponent implements OnInit {
   departmentForm!: FormGroup;
@@ -124,11 +123,10 @@ export class DepartmentComponent implements OnInit {
   }
 
   closeForm(): void {
-    this.router.navigate(['/departmenylist']);
+    this.router.navigate(['/Mainlayout/department/list']);
   }
 
   goBack(): void {
     this.router.navigate(['/Mainlayout/department/list']);
-
   }
 }

@@ -5,21 +5,22 @@ import { RouterLink } from "@angular/router";
 declare var bootstrap: any;
 
 @Component({
-    standalone: true,
-    selector: 'app-sidebar',
-    imports: [RouterLink, CommonModule],
-    template: `
+  selector: 'app-sidebar',
+  imports: [RouterLink, CommonModule],
+  template: `
     <aside class="bg-dark text-white vh-100 p-2" [class.collapsed]="isCollapsed">
-  <button class="menu-btn d-flex align-items-center w-100">
-    <img src="assets/dashboard.png" style="width: 24px;height: 24px;" />
-    <span class="menu-label" style="margin-left:9px;">Dashboard</span>
-  </button>
+<button class="menu-btn d-flex align-items-center w-100" [routerLink]="'/Mainlayout/dashboard'" routerLinkActive="active">
+  <i class="bi bi-speedometer2"></i>  
+  <span class="menu-label" style="margin-left:9px;">Dashboard</span>
+</button>
+
   <div class="divider"></div>
 
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
     data-bs-toggle="collapse" data-bs-target="#masterMenu"
     aria-expanded="false" aria-controls="masterMenu">
-    <img src="assets/Master.png" class="menu-icon" />
+   <img src="assets/Master.png" class="menu-icon" style="min-width: 8px; width: 16px; color: white; margin-left:3px; height: 20px;" />
+
     <span class="menu-label">Master</span>
     <i class="bi bi-caret-right-fill arrow"></i>
   </button>
@@ -29,11 +30,14 @@ declare var bootstrap: any;
       <a routerLink="/Mainlayout/area/create" routerLinkActive="active">Area</a>
       <a routerLink="/Mainlayout/designation/list" routerLinkActive="active">Designation</a>
       <a routerLink="/Mainlayout/employee/list" routerLinkActive="active">Empoloyee</a>
-      <a routerLink="/Mainlayout/enquiry-source-list/create" routerLinkActive="active">Enquery Source</a>
-      <a routerLink="/Mainlayout/product-create" routerLinkActive="active">Product</a>
+      <a routerLink="/Mainlayout/enquiry-list" routerLinkActive="active">Enquery Source</a>
+      <a routerLink="/Mainlayout/product-list" routerLinkActive="active">Product</a>
+      <a routerLink="/Mainlayout/competetor-list" routerLinkActive="active">Competitor Product</a>
     </nav>
   </div>
+
 <div class="divider"></div>
+
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
     data-bs-toggle="collapse" data-bs-target="#saleMenu"
     aria-expanded="false" aria-controls="saleMenu">
@@ -43,27 +47,27 @@ declare var bootstrap: any;
   </button>
   <div class="collapse submenu-container" id="saleMenu">
     <nav class="submenu-items">
-      <a routerLink="/sale-invoice">Lead</a>
-      <a routerLink="/sale-list">Order</a>
-      <a routerLink="/sale-list">Payment</a>
+      <a routerLink="/Mainlayout/lead-list" routerLinkActive="active">Lead</a>
+      <a routerLink="/Mainlayout/order-list" routerLinkActive="active">Order</a>
+      <a routerLink="/Mainlayout/payment-list" routerLinkActive="active">Payment</a>
     </nav>
   </div>
+
   <div class="divider"></div>
 
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
     data-bs-toggle="collapse" data-bs-target="#commissionMenu"
     aria-expanded="false" aria-controls="commissionMenu">
     <i class="bi bi-bullseye me-2"></i>
-    <span class="menu-label">Commission & Target</span>
+    <span class="menu-label">Target</span>
     <i class="bi bi-caret-right-fill arrow"></i>
   </button>
   <div class="collapse submenu-container" id="commissionMenu">
     <nav class="submenu-items">
-      <a routerLink="/commission-lead">Lead</a>
-      <a routerLink="/commission-incentive">Incentive</a>
-      <a routerLink="/commission-payment">Payment</a>
+      <a routerLink="/Mainlayout/targrtIncentive-list" routerLinkActive="active">Target & Incentive</a>
     </nav>
   </div>
+
   <div class="divider"></div>
 
   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
@@ -80,11 +84,28 @@ declare var bootstrap: any;
       <a routerLink="/travel-allowance">Allowance</a>
     </nav>
   </div>
+
+  <div class="divider"></div>
+
+   <button class="menu-btn d-flex align-items-center justify-content-between w-100"
+    data-bs-toggle="collapse" data-bs-target="#reportsMenu"
+    aria-expanded="false" aria-controls="reportsMenu">
+<i class="bi bi-bar-chart"></i>
+    <span class="menu-label">Reports</span>
+    <i class="bi bi-caret-right-fill arrow"></i>
+  </button>
+  <div class="collapse submenu-container" id="reportsMenu">
+    <nav class="submenu-items">
+      <a routerLink="/Mainlayout/lead-report" routerLinkActive="active">Lead Report</a>
+      <a routerLink="/Mainlayout/order-report" routerLinkActive="active">Order Report</a>
+      <a routerLink="/Mainlayout/customer-report" routerLinkActive="active">Customer Report</a>
+    </nav>
+  </div>
   <div class="divider"></div>
 </aside>
 
     `,
-    styles: [`
+  styles: [`
     aside {
       width: 250px;
       transition: width 0.3s;
@@ -304,16 +325,16 @@ aside.collapsed .divider {
     `]
 })
 export class SidebarComponent implements OnChanges {
-    @Input() isCollapsed = false;
+  @Input() isCollapsed = false;
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['isCollapsed'] && this.isCollapsed) {
-            // Close all currently opened collapse menus
-            const openMenus = document.querySelectorAll('.collapse.show');
-            openMenus.forEach(menu => {
-                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(menu as Element, { toggle: false });
-                bsCollapse.hide();
-            });
-        }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isCollapsed'] && this.isCollapsed) {
+      // Close all currently opened collapse menus
+      const openMenus = document.querySelectorAll('.collapse.show');
+      openMenus.forEach(menu => {
+        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(menu as Element, { toggle: false });
+        bsCollapse.hide();
+      });
     }
+  }
 }

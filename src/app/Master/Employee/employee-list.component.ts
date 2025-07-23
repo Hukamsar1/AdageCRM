@@ -9,11 +9,9 @@ import { DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
 @Component({
     selector: 'app-employee-list',
-    standalone: true,
     imports: [AgGridModule, CommonModule, ReactiveFormsModule],
     templateUrl: './employee-list.component.html',
-    styleUrls: ['./employee-list.component.scss'],
-
+    styleUrls: ['./employee-list.component.scss']
 })
 export class EmployeeListComponent implements OnInit {
     rowData: any[] = [];

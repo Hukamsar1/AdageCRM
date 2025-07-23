@@ -7,7 +7,6 @@ import { EmployeeService } from 'src/app/core/Service/EmployeeService';
 
 @Component({
     selector: 'app-enquirysource',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './enquery.component.html',
     styleUrls: ['./enquery.component.scss']
@@ -16,6 +15,9 @@ export class EnquirySourceFormComponent implements OnInit {
     form!: FormGroup;
     isEdit = false;
     id?: number;
+    isLoading = false;
+    isEditMode = false;
+    enquirySourceId!: number;
 
     constructor(
         private fb: FormBuilder,
@@ -32,19 +34,37 @@ export class EnquirySourceFormComponent implements OnInit {
         this.id = Number(this.route.snapshot.paramMap.get('id'));
         if (this.id) {
             this.isEdit = true;
-            this.loadData();
+            this.checkEditMode();
         }
     }
 
-    loadData() {
-        this.enquirySourceService.getById(this.id!).subscribe({
-            next: data => this.form.patchValue({
-                enquirySourceName: data.enquirySourceName
-            }),
-            error: err => this.showError('Failed to load Enquiry Source.')
+    private checkEditMode(): void {
+        this.route.paramMap.subscribe(params => {
+            const id = params.get('id');
+            if (id) {
+                this.isEditMode = true;
+                this.enquirySourceId = +id;
+                this.loadEnqueryData(this.enquirySourceId);
+            }
         });
     }
 
+    private loadEnqueryData(id: number): void {
+        this.isLoading = true;
+        this.enquirySourceService.getEnquerySourceById(id).subscribe({
+            next: (enquery) => {
+                this.form.patchValue({
+                    enquirySourceName: enquery.enquirySourceName, // Ensure this matches API response
+                });
+                this.isLoading = false;
+            },
+            error: (error) => {
+                console.error('Error loading Enquery:', error);
+                this.isLoading = false;
+                // Optional: Show error to user
+            }
+        });
+    }
 
     onSubmit() {
         if (this.form.invalid) {
@@ -52,6 +72,30 @@ export class EnquirySourceFormComponent implements OnInit {
             return;
         }
 
+        const name = this.form.get('enquirySourceName')?.value.trim();
+
+        if (!name) {
+            alert('Name is required');
+            return;
+        }
+
+        this.enquirySourceService.checkDuplicateEnquirySource(name, this.id ?? 0).subscribe({
+            next: (isDuplicate) => {
+                if (isDuplicate) {
+                    alert('This enquiry source already exists. Please choose another.');
+                    return;
+                }
+
+                // Proceed if no duplicate
+                this.saveEnquirySource();
+            },
+            error: () => {
+                this.showError('Error checking duplicate enquiry source');
+            }
+        });
+    }
+
+    private saveEnquirySource() {
         const data: EnquirySource = this.form.value;
 
         if (this.isEdit) {
@@ -62,7 +106,6 @@ export class EnquirySourceFormComponent implements OnInit {
                     this.router.navigate(['/enquiry-source-list']);
                 },
                 error: (error) => {
-                    console.error('Error details:', error);
                     this.showError(error.error?.message || 'Error updating Enquiry Source');
                 }
             });
@@ -72,13 +115,13 @@ export class EnquirySourceFormComponent implements OnInit {
                     this.showSuccess('Enquiry Source created successfully!');
                     this.router.navigate(['/enquiry-source-list']);
                 },
-                error: err => {
-                    console.error('Create failed', err);
+                error: (err) => {
                     this.showError('Error creating Enquiry Source');
                 }
             });
         }
     }
+
 
     private showSuccess(message: string): void {
         alert(message);
@@ -86,5 +129,9 @@ export class EnquirySourceFormComponent implements OnInit {
 
     private showError(message: string): void {
         alert(message);
+    }
+    goBack(): void {
+        this.router.navigate(['/Mainlayout/enquiry-list']);
+
     }
 }

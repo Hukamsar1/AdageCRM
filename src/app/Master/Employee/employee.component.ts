@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Designation, DesignationForDropdown } from 'src/app/core/interface/Ideignation';
 import { Employee, EmployeeDropdown } from 'src/app/core/interface/IEmployee';
@@ -10,11 +10,10 @@ import { AreaService } from 'src/app/core/Service/areaService';
 import { DesignationService } from 'src/app/core/Service/degnationService';
 import { Department, DepartmentService } from 'src/app/core/Service/DepartmentService ';
 
-import { EmployeeService } from 'src/app/core/Service/EmployeeService';
+import { EmployeeService, Zone } from 'src/app/core/Service/EmployeeService';
 
 @Component({
     selector: 'app-employee-form',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './employee.component.html',
     styleUrls: ['./employee.component.scss']
@@ -42,7 +41,7 @@ export class EmployeeComponent implements OnInit {
     isLoading = false;
     isEditMode = false;
     employeeid!: number;
-
+Zones : any[] = [];
     constructor(
         private fb: FormBuilder,
         private employeeService: EmployeeService,
@@ -57,11 +56,12 @@ export class EmployeeComponent implements OnInit {
             lastName: ['', Validators.required],
             phone: ['', [Validators.required, Validators.pattern('[0-9]{10}')]],
             email: ['', [Validators.required, Validators.email]],
-            dob: ['', Validators.required],
+            dob: ['', [Validators.required, this.minimumAgeValidator(18)]],
             countryId: ['', Validators.required],
             stateId: ['', Validators.required],
             cityId: ['', Validators.required],
             areaId: ['', Validators.required],
+           ZoneId: [null, Validators.required],
             address: ['', Validators.required],
             departmentId: ['', Validators.required],
             designationId: ['', Validators.required],
@@ -103,6 +103,27 @@ export class EmployeeComponent implements OnInit {
         });
     }
 
+
+    private minimumAgeValidator(minAge: number): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (!control.value) {
+                return null; // empty -> required validator will catch
+            }
+
+            const dob = new Date(control.value);
+            const today = new Date();
+
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            return age < minAge ? { minimumAge: { requiredAge: minAge, actualAge: age } } : null;
+        };
+    }
+
+
     private resetDependentControls(controlNames: string[]): void {
         controlNames.forEach(controlName => this.employeeForm.get(controlName)?.reset());
     }
@@ -120,6 +141,7 @@ export class EmployeeComponent implements OnInit {
         this.loadDepartments();
         this.loadDesignations();
         // this.loadReportToList();
+        this.loadZone();
     }
 
     loadDepartments(): void {
@@ -129,6 +151,17 @@ export class EmployeeComponent implements OnInit {
             },
             error: (error) => {
                 console.error('Error loading departments:', error);
+            }
+        });
+    }
+
+    loadZone(): void {
+        this.employeeService.getAllZones().subscribe({
+            next: (zones: Zone[]) => {
+                this.Zones = zones;
+            },
+            error: (error) => {
+                console.error('Error loading Zone:', error);
             }
         });
     }
@@ -223,6 +256,7 @@ export class EmployeeComponent implements OnInit {
                     stateId: employee.stateId,
                     cityId: employee.cityId,
                     areaId: employee.areaId,
+                    ZoneId: employee.zoneId,
                     address: employee.address,
                     departmentId: employee.departmentId,
                     designationId: employee.designationId,
@@ -272,7 +306,7 @@ export class EmployeeComponent implements OnInit {
         });
     }
 
-    
+
     loadAreas(cityId: number): void {
         this.areaService.getAreas(cityId).subscribe({
             next: (areas) => {
@@ -289,64 +323,93 @@ export class EmployeeComponent implements OnInit {
 
     // employee.component.ts
     onSubmit(): void {
-    if (this.employeeForm.invalid) {
-        this.employeeForm.markAllAsTouched();
-        return;
-    }
-
-    this.isSubmitting = true;
-
-    // ✅ Create ke time documents mandatory check
-    if (!this.isEditMode) {
-        if (!this.aadharFile || !this.resumeFile || !this.appointmentFile) {
-            this.isSubmitting = false;
-            this.showError('Please upload all required documents (Aadhar, Resume, Appointment Letter)');
+        if (this.employeeForm.invalid) {
+            this.employeeForm.markAllAsTouched();
             return;
         }
+
+        //  DOB age check
+        // const dobValue = this.employeeForm.get('dob')?.value;
+        // if (!dobValue) {
+        //     this.showError('Date of Birth is required');
+        //     return;
+        // }
+
+        // const age = this.calculateAge(new Date(dobValue));
+        // if (age < 18) {
+        //     this.showError('Employee must be at least 18 years old');
+        //     return;
+        // }
+
+
+        this.isSubmitting = true;
+
+        //  Create ke time documents mandatory check
+        if (!this.isEditMode) {
+            if (!this.aadharFile || !this.resumeFile || !this.appointmentFile) {
+                this.isSubmitting = false;
+                this.showError('Please upload all required documents (Aadhar, Resume, Appointment Letter)');
+                return;
+            }
+        }
+
+        // ✅ Prepare employee data
+        const employeeData = {
+            EmployeeId: this.isEditMode ? this.employeeid : 0,
+            FirstName: this.employeeForm.get('firstName')?.value,
+            LastName: this.employeeForm.get('lastName')?.value,
+            Phone: this.employeeForm.get('phone')?.value,
+            Email: this.employeeForm.get('email')?.value,
+            dob: new Date(this.employeeForm.get('dob')?.value).toISOString(),
+            CountryId: Number(this.employeeForm.get('countryId')?.value),
+            StateId: Number(this.employeeForm.get('stateId')?.value),
+            CityId: Number(this.employeeForm.get('cityId')?.value),
+            AreaId: this.employeeForm.get('areaId')?.value,
+            ZoneId: Number(this.employeeForm.get('ZoneId')?.value),
+            Address: this.employeeForm.get('address')?.value,
+            DepartmentId: Number(this.employeeForm.get('departmentId')?.value),
+            DesignationId: Number(this.employeeForm.get('designationId')?.value),
+            ReportToId: this.employeeForm.get('reportToId')?.value ? Number(this.employeeForm.get('reportToId')?.value) : null,
+            AccountHolder: this.employeeForm.get('accountHolder')?.value,
+            AccountNumber: this.employeeForm.get('accountNumber')?.value,
+            IFSC: this.employeeForm.get('IFSC')?.value,
+            BankAddress: this.employeeForm.get('bankAddress')?.value,
+            AadharFilePath: this.aadharFile ? null : this.existingAadharPath,
+            ResumeFilePath: this.resumeFile ? null : this.existingResumePath,
+            AppointmentLetterFilePath: this.appointmentFile ? null : this.existingAppointmentPath,
+            IsDeleted: 0,
+            ActionType: this.isEditMode ? 'Update' : 'Insert'
+        };
+
+        const formData = new FormData();
+        formData.append('employeeJson', JSON.stringify(employeeData));
+        if (this.aadharFile) formData.append('AadharFile', this.aadharFile, this.aadharFile.name);
+        if (this.resumeFile) formData.append('ResumeFile', this.resumeFile, this.resumeFile.name);
+        if (this.appointmentFile) formData.append('AppointmentLetterFile', this.appointmentFile, this.appointmentFile.name);
+
+        if (this.isEditMode) {
+            this.updateEmployee(formData);
+        } else {
+            this.createEmployee(formData);
+        }
+
+        this.logFormDataContents(formData);
     }
 
-    // ✅ Prepare employee data
-    const employeeData = {
-        EmployeeId: this.isEditMode ? this.employeeid : 0,
-        FirstName: this.employeeForm.get('firstName')?.value,
-        LastName: this.employeeForm.get('lastName')?.value,
-        Phone: this.employeeForm.get('phone')?.value,
-        Email: this.employeeForm.get('email')?.value,
-        dob: new Date(this.employeeForm.get('dob')?.value).toISOString(),
-        CountryId: Number(this.employeeForm.get('countryId')?.value),
-        StateId: Number(this.employeeForm.get('stateId')?.value),
-        CityId: Number(this.employeeForm.get('cityId')?.value),
-        AreaId: this.employeeForm.get('areaId')?.value,
-        Address: this.employeeForm.get('address')?.value,
-        DepartmentId: Number(this.employeeForm.get('departmentId')?.value),
-        DesignationId: Number(this.employeeForm.get('designationId')?.value),
-        ReportToId: this.employeeForm.get('reportToId')?.value ? Number(this.employeeForm.get('reportToId')?.value) : null,
-        AccountHolder: this.employeeForm.get('accountHolder')?.value,
-        AccountNumber: this.employeeForm.get('accountNumber')?.value,
-        IFSC: this.employeeForm.get('IFSC')?.value,
-        BankAddress: this.employeeForm.get('bankAddress')?.value,
-        AadharFilePath: this.aadharFile ? null : this.existingAadharPath,
-        ResumeFilePath: this.resumeFile ? null : this.existingResumePath,
-        AppointmentLetterFilePath: this.appointmentFile ? null : this.existingAppointmentPath,
-        IsDeleted: 0,
-        ActionType: this.isEditMode ? 'Update' : 'Insert'
-    };
-
-    const formData = new FormData();
-    formData.append('employeeJson', JSON.stringify(employeeData));
-    if (this.aadharFile) formData.append('AadharFile', this.aadharFile, this.aadharFile.name);
-    if (this.resumeFile) formData.append('ResumeFile', this.resumeFile, this.resumeFile.name);
-    if (this.appointmentFile) formData.append('AppointmentLetterFile', this.appointmentFile, this.appointmentFile.name);
-
-    if (this.isEditMode) {
-        this.updateEmployee(formData);
-    } else {
-        this.createEmployee(formData);
+    get dobErrors() {
+        return this.employeeForm.get('dob')?.errors ?? {};
     }
 
-    this.logFormDataContents(formData);
-}
 
+    private calculateAge(dob: Date): number {
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        return age;
+    }
 
 
     private createEmployee(formData: FormData): void {
@@ -434,7 +497,16 @@ export class EmployeeComponent implements OnInit {
         alert(message);
     }
 
-    onClear(): void {
+    goBack(): void {
+        this.router.navigate(['/Mainlayout/employee/list']);
+    }
+
+    clearForm(): void {
         this.employeeForm.reset();
     }
+
+    closeForm(): void {
+        this.router.navigate(['/Mainlayout/employee/list']);
+    }
+
 }

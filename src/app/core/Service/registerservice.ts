@@ -3,6 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RegisterUserRequest } from '../interface/Iregister';
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface UserResponse {
+  id: number;
+  mobile: string;
+  email: string;
+}
+
 @Injectable({ providedIn: 'root' })
 
 export class UserService {
@@ -24,7 +35,11 @@ export class UserService {
   }
 
   signup(userData: any): Observable<any> {
-  return this.http.post(`${this.apiUrl}/User/register`, userData); 
+    return this.http.post(`${this.apiUrl}/User/register`, userData);
+  }
+
+  login(data: { email: string; password: string }): Observable<any> {
+  return this.http.post(`${this.apiUrl}/User/login`, data);
 }
 
 }

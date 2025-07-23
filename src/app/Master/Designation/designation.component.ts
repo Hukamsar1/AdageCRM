@@ -7,7 +7,6 @@ import { DesignationService } from 'src/app/core/Service/degnationService';
 
 @Component({
     selector: 'app-designation',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './designation.component.html',
     styleUrls: ['./designation.component.scss']
@@ -84,23 +83,23 @@ export class DesignationComponent implements OnInit {
     });
   }
 
-   loadDesignation(id: number): void {
-    this.isLoading = true;
-    this.designationService.getDesignationById(id).subscribe({
-      next: (designation) => {
-        this.designationForm.patchValue({
-          designationName: designation.designationName,
-          departmentId: designation.departmentId,
-          reportToId: designation.reportToId
-        });
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading designation:', error);
-        this.isLoading = false;
-      }
-    });
-  }
+  // loadDesignation(id: number): void {
+  //   this.isLoading = true;
+  //   this.designationService.getDesignationById(id).subscribe({
+  //     next: (designation) => {
+  //       this.designationForm.patchValue({
+  //         designationName: designation.designationName,
+  //         departmentId: designation.departmentId,
+  //         reportToId: designation.reportToId
+  //       });
+  //       this.isLoading = false;
+  //     },
+  //     error: (error) => {
+  //       console.error('Error loading designation:', error);
+  //       this.isLoading = false;
+  //     }
+  //   });
+  // }
 
    private loadDesignationData(id: number): void {
     this.isLoading = true;

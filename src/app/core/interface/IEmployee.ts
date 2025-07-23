@@ -26,6 +26,7 @@ export interface Department {
 }
 
 export interface Employee {
+  employeeId(employeeId: any): string;
   id?: number;
   firstName: string;
   lastName: string;
@@ -37,6 +38,7 @@ export interface Employee {
   designationId: number;
   reportToId?: number;
   areaId: number;
+  zoneId: number;
   countryId: number;
   stateId: number;
   cityId: number;
